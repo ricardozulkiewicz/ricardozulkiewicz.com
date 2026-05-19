@@ -52,7 +52,7 @@ const lines: PdfLine[] = [
 
 const links: PdfLink[] = [
   { url: "https://wa.me/5511992881425", x: 56, y: 708, width: 126, height: 14 },
-  { url: "mailto:ricardomachado.zulk@gmail.com", x: 190, y: 708, width: 220, height: 14 },
+  { url: "https://mail.google.com/mail/?view=cm&fs=1&to=ricardomachado.zulk%40gmail.com", x: 190, y: 708, width: 220, height: 14 },
   { url: "https://ricardozulkiewicz.com", x: 56, y: 695, width: 138, height: 14 },
   { url: "https://www.linkedin.com/in/rick-zulk/", x: 202, y: 695, width: 180, height: 14 },
 ];
