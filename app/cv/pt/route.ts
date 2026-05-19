@@ -1,1 +1,3 @@
-export { GET, dynamic, runtime } from "../ricardo-zulkiewicz-cv-pt/route";
+export function GET() {
+  return Response.redirect(new URL('/CV_Ricardo_Zulkiewicz_PT.pdf', 'https://ricardozulkiewicz.com'), 302);
+}
