@@ -42,23 +42,31 @@ function rgb(color: PdfColor) {
   return color.map((value) => String(value)).join(" ");
 }
 
+function isLogoBox(box: PdfBox) {
+  return box.x >= 518 && box.x <= 522 && box.y >= 702 && box.y <= 706 && box.width >= 40 && box.width <= 44 && box.height >= 40 && box.height <= 44;
+}
+
 function buildBox(box: PdfBox) {
+  const normalizedBox = isLogoBox(box)
+    ? { ...box, x: 520, y: 704, width: 42, height: 42, fill: [0.02, 0.12, 0.24] as PdfColor, stroke: [0.02, 0.12, 0.24] as PdfColor, lineWidth: 0 }
+    : box;
+
   const commands: string[] = ["q"];
-  commands.push(`${box.lineWidth ?? 0.6} w`);
+  commands.push(`${normalizedBox.lineWidth ?? 0.6} w`);
 
-  if (box.fill) {
-    commands.push(`${rgb(box.fill)} rg`);
+  if (normalizedBox.fill) {
+    commands.push(`${rgb(normalizedBox.fill)} rg`);
   }
 
-  if (box.stroke) {
-    commands.push(`${rgb(box.stroke)} RG`);
+  if (normalizedBox.stroke) {
+    commands.push(`${rgb(normalizedBox.stroke)} RG`);
   }
 
-  commands.push(`${box.x} ${box.y} ${box.width} ${box.height} re`);
+  commands.push(`${normalizedBox.x} ${normalizedBox.y} ${normalizedBox.width} ${normalizedBox.height} re`);
 
-  if (box.fill && box.stroke) {
+  if (normalizedBox.fill && normalizedBox.stroke) {
     commands.push("B");
-  } else if (box.fill) {
+  } else if (normalizedBox.fill) {
     commands.push("f");
   } else {
     commands.push("S");
@@ -69,11 +77,12 @@ function buildBox(box: PdfBox) {
 }
 
 function buildText(line: PdfLine) {
+  const isLogoText = line.text === "RZ";
   const font = line.font === "bold" ? "F2" : "F1";
-  const size = line.size ?? 9.5;
-  const x = line.x ?? 56;
-  const y = line.y ?? 720;
-  const color = line.color ?? [0, 0, 0];
+  const size = isLogoText ? 17 : line.size ?? 9.5;
+  const x = isLogoText ? 527.7 : line.x ?? 56;
+  const y = isLogoText ? 718.3 : line.y ?? 720;
+  const color = isLogoText ? ([1, 1, 1] as PdfColor) : line.color ?? [0, 0, 0];
   return `q\n${rgb(color)} rg\nBT /${font} ${size} Tf ${x} ${y} Td (${escapePdfText(line.text)}) Tj ET\nQ`;
 }
 
