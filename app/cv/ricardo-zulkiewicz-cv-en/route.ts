@@ -1,16 +1,62 @@
-export const runtime = "nodejs";
-export const dynamic = "force-static";
+import { buildSimplePdf, type PdfLine } from "../pdf-builder";
 
-const pdfBase64 = "JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSIC9GMiAzIDAgUgo+PgplbmRvYmoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAvRW5jb2RpbmcgL1dpbkFuc2lFbmNvZGluZyAvTmFtZSAvRjEgL1N1YnR5cGUgL1R5cGUxIC9UeXBlIC9Gb250Cj4+CmVuZG9iagozIDAgb2JqCjw8Ci9CYXNlRm9udCAvSGVsdmV0aWNhLUJvbGQgL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgL05hbWUgL0YyIC9TdWJ0eXBlIC9UeXBlMSAvVHlwZSAvRm9udAo+PgplbmRvYmoKNCAwIG9iago8PAovQSA8PAovUyAvVVJJIC9UeXBlIC9BY3Rpb24gL1VSSSAoaHR0cHM6Ly93YS5tZS81NTExOTkyODgxNDI1KQo+PiAvQm9yZGVyIFsgMCAwIDAgXSAvUmVjdCBbIDEwNC41MzE1IDc1OS4wOTggMTM2LjM2MTIgNzY3LjM3OCBdIC9TdWJ0eXBlIC9MaW5rIC9UeXBlIC9Bbm5vdAo+PgplbmRvYmoKNSAwIG9iago8PAovQSA8PAovUyAvVVJJIC9UeXBlIC9BY3Rpb24gL1VSSSAobWFpbHRvOnJpY2FyZG9tYWNoYWRvLnp1bGtAZ21haWwuY29tKQo+PiAvQm9yZGVyIFsgMCAwIDAgXSAvUmVjdCBbIDE0NS44MjggNzU5LjA5OCAyNDcuOTIwNCA3NjcuMzc4IF0gL1N1YnR5cGUgL0xpbmsgL1R5cGUgL0Fubm90Cj4+CmVuZG9iago2IDAgb2JqCjw8Ci9BIDw8Ci9TIC9VUkkgL1R5cGUgL0FjdGlvbiAvVVJJIChodHRwczovL3JpY2FyZG96dWxraWV3aWN6LmNvbSkKPj4gL0JvcmRlciBbIDAgMCAwIF0gL1JlY3QgWyAyNTcuMzg3MiA3NTkuMDk4IDMyNC40NzU5IDc2Ny4zNzggXSAvU3VidHlwZSAvTGluayAvVHlwZSAvQW5ub3QKPj4KZW5kb2JqCjcgMCBvYmoKPDwKL0EgPDwKL1MgL1VSSSAvVHlwZSAvQWN0aW9uIC9VUkkgKGh0dHBzOi8vd3d3LmxpbmtlZGluLmNvbS9pbi9yaWNrLXp1bGsvKQo+PiAvQm9yZGVyIFsgMCAwIDAgXSAvUmVjdCBbIDMzMy45NDI3IDc1OS4wOTggNDA2Ljc4NiA3NjcuMzc4IF0gL1N1YnR5cGUgL0xpbmsgL1R5cGUgL0Fubm90Cj4+CmVuZG9iago4IDAgb2JqCjw8Ci9Bbm5vdHMgWyA0IDAgUiA1IDAgUiA2IDAgUiA3IDAgUiBdIC9Db250ZW50cyAxMiAwIFIgL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gL1BhcmVudCAxMSAwIFIgL1Jlc291cmNlcyA8PAovRm9udCAxIDAgUiAvUHJvY1NldCBbIC9QREYgL1RleHQgL0ltYWdlQiAvSW1hZ2VDIC9JbWFnZUkgXQo+PiAvUm90YXRlIDAgCiAgL1RyYW5zIDw8Cgo+PiAvVHlwZSAvUGFnZQo+PgplbmRvYmoKOSAwIG9iago8PAovUGFnZU1vZGUgL1VzZU5vbmUgL1BhZ2VzIDExIDAgUiAvVHlwZSAvQ2F0YWxvZwo+PgplbmRvYmoKMTAgMCBvYmoKPDwKL0F1dGhvciAoXChhbm9ueW1vdXNcKSkgL0NyZWF0aW9uRGF0ZSAoRDoyMDI2MDUxOTE2MTMwNyswMCcwMCcpIC9DcmVhdG9yIChcKHVuc3BlY2lmaWVkXCkpIC9LZXl3b3JkcyAoKSAvTW9kRGF0ZSAoRDoyMDI2MDUxOTE2MTMwNyswMCcwMCcpIC9Qcm9kdWNlciAoUmVwb3J0TGFiIFBERiBMaWJyYXJ5IC0gXChvcGVuc291cmNlXCkpIAogIC9TdWJqZWN0IChcKHVuc3BlY2lmaWVkXCkpIC9UaXRsZSAoXChhbm9ueW1vdXNcKSkgL1RyYXBwZWQgL0ZhbHNlCj4+CmVuZG9iagoxMSAwIG9iago8PAovQ291bnQgMSAvS2lkcyBbIDggMCBSIF0gL1R5cGUgL1BhZ2VzCj4+CmVuZG9iagoxMiAwIG9iago8PAovRmlsdGVyIFsgL0FTQ0lJODVEZWNvZGUgL0ZsYXRlRGVjb2RlIF0gL0xlbmd0aCA0MDExCj4+CnN0cmVhbQpHYiIvKj5CQU9XKDRRIl0zIlBEOjJeOUlLR2pqKi5OZnEhPmAzLG81aDlOYU0nSi1NZDg8cCFAMzBXJVFeJz1ZQSZ1Q1ttQjpDNi0tYWw6cSVhWGYwIzdxJUBKI04yYVg5InA8aVVMc3JQZW04JVcncjgpP2JnMyRvKHJfRjdbYWdcKDNOPmpEMi90MkxYV0taOnFjLGFVZzFdMyRhQD4vJVBYTkJINGhyS2NYUl8lX2ArT18hMjVHNylHW09HWFtwPzBmIW0xM1ZILjhDZV5KNExuOHNmLllNODghJ1E6a0hoOztaPylwQkRHJT1jPGdrLC1XXDJmNWBsQ3E3IU87cHQnViM8K284bFdHUDxAXUZvQy80czNnN2BzWl04SiEwJTMvPlVbJlQlKC46O0Q0JGIrP0ovN2o4bmdqWWpsbnJXVzMvY0RFOCJEXz9XQVM0KEtpKlpwcyFqYVxvOFZFbCVQTnRHJkNfPG4uK21tKl8yZiY1Tl5pWyNUKEoqODFqNEZvI3NOS09sOTomMkNUIWA2aCpePVJqbC1BcE04SGsyUS82KCdWQlQyRkE1ZUlrKk1HYi4oT0QiUExmSE9YPUNlWTZAQEApV29nSCYhJTNhKV1HQkxda2lyZSpabjRkXEtbRzpEQ2dYQE0tViNxOFpxQSkjKF1hYj9ZVy5LJm1yaUFYM01MLF9qRUNAO2F0L01lKl9tY0VBR25XPGRNTVUyWS9kWCcnM2w0aS8yakFfO2goN2VJbytZTHRVZG1DSCY2UCViTDU5aT9Cck1QbCMvNCtcNEZyITs7R0RbITA5bWYjXWI+Kj88aWFnaDIzJEZrQDxgL1JURzp0LCVWYm4oa1A1SilyLlFCJFUvQylwKlE2XSNIQ1ZYN2dsSSI/MXJmOTVzaUcjKElANU4pUyElX2djazdLN29uXGZCMW5hRERrMl9uZTkhQmJBdGc6YS5NSD8uMz1sKFtbQUNOSzZBbDFmJWA+SyEtN1RgIy1UIyxGN1prJSNGKUFDOCYiV0YtajchWGtbJCJoNU8pU2lxN2ZWZDlSYCRxZS8uTj4kYCdxPjViUGgyYHRlZTc4V0paQW03SVElMTVKTmtcRTcwRmlZcE9mX0BNO1RTclhrUmZkZScpM2FgVStjJyUoV3EqUkE3XkNFKydVaVJNNkxaQ01dTUBJNjxATHBwZChZJnVUdHVMSTlxKWRbZ1hoLks9MF1vdTVvUi06YmxQQVNNO2FwdVJfMCpdNDtZZyU3KjpodEQpQj9nbD1AXE9RdCpMXG81LXAuSGhuZU8nWjdYWklKOlFbN3U7LkRCJCVYSzJsOyEyQSFoXjRSO2xJJlh1NUp1OyVMVDNgZVxFPydpRjFqZilqdGhPLUYjcSRmQFlhajctJHMiTF9xLyZdYnE2XXNkclskPjYmajBJZCxlaicsJV1cNUFJPilLVjpBTFowMHQlZVhZUTZnWmVqN1VYLkpUXHRpRDkhcEJiaF1gSiRDdGhIWCVIOU8wV2BjYzkxJHEzKENUKGFUPG5cSTZSJjVGPjtrVTRNRCZCcjtsNU8jRlA/Jy5LMEwnbmkpKHM2LjY3a2U8SywoXzlEOmxqcEArPGhBQ187dUdKcjxzTzdHZ0w3Q1dpcjhbKFdIcGxhaDhEV25lKDA8UjUhKVdDSmtkRj4kKFpsXio+ViM/Nl0mITlWcDs5QkNdKGQyNjlmWHFsZyM4bkZiOUUmXE9MN04jciVxXTQiIUtWRyZRN25LUCUqWUtTUWNWUSg1akhuIUE6XDQyMCc6QWFqbyZaKSJeQ0s4OVJLL1NWO1w9UT06QmoxTkdjPkRoSFIhYEtXRkUjMjBqZ3RgOCMjUSRiWj5xRERGPkQjMyJVVE8xLl5EQClzKD50Yjs6UXBCaFtibTdQXWw+IUNzTktuOnQvPERNKj4rQFBpWSosX2BuUkVDU1UkZHNTZExvVj9aSTZWN1FRNTJTaVczNEtKMTVAM3M+RysjQSNNJElhWEFVcWReRCVLXyxOIklWWC80ZSwhRTlaOGg0OjYhPFhRTyIpTzYhTj5LKFAnRyg8W3M2TW9VXVUqVTYsRS5qcyFjQDckUTklUTNPKE4mQSJZY1VKWGglPElLclRiWjJQbmY2NFBRPUY6RFZYW1ImQldGLTNEWCRqIz5jI1A6TGJGUkNdPmIoWVBDbDEwN0ZITzNHKGtrRmtXVEI6QmFZTispKlQuR3E1bTE8UCFsck46VSE8OGYrXT9ZSk8hN0FEbzY2M2BJTWxrRClbcTBibjFLQk0wT3BnMzVvRFE1YGQkVkA9RCF1LW0mWChrSj1QKkMzb10nMTdPaEFeM1lBOm0kRmNwb1ItNXBDaVlvJSZlRV1QUkIyUjEkSkEnUmohMHErVEtnc0hNI0tNVT5pSDBwPiJDVjhOJTg1VidqI0lxYSdDZE9uaDxGSSdTZiRqSG5ePFpTdFtYW1chM3QvSlEkLzcjRWRTOy5QYXUjLDhDSlBLRmJLUm8uXEYwR1pKTU9jQ1UiUVdZXFxTPEssVSwvMi4rP0tWPl5kO1A9ZS9xYSplL3JDQmdNQl5rOSRXVHUmMU9nI0BCQjxPbSdnR3Q8LDM0YThGYSIrWDJqJURIUmtRbHFIPkRXbFJcRGEybW5ITS1CLUNtaDJHak5pZklGKjFWZGRSX2UoXSdXbjxvZWQnT2suN0A2MD1icmtlKzhxJSgoYVBUOD1PKydISWhpM24jKT5RIl1fXSJUb2dJWnVCJz9BPS1uVy5ALGtlWWAyJEJjc1tuXj5OTTB1XF1bNVEtN1FONmFNXnVmRTBPNTgoR1osKzQkYTtXKi9FTEBDVSM9amtgRWJ0bDA7aTlfVTI1KGZYbExHLlltYUU9TmI5ZWo+Ils/UTtUQF42QVRtZkM5Q0QtKEZVVCdjcShoLWtvdEwmViw9LTkzQ1pxWElPWlBccE06Ul4/a206ISwmbWZXa10lRiRUY0EnOTZyRU1lPlFMOV0wal1iNSprPEAvNitObzA7InIucV9jXEgnaE46aCs4ZHVNblFKNkEwY0UpUmZwYGVDKVliVi8lKWp0QlprKDljOzlqbm5NQEFsY2tecTxgW0JuIWwyaF9BWEZMQTNBKmxPJD1hK0RuVjw1JjFeTEZGa1FNSkFtPl5ISSZsSkBdP19UY3NFKl0zPVp1amI5V0F1WlRqMXBjTFVnLG8sJzNcNCozOiktZDhsT2NMTl0+W0ZMMTwzNmVbUzFaLERrSTpcJypVVSJlKiknOlJEbDE6LyFANyFHWyRNTCM+TzJbV2wlPG1iOyJYSmQyMDpFJnI6QV1ebmlpSmo2cjJBdDZuaVdaQUY0bVcnKj8nVU5IYU5lZiFmTnNGQ2huNCQiJjhnbEpqU2dgVTRAIlFXXDYxdUcxUlAxIT0rZzw+PzYkMGU9ZUpWZUIuX3RILGtSIypAQm5ocHJFQzYsVFN0c1orbVQoLCZVYXFiU0tfWFMwcWc/MTR1XzJPOTMlOixwcylpQD8jZ0xHXG4iRSNta2VsLCRjTi4+Om1eJ1FtMzxnO11dUjJJQkElTT0uMl1TPDRONExkNVZiX1UrNW9tOE9XQ1EnSSYrdDU6c0JqUDovJXEnIk1JbEwvO1YmIy1cazBmIllgYS4tL1EyOzhvNjdpZyZucV1XLSI9WSdsIyZwYXAxNlBzVFNDZi5UPTNHY0JQJmYnZlY0NVNYUlJBQGwpOHBXdSQiIURNMTQrWXFZK2BYJFolcjRdMk9DRDBScWJMKlNIVTk1NFAvZ2MlJD1pNi90OjxJKTEzaSNHZVRRcmpLTkZJQTFIREQmLTw2Nj1ZZXJuUlQ7KSRmYU44KVo8PjxtWDEzN3AvcUUvQDAyXy9MLDZSO0xAMWRpO2gjU3NtWSlvNk9AIkdmMj1sO3M+S1xHRDkmXFUna3VVUS06RVwwaS44LiFPbScoazoiakwjck9tbmYuYCMhcGk3RWZATk9oZ0ZpOD09MjRbTy0xR2srcUFsViJZJkUkJV1FM3QqcUAiUkVBNzImVmRtSjNbKCpBIzJrJWg/ZTxfNmklcGtiT0oqVFBVL2dtXCQjJEVzTDFtIiNHXWYhSkcodWI5UyRgKS40cFBxP1ZaUCtoN2EpXFYwY2tiOWFrUjRFXTE6VzgwSikvXj4kXCkhITJcPitDYnU2OHVwW0BZLl5ISjE/QmYiQ3JGWTxvcyRFUHVqN1deSSQuJGRvQkIuUDw6PSRMbXAoLj48SjQrYU89TnMrNThhIihGN20+cGFgbmNCZiFIKkE3SHRccSclNjkrc3VWOzhgITNUSzU2a2pxQmdRLl1MUVgqPEtZaz5NPGdQQiRgQWRuTDRdbFssTGVVVmNncFYyNyVvVkw7dVE2Ql1OQWZuX1wldFZuJDcqUDU8Z2g0L14yZ3MmbSU+Pmw8ZUUkJk1TXjdDMjpgIypROiopMkVmc0ZPWT0sWV49NXBKMyJnUXJJMGU+dW40IU5GVy0waURlLzZrdVJdNkFuOzNQXXFcIV05UycxNTMwSEpcUnIuLTtGO2Fqc2k2am5mUjFbOk04LFIlMkRLY2VyUGFxI2MpNypOPl5BY0JoUGJcdU8oUWxcYm0kYUFmKD9jLW9jNGBPVyEhMldBdGUuOFlRL1RASjUmL0l1TzhIdVomYi44UnFXOjEzW1gjSWhzOUFLOmlWXkcjXFEjSG9WXkprN04uS1Y5TjZJMHImajl1UU0oUE41Yk5qYnEqJktBO15hN0xjXltqUUBsQWZWIi91bmpwNUxgI1ltZ2ghLEdWPDdgO2VuPUQ3RCg1TSFBL3Q5czlESExUNyVxXmM1UWRaOGJyY3JzNEVTKF0jPyMrNkJFT2tZRTVoW1opcCU5dF8/W3IrQTRaazY1MCZsJXBMayw2TV10UlFqKSZHZy1EaUBbM3ApXWVRVzxkX3EsN3E7LC0ydWxUYFVHaUglNlZHZ3E7bDAwIyw9XHQqZU01OTJwaz0wOnVAZylRWCJqISxnL2BvY1VpR1BEMFIzIUY9JVsuNzxJR0ZsbXRLVG42cFhCNVAvXmk1bjcwX0gxZzBwLVNIZjBcRSo5cGRAaDk1b0xhR0dqVkctJEdPVUoraGFGIVFiOihTOGhsNGVzUidXUG9UdTA9TE9VIWY4cSw8bD1fPmYwOkFFW20nITg2Xm0tZ0g5PUUyKWJaJUFxZ1NES2hHLFpNdSckP3RNQE9XOzlgTT4+PUBcPnAqMWFJcDtnP11lO1MlXS9UTjhySSdIMF4yR3ViX3NJOiZUc1dtWCZDK1RUXlJVMShcNlp1a0VMZ04zIi5BWDptUjMpaSRRJkFiUFEoXVVsUSJSfj5lbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCAxMwowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAwNjEgMDAwMDAgbiAKMDAwMDAwMDEwMiAwMDAwMCBuIAowMDAwMDAwMjA5IDAwMDAwIG4gCjAwMDAwMDAzMjEgMDAwMDAgbiAKMDAwMDAwMDQ5OCAwMDAwMCBuIAowMDAwMDAwNjgzIDAwMDAwIG4gCjAwMDAwMDA4NjIgMDAwMDAgbiAKMDAwMDAwMTA0OSAwMDAwMCBuIAowMDAwMDAxMjkwIDAwMDAwIG4gCjAwMDAwMDEzNTkgMDAwMDAgbiAKMDAwMDAwMTY0MCAwMDAwMCBuIAowMDAwMDAxNzAwIDAwMDAwIG4gCnRyYWlsZXIKPDwKL0lEIApbPDNmODE3ZGI0MDMwNzg4Njk2OGNiNDAzMGM0ZWQxMWFkPjwzZjgxN2RiNDAzMDc4ODY5NjhjYjQwMzBjNGVkMTFhZD5dCiUgUmVwb3J0TGFiIGdlbmVyYXRlZCBQREYgZG9jdW1lbnQgLS0gZGlnZXN0IChvcGVuc291cmNlKQoKL0luZm8gMTAgMCBSCi9Sb290IDkgMCBSCi9TaXplIDEzCj4+CnN0YXJ0eHJlZgo1ODAzCiUlRU9GCg==";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const lines: PdfLine[] = [
+  { text: "Ricardo Zulkiewicz CV | EN", x: 56, y: 748, size: 18, font: "bold" },
+  { text: "Account Executive | B2B Sales, Outbound & CRM | Technology & IT Outsourcing", x: 56, y: 728, size: 9.5 },
+  { text: "Sao Paulo, Brazil | WhatsApp | ricardomachado.zulk@gmail.com | ricardozulkiewicz.com | linkedin.com/in/rick-zulk", x: 56, y: 712, size: 8 },
+
+  { text: "EXECUTIVE SUMMARY", x: 56, y: 684, size: 11, font: "bold" },
+  { text: "Account Executive with experience in consultative B2B sales, outbound, CRM, and commercial structuring for technology, startups, and IT Outsourcing.", x: 56, y: 668, size: 8.5 },
+  { text: "Full-cycle background across prospecting, discovery, qualification, proposal, negotiation, and closing, with R$35k to R$120k deal sizes.", x: 56, y: 655, size: 8.5 },
+  { text: "Approximately 5 deals/month and a mostly outbound-generated pipeline. Profile combines execution, ICP analysis, decision-maker engagement and process building.", x: 56, y: 642, size: 8.5 },
+
+  { text: "KEY METRICS", x: 56, y: 616, size: 11, font: "bold" },
+  { text: "5 deals/month - approximate average closings at Talentu", x: 56, y: 600, size: 8.8 },
+  { text: "R$35k - R$120k - commercial deal size range", x: 56, y: 587, size: 8.8 },
+  { text: "80% outbound - approximate pipeline source", x: 56, y: 574, size: 8.8 },
+  { text: "~R$320k/month - approximate closed TCV average at Talentu", x: 56, y: 561, size: 8.8 },
+
+  { text: "PROFESSIONAL EXPERIENCE", x: 56, y: 535, size: 11, font: "bold" },
+  { text: "Account Executive | First Decision | 2026 - Present", x: 56, y: 519, size: 9.3, font: "bold" },
+  { text: "B2B sales for technology and IT Outsourcing, focused on outbound, new business, CRM, pipeline, and private-market entry.", x: 56, y: 505, size: 8.5 },
+  { text: "Built the commercial approach for the private outsourcing unit: ICP, priority segments, cadences, qualification criteria and support materials.", x: 56, y: 492, size: 8.5 },
+  { text: "Organized commercial governance in Pipedrive, standardizing pipeline stages, relationship history, activities, follow-ups and opportunities.", x: 56, y: 479, size: 8.5 },
+  { text: "Created CRM materials and guides to support adoption, sales predictability, and team alignment.", x: 56, y: 466, size: 8.5 },
+
+  { text: "Account Executive | Talentu | 2023 - 2025", x: 56, y: 444, size: 9.3, font: "bold" },
+  { text: "Led end-to-end consultative B2B sales for startups, scale-ups, and companies undergoing digital transformation.", x: 56, y: 430, size: 8.5 },
+  { text: "Engaged C-level executives, HR leaders, and founders in strategic meetings, diagnosis, proposals, negotiation and closing.", x: 56, y: 417, size: 8.5 },
+  { text: "Managed a pipeline with roughly 80% outbound origin, 30-45 day average sales cycle, R$35k to R$120k deal sizes and 5 deals/month.", x: 56, y: 404, size: 8.5 },
+  { text: "Generated an approximate average of R$320k/month in TCV, ranging from R$180k to R$500k.", x: 56, y: 391, size: 8.5 },
+
+  { text: "Business Development Representative | Talentu | 2022 - 2023", x: 56, y: 369, size: 9.3, font: "bold" },
+  { text: "Prospecting, qualification, market mapping, and generation of qualified sales conversations for the commercial team.", x: 56, y: 355, size: 8.5 },
+  { text: "Supported ICP definition, market research, outbound cadences, and handoff of qualified opportunities.", x: 56, y: 342, size: 8.5 },
+
+  { text: "SELECTED PROJECTS", x: 56, y: 316, size: 11, font: "bold" },
+  { text: "Pipeline structuring and Pipedrive governance for a B2B commercial operation, with stage-advance criteria and opportunity tracking.", x: 56, y: 300, size: 8.5 },
+  { text: "Created Sales Enablement materials: playbooks, one-pagers, sales scripts and CRM guides.", x: 56, y: 287, size: 8.5 },
+
+  { text: "CORE SKILLS", x: 56, y: 261, size: 11, font: "bold" },
+  { text: "Consultative B2B Sales | Outbound | Discovery | Qualification | Negotiation | CRM | Pipeline | Forecasting | Sales Enablement", x: 56, y: 245, size: 8.5 },
+  { text: "TOOLS: Pipedrive CRM | LinkedIn | Google Workspace | Calendly | Slack", x: 56, y: 226, size: 8.5 },
+  { text: "LANGUAGES: Portuguese native | English professional | Spanish basic", x: 56, y: 207, size: 8.5 },
+  { text: "ADDITIONAL EXPERIENCE: Volunteer Consultant - NAPEN: strategic consulting for small businesses.", x: 56, y: 188, size: 8.5 },
+
+  { text: "ricardozulkiewicz.com | English CV - website version", x: 56, y: 42, size: 8 },
+];
 
 export function GET() {
-  const pdfBuffer = Buffer.from(pdfBase64, "base64");
+  const pdfBuffer = buildSimplePdf(lines);
 
   return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="Ricardo_Zulkiewicz_CV_EN_PREMIUM_SITE.pdf"',
-      "Cache-Control": "public, max-age=31536000, immutable",
+      "Content-Disposition": 'attachment; filename="Ricardo_Zulkiewicz_CV_EN.pdf"',
+      "Cache-Control": "no-store, max-age=0",
     },
   });
 }
