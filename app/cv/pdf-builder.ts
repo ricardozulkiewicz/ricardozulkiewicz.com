@@ -6,6 +6,14 @@ export type PdfLine = {
   font?: "regular" | "bold";
 };
 
+export type PdfLink = {
+  url: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 function escapePdfText(value: string) {
   return value
     .replace(/\\/g, "\\\\")
@@ -13,7 +21,7 @@ function escapePdfText(value: string) {
     .replace(/\)/g, "\\)");
 }
 
-export function buildSimplePdf(lines: PdfLine[]) {
+export function buildSimplePdf(lines: PdfLine[], links: PdfLink[] = []) {
   const width = 612;
   const height = 792;
 
@@ -27,13 +35,25 @@ export function buildSimplePdf(lines: PdfLine[]) {
     })
     .join("\n");
 
+  const annotationRefs = links
+    .map((_, index) => `${7 + index} 0 R`)
+    .join(" ");
+  const annotations = annotationRefs ? ` /Annots [${annotationRefs}]` : "";
+
   const objects = [
     "<< /Type /Catalog /Pages 2 0 R >>",
     "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>`,
+    `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R${annotations} >>`,
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>",
     "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>",
     `<< /Length ${Buffer.byteLength(content, "latin1")} >>\nstream\n${content}\nendstream`,
+    ...links.map((link) => {
+      const x1 = link.x;
+      const y1 = link.y;
+      const x2 = link.x + link.width;
+      const y2 = link.y + link.height;
+      return `<< /Type /Annot /Subtype /Link /Rect [${x1} ${y1} ${x2} ${y2}] /Border [0 0 0] /A << /S /URI /URI (${escapePdfText(link.url)}) >> >>`;
+    }),
   ];
 
   let pdf = "%PDF-1.4\n";
