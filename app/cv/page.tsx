@@ -5,15 +5,15 @@ const cvOptions = [
     language: "Português",
     title: "CV em português",
     description:
-      "Versão objetiva do currículo profissional de Ricardo Zulkiewicz em português, com experiência, competências e idiomas.",
-    href: "/Ricardo_Zulkiewicz_CV_PT.pdf",
+      "Versão premium do currículo profissional de Ricardo Zulkiewicz em português, com posicionamento executivo, experiência, competências, projetos e idiomas.",
+    href: "/cv/ricardo-zulkiewicz-cv-pt",
   },
   {
     language: "English",
     title: "English CV",
     description:
-      "Concise English version of Ricardo Zulkiewicz's professional CV, covering experience, core skills and languages.",
-    href: "/cv/en",
+      "Premium English version of Ricardo Zulkiewicz's professional CV, covering executive summary, experience, core skills, tools and languages.",
+    href: "/cv/ricardo-zulkiewicz-cv-en",
   },
 ];
 
@@ -46,7 +46,7 @@ export default function CVPage() {
           </h1>
 
           <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-600">
-            Escolha a versão do currículo para download. Choose the CV version you want to download.
+            Escolha a versão premium do currículo para download. Choose the premium CV version you want to download.
           </p>
         </section>
 
@@ -74,7 +74,7 @@ export default function CVPage() {
                 rel="noreferrer"
                 className="mt-7 inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
               >
-                Download
+                Download PDF
                 <Download className="ml-2" size={17} />
               </a>
             </article>
