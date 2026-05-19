@@ -151,20 +151,15 @@ export default function Home() {
           </div>
 
           <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.045em] text-slate-950 md:text-7xl">
-            Vendas B2B, IT Outsourcing e desenvolvimento comercial para
-            operações de tecnologia.
+            Estruturo vendas B2B, pipeline e crescimento comercial para empresas de tecnologia.
           </h1>
 
           <p className="mt-7 max-w-2xl text-lg leading-8 text-slate-600">
-            Atuo na interseção entre vendas consultivas, tecnologia,
-            desenvolvimento de negócios e construção de operações comerciais
-            mais previsíveis.
+            Atuo na interseção entre vendas consultivas, tecnologia e desenvolvimento de negócios, conectando prospecção, CRM, relacionamento e materiais comerciais a uma operação comercial mais previsível.
           </p>
 
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-500">
-            Meu trabalho combina prospecção, qualificação, relacionamento, CRM,
-            materiais comerciais e método para transformar oportunidades em
-            receita.
+            Meu trabalho combina execução prática, visão estratégica e organização de processos para transformar oportunidades em receita com mais clareza, método e consistência.
           </p>
 
           <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -200,28 +195,26 @@ export default function Home() {
                 Estratégia comercial com execução prática.
               </h2>
               <p className="mt-4 text-sm leading-6 text-slate-300">
-                Estruturar vendas não é apenas vender mais. É organizar
-                narrativa, processo, CRM, cadência e tomada de decisão para que
-                a operação comercial funcione com clareza.
+                Organizo narrativa, pipeline, CRM, cadência comercial e tomada de decisão para que vendas deixe de depender de improviso e passe a operar com método.
               </p>
             </div>
             <div className="mt-5 grid grid-cols-2 gap-4">
               <div className="rounded-3xl border border-slate-200 p-5">
                 <LineChart className="mb-4 text-slate-950" size={22} />
                 <p className="text-2xl font-semibold tracking-tight">
-                  Pipeline
+                  Pipeline & CRM
                 </p>
                 <p className="mt-2 text-sm leading-5 text-slate-500">
-                  Visibilidade e previsibilidade comercial.
+                 Visibilidade, previsibilidade e gestão comercial.
                 </p>
               </div>
               <div className="rounded-3xl border border-slate-200 p-5">
                 <BriefcaseBusiness className="mb-4 text-slate-950" size={22} />
                 <p className="text-2xl font-semibold tracking-tight">
-                  New Business
+                 Geração de demanda
                 </p>
                 <p className="mt-2 text-sm leading-5 text-slate-500">
-                  Abertura de mercado e relacionamento B2B.
+Prospecção, relacionamento e abertura de mercado B2B.
                 </p>
               </div>
             </div>
