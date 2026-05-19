@@ -6,14 +6,14 @@ const cvOptions = [
     title: "CV em português",
     description:
       "Versão premium do currículo profissional de Ricardo Zulkiewicz em português, com posicionamento executivo, experiência, competências, projetos e idiomas.",
-    href: "/CV_Ricardo_Zulkiewicz_PT.pdf",
+    href: "/cv/ricardo-zulkiewicz-cv-pt",
   },
   {
     language: "English",
     title: "English CV",
     description:
       "Premium English version of Ricardo Zulkiewicz's professional CV, covering executive summary, experience, core skills, tools and languages.",
-    href: "/Ricardo_Zulkiewicz_CV_EN.pdf",
+    href: "/cv/ricardo-zulkiewicz-cv-en",
   },
 ];
 
