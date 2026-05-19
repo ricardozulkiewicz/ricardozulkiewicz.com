@@ -22,7 +22,8 @@ import {
 
 const linkedinUrl = "https://www.linkedin.com/in/rick-zulk/";
 const emailAddress = "ricardomachado.zulk@gmail.com";
-const emailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
+const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
+const mailtoUrl = `mailto:${emailAddress}`;
 
 const indicators = [
   "B2B Sales",
@@ -478,10 +479,17 @@ export default function Home() {
                 <ArrowUpRight className="ml-2" size={17} />
               </a>
               <a
-                href={emailUrl}
+                href={gmailComposeUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
+                className="hidden items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:inline-flex"
+              >
+                E-mail
+                <Mail className="ml-2" size={17} />
+              </a>
+              <a
+                href={mailtoUrl}
+                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:hidden"
               >
                 E-mail
                 <Mail className="ml-2" size={17} />
