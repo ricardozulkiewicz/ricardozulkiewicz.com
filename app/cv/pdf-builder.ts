@@ -29,6 +29,7 @@ export type PdfLink = {
 
 export type PdfOptions = {
   boxes?: PdfBox[];
+  logo?: boolean;
 };
 
 function escapePdfText(value: string) {
@@ -77,22 +78,42 @@ function buildBox(box: PdfBox) {
 }
 
 function buildText(line: PdfLine) {
-  const isLogoText = line.text === "RZ";
+  if (line.text === "RZ") {
+    return "";
+  }
+
   const font = line.font === "bold" ? "F2" : "F1";
-  const size = isLogoText ? 17 : line.size ?? 9.5;
-  const x = isLogoText ? 527.7 : line.x ?? 56;
-  const y = isLogoText ? 718.3 : line.y ?? 720;
-  const color = isLogoText ? ([1, 1, 1] as PdfColor) : line.color ?? [0, 0, 0];
+  const size = line.size ?? 9.5;
+  const x = line.x ?? 56;
+  const y = line.y ?? 720;
+  const color = line.color ?? [0, 0, 0];
   return `q\n${rgb(color)} rg\nBT /${font} ${size} Tf ${x} ${y} Td (${escapePdfText(line.text)}) Tj ET\nQ`;
+}
+
+function buildRzLogo() {
+  const navy: PdfColor = [0.02, 0.12, 0.24];
+  const white: PdfColor = [1, 1, 1];
+  return [
+    "q",
+    "0 w",
+    `${rgb(navy)} rg`,
+    "520 704 42 42 re",
+    "f",
+    `${rgb(white)} rg`,
+    "BT /F2 17 Tf 527.7 718.3 Td (RZ) Tj ET",
+    "Q",
+  ].join("\n");
 }
 
 export function buildSimplePdf(lines: PdfLine[], links: PdfLink[] = [], options: PdfOptions = {}) {
   const width = 612;
   const height = 792;
 
-  const graphicsContent = (options.boxes ?? []).map(buildBox).join("\n");
-  const textContent = lines.map(buildText).join("\n");
-  const content = [graphicsContent, textContent].filter(Boolean).join("\n");
+  const boxesWithoutLogo = (options.boxes ?? []).filter((box) => !isLogoBox(box));
+  const graphicsContent = boxesWithoutLogo.map(buildBox).join("\n");
+  const logoContent = options.logo === false ? "" : buildRzLogo();
+  const textContent = lines.map(buildText).filter(Boolean).join("\n");
+  const content = [graphicsContent, logoContent, textContent].filter(Boolean).join("\n");
 
   const annotationRefs = links
     .map((_, index) => `${7 + index} 0 R`)
