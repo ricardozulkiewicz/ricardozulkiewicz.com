@@ -1,16 +1,62 @@
-export const runtime = "nodejs";
-export const dynamic = "force-static";
+import { buildSimplePdf, type PdfLine } from "../pdf-builder";
 
-const pdfBase64 = "JVBERi0xLjQKJZOMi54gUmVwb3J0TGFiIEdlbmVyYXRlZCBQREYgZG9jdW1lbnQgKG9wZW5zb3VyY2UpCjEgMCBvYmoKPDwKL0YxIDIgMCBSCj4+CmVuZG9iagoKMiAwIG9iago8PAovQmFzZUZvbnQgL0hlbHZldGljYSAKL0VuY29kaW5nIC9XaW5BbnNpRW5jb2RpbmcgCi9OYW1lIC9GMSAKL1N1YnR5cGUgL1R5cGUxIAovVHlwZSAvRm9udCAKPj4KZW5kb2JqCgozIDAgb2JqCjw8Ci9Db250ZW50cyA3IDAgUiAKL01lZGlhQm94IFsgMCAwIDU5NS4yNzU2IDg0MS44ODk4IF0gCi9QYXJlbnQgNiAwIFIgCi9SZXNvdXJjZXMgPDwKL0ZvbnQgMSAwIFIgCi9Qcm9jU2V0IFsgL1BERiAvVGV4dCAvSW1hZ2VCIC9JbWFnZUMgL0ltYWdlSSBdCj4+IAovUm90YXRlIDAgCi9UcmFucyA8PAoKPj4gCi9UeXBlIC9QYWdlCj4+CmVuZG9iagoKNCAwIG9iago8PAovUGFnZU1vZGUgL1VzZU5vbmUgCi9QYWdlcyA2IDAgUiAKL1R5cGUgL0NhdGFsb2cKPj4KZW5kb2JqCgo1IDAgb2JqCjw8Ci9BdXRob3IgKGFub255bW91cykgCi9DcmVhdGlvbkRhdGUgKEQ6MjAyNjA1MTkxNjEzMzIrMDAnMDAnKSAKL0NyZWF0b3IgKHVuZGlzY2xvc2VkKSAKL0tleXdvcmRzICgpIAovTW9kRGF0ZSAoRDoyMDI2MDUxOTE2MTMzMiswMCcwMCcpIAovUHJvZHVjZXIgKFJlcG9ydExhYiBQREYgTGlicmFyeSAtIHd3dy5yZXBvcnRsYWIuY29tKSAKL1N1YmplY3QgKHVuc3BlY2lmaWVkKSAKL1RpdGxlICh1bnRpdGxlZCkgCi9UcmFwcGVkIC9GYWxzZQo+PgplbmRvYmoKCjYgMCBvYmoKPDwKL0NvdW50IDEgCi9LaWRzIFsgMyAwIFIgXSAKL1R5cGUgL1BhZ2VzCj4+CmVuZG9iagoKNyAwIG9iago8PAovRmlsdGVyIFsgL0FTQ0lJODVEZWNvZGUgL0ZsYXRlRGVjb2RlIF0gCi9MZW5ndGggNTAzNQo+PgpzdHJlYW0KR2FwcUdbJmUoTVxXfXU7YiFHTjYkbmVgMVZZOCZIbGozUHBRVVIwNVFxZzJaWDBQYjJBKCZaQiMtM0hEUCtIQihlcWBSNWdOW2BicWxCWFhbWzQ4UiZZaWI7TWliZDkrSzhWY3BfN2wsXyZgRjV6PUgmeUBBOU89NCxUUXVVPT1qckAhKFFrPklPO0VuOSJsaXVTOFQ2YldQfW8pMUhhZkxuWXldc1V+LV5rQGphRV16RkU7WXQqc3NZVVtZZFNyckosQypHPiZaPmZKJW9aSExzU2ZudTBocWJmdjVwXm1+OnxpY3ZZTGwhJkFDR2FJX0wxPncwZWBZNkJkTUNCL2U6NVwuUFYifCZaWEdBfVlHYmFkRUlpMWByYDFDd0FESl9ZfnI5WzokPk1FeHJqcUNGM2t4Qk1PUD53RFwsVURCTWJdLidUSlR5bnJkQFI6JUpPVDRsQ0Q3UUlIciYkWnlVZjgySSZoO2YuY2Q5bVY0UUZIJ2pSQ1ctNlEtY2Y9RkNDa0t6YkFvZ0kxSS90S1IxbHI0clZYW1p8RlpGXEwqQWYvZmRrMn1wOGw1WD16Yjg8NCZLZTZnUVgtXmdJXDZCNiZGcWFaVlEgcjZDbylFa3xzdiMxa1Mnb2tfRm9nV0dJWXEyZzckOk9YOidLNVY8US1cT1NHTll7eWk3O0QuUUFVNyNQVHwhPTxqdDEuV2IuYU0yQzktaDssS0QzcEw3bGUgXH9TYko0bkEwISZVMGQ7ZHRFbz0sfG1lQXZcV3xEb31xQzt3UDEufWc0Zn9WXHtiQXZNW11dQ01oN0tTL2lmLTJkciNPPSN0ayRJdGguZEd2dCdYbWUzZTwhWUVrJiF1NSBYTmlHI2pPdCpgWnEqRWNFfWlHXXh7JVhMIkFTK0t2Ymg4eGMobTtsaF5Df1FnKCx1Y2JATXRpUEN6fUdiUC5tRStsczZPXFJFWnRKQ0A7aC12QTViZV96bVg2WHtST2FYTlgxdDNwVzFqd1VLdDBdUXRrTzMpfXcwYjVpVihYUnBZNy4qT3Q9eGNqRyRtPnRzQkM4eSNqNSFhIyRTIFZvZUR8MS53RTxsX3c9PiMheSQqKk9mTTdcZVxhQCZaYywtdj1zUEM9aW5mXSQmYT1fUVBMLUpROF5SJV1GTmxjT1t5cGdFPmxOUVMgN1UhQGBbYjBGaDA0ZmtGN3gvUzNtWkBhcTAjKjh6PzkqdTo6MnEyTjtmdGd6Qn1xJTRnYGUqRXdrUGFTZ1c1Q0hXbS4iRF9bYWRteWFOdzBgNk1YQCtGUnltVHBqbC5lUn1sI0ZIaXJJUz0qPCU0cihlYmtFfik2fW8gZjguenZLcFdcJzRRUz1sdWg0S0hAJWxdbGshYyw7YGMgfDBRSGpqLEcpLEtfIktELUJmZzAwKmtacDIiQUZJUk5QZ2k5dTt0fDBkLH83WyVXNHFSK3UxOn1dM1R0ZFIra2xMI3lELk5Idzc5LydXMFpBPjBxLCE0UjZVek17Tyh8PGtgXCZIakFYaVlbO3JoWEdSLnNSRDJSRkVVP3Y8WH91LD1YMSJwXF4pKCEhOz9qICkpcGk8O2wyQGE8Y2lvUzU3Kl9TVC8wN0AqNmE5M1VUaEU2Qi5JKEVQeFNlZ0hpKnFIP21PUUY7WzU9bShVMiQ7TW9abU14QzUxcS1Yamg3flAwMkZKfmUnIW5TWT5pdXdjaWVLc0otUHRfW0NmcWAvd1V6ZWQ3N2xLL3lPYGdSc1NQJihXUWp8bmZsWzRGNFpVXHRTam9uaFZoNyZUcWZ3aHZoNFRxeT0zNiZpc0k7MCgyNipUU0c7Sz1ySzRPWUFKUkFIfmxHUXZDaHxeYVV8X09Hd1pIcVE+XHxJI1MtY2s5clhOaVApWVp7bDhJaXFRN25tLXV5MGEuc2JRXEIwQDZdPW1McGZgcmRcWDBDaSwpbEJPL0t9N0kzM0BlUjdGXFxhdzApfC9xKG0mQUBkZWJbaF5MPGRmbVVOczcmWEZ3R30yOU4hYSE9fXtrJkNGW0E3LG9WTWxjW2ZxR1F0UGIzWT9xRUw7YXZQRyE9bXRgfnFDOTtKcn9QU1FHNkZeYCdncVBbcn0gMjhUU1hLYFRpWzJSdFVIWUZ8YXhIPl1jbHtzOiR6a0p4ZWUtWmFHYzBGKDN1dFh6Q2Z3Jl0rWzdzUG9ZYmJSRmNQcmlTQyJ3Sy80PWQ+UW9YVjZgfHx9TWBxS29GbH5ER3QpblgqSXtjcHp2NkdPKVE2W0JLV09DZVl3N3kpdU1scV9MdjJgfmRZPWRAR1dcUH1TbmxhNHM3Qy9DUGl+R2RFaUFEbmdzSzFsYjJ7PE9/UXtCJTpsRF5mKXhzbV5sQkBEPm9ATjpJOSp3M2hpX2pXU2QqWEw+TClySlxZcU5pO0pjNVlYJlN1OmRMTSYqRlplUk9oQEZue1ZqcFFyNTR1bFwkZCM8aDRQSUV5WmdDKFBtNVozRUFFO0teRGNqMWZBdEtcUFJFVy5XXWIyRF9uKy1ZaTEjZDs8diIvPEhRLTRqPjRXI0wiQCcnW1NTKjJENiFJKW41cnZXNkpTdTRsY1FNYEF2RkdFUS44T2FsT1diPyFoJiEzLCtyO291L21YIWFRbDJFZmsrJDtxOCUwQjtuWnpAQkx0cUdlSnNjdkpkQF5DaVBARkFjRG45dVJpX0hpcEdrPFhLXEZ3KVJYNHJxcFlacmlNQXZXN2RlMlsjZn1uUUpaTGlbfk5VfnEoJmg0cns1KSR4Km1kKSExZ3J7RSVgNCE3NDJcXFlNQTJTTmJAb1k0Xz5rbnE7e0MxfVYqT20wQSRMWE1cUSMuaEN4VktKNVl7M0k4RCV0Mm93UX48VUtHYDBhJjdKe0lDXXd1T1FBLUYmXWkjXX88SyhZJj0pUS0vW0A+Sjk7ezQ6WGJQa35jcGdOJkRXTW5AT1JfW0AgPG4rLU54PnVLJmYiP3JxQSxmfjB2Lno8ciMwUUpvMHpuWmYjZEBFQWJfMmNUTTIwXkQvb2hqc2NmUl9rNSErZGVMRitNP24zXGJBLixbe1M9V2RQUSZ1b1I8MHFdWE4gNVxgVjVuV3kzcnBvX3MyfHNmfW84LjVZSzFaOyh5UUo0emhTRGdQWzNObTNsXE9fdyp6U2o2cy9FKEdZc1JaY1llIjNZYTd8OUJfeSx7bEhoUXlON3VWZUZfMCEzK1R9TTFxcDlST1c6TiRPYFhJPmBjKDUsZXZFPHJqaVAqbX5aLyZaTTRZbTpnZ3JMd0JdT1suNFlxUEleSzAsQz0hXS89YzZBM2tnXTRIUWl4dXBRY3R7eEozZDJDVS9sP2lYakNHSn1qWElScmQqJGVRRzBwdCdJfmVkNEQ9dypKVm1tczFlMltTMCRBUUMwJTViPyZkNjlpO0RydF58OFIsZmFUQ0hVP2MwZUlvVjJ8VlZ0Wz1JMDspZyc3ZlhbaVdXQHlmVHd5di4ycyt8O2YlUWYiZCVUPk0mQHZqc1tUZFgsUkZnJ3ZxSml8Jj8wYjdjdGNYNWR3ak0oL0U+PVk8SGdKRkUhRXNNR2Y3SG5vXGppKTBdRlM/XDlVfU9iUChTIShYfWwqJV5vXGg6ekxNUV4uTzhWQ29wTE5pRVVucWMoOGdOWldBZDUzIi1wd3YwVXBjJl11Ry9jW08iOmN8RVBvU35uU3JoZEUtbSYhXDhCYlZDVEtmfFx+QCRILkxHLzE8fDQpPzwoUylSU1dxU2x9Yj5xaWwoM1BIUkhnPWZNZjB2OkR2a1Z3KExiRDFmT1wmS3h9b0ZGfHI2XEZBOCk1JWB5RWFeY3VYdCx1NkpQPTsrQDJ5dEE5SmFKX2h/MjtJMDwnZnNeME58bWMxfyRNbCNWUmE0XTtHfW9/REp3cn9GTiFzZXYjV1ZHLGI+YnhtTFZVdXd/XTN0LXJVZk10O1xdKkBsYjI1J3lLLF8vTTZScFMkNFk6Km1dTi9GNC49cj12KVs4I3E2MnpQQzZrXSdcMCJTfGJiO2FhMEQwY0EnTnpVYGRQZTV2akFNK34rVWBCV2cncyl7XDZDZWhSOHJqaFVcOUwxMGYjKj5GZFdOVldxemEhNzJ9N2B3OjFVIXEqdjhLQiR0MWg4czBsdCEjVmQoZnFBfGpIcjN2PWImfXJ6QEx8eWZiKEtKUVQwQGdyTTJ3I2MgbTQjfHdKRkJRbVtuNClYalZ3bWpFREgkXypgN2ByYjRmNnZBQCQ5cCpDRGt1ZmVzTFdLYyE7YXdYUVsyS0IpYjMmYTo1U0xzI3RcYXJMV2dBdmJXPypGdmwyRzYrSllTJnRmSVgxYlNBZn83VkdeXGEkKW9jaW1eYXlmclo2bWM3IiUoN0tSSUB8N11QQHJQdGJQaXBNYG19ajU4UXNXZC1eY05yKD0zVWEhdkt5d0d+JGRRQUwrRkVAKkMoY3M4VjRbJj5EeD1zWUM0TVRQVDpLOigqRSxJXSdpZj8lKCMrZyd6UXFJSXNYdTcgVTxwR3ZvMnBUaXJLOVAhSCFMcFpbMW5eNyMmXywpfWdmU0UqXU1/IEcgd0xiWlttYyhyTy1waS1SSDNsb2UoPn9jTGk4IHRmLDxcYG9qICJVKmg/OUVzbCNjPjFqLX9qW0hRZ19aI2FfLWJzajZkbXBwM2QwY0x1M0ZLZVVhPmE7czZSKSZlISRxY24pXG80Oyw2M2lZW1F8WlBcXlZ2Xjd1b19/cWJZKjolMT5HPVMoSl17eCRBLVg0MiMqeFBqSFUjdlpeOEVKXXZsQmtqcXUxajFRaT1La15cQScpOkE6ZmBnW3x1cl8kYFBwVDswbSwnNGJUazRwX2dGXmRzUkxgXlU0W3tqbn5xfjJ1ISVSNDp+Uj1wfn04N25UOGRHKE0xLT1IdV1vZ2g6UyMyXWJkYT5vcENwYyZqRkJBJTNvY1J1YWdmWE1FfnF8c18hfVYmfEJpbjldMzp0bWF1cVhtJGlxZmYqJDxXSiN2SUQwYCMycjYmOWxmWWpzOmM3W3xmcjQ3S2hmTk96Jls6a3ZvZVZxbGFzRHB+UlQqLUxeRmMyTyEqMGFROUhqZ3V1NT1iJWFWWm5Ne3clYEZFTjZZWzVyN1J5Ny9EPzlvJj9Ad2ZSUlxFcWdwX2YgVndATFptXH9+VTA9ZSVbSUJ7b0V2LCEpXGsmdHJzYy8oJkJwcD5KXCg4ZV0ySCFYc18saCMyc0YnPHVDVylQe3UvOFwvfno0WS5CRGQ9R31STTt3W2JsRC1yZnI7NWNCXHF6V3hWemMyUWVIKD1nbWhGJCw+KD1ULy1CfnFROkcpQ3FFeV1QJyx1NnE4L1ZoP3RqYz5nYUEjZVsnaW5MXDMlSyViOmpIWGNhPn8sfkJOIV50eGJpM2ZIRFJRMyxXc1pJNzB1YER6NXlmVk1kcyR1N2VkPGZoRmRlRSdaWWswLT4tZlEoUVl0KmBaN3Jtc11jS1c0c2l7NWFzM3N1RGpZaU1MXX5Ld08wVWYjJkVlZ30gMSMyNXcvUi0uLko0NnEzZSEiYlUzfV5ARUogIUpSYgplbmRzdHJlYW0KZW5kb2JqCnhyZWYKMCA4CjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDA3MyAwMDAwMCBuIAowMDAwMDAwMTA0IDAwMDAwIG4gCjAwMDAwMDAyMTEgMDAwMDAgbiAKMDAwMDAwMDQxNCAwMDAwMCBuIAowMDAwMDAwNDgyIDAwMDAwIG4gCjAwMDAwMDA3NzggMDAwMDAgbiAKMDAwMDAwMDgzNyAwMDAwMCBuIAp0cmFpbGVyCjw8Ci9JRCAKWzw4YjE2ZTg4NTE4ZTJiNmVjYmQxMWNkNTdiODAzMWEwZT48OGIxNmU4ODUxOGUyYjZlY2JkMTFjZDU3YjgwMzFhMGU+XQolIFJlcG9ydExhYiBnZW5lcmF0ZWQgUERGIGRvY3VtZW50IC0tIGRpZ2VzdCAoaHR0cDovL3d3dy5yZXBvcnRsYWIuY29tKQoKL0luZm8gNSAwIFIKL1Jvb3QgNCAwIFIKL1NpemUgOAo+PgpzdGFydHhyZWYKNjA2OQolJUVPRgo=";
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+const lines: PdfLine[] = [
+  { text: "Ricardo Zulkiewicz CV | PT-BR", x: 56, y: 748, size: 18, font: "bold" },
+  { text: "Account Executive | Vendas B2B, Outbound & CRM | Tecnologia & IT Outsourcing", x: 56, y: 728, size: 9.5 },
+  { text: "Sao Paulo, Brasil | WhatsApp | ricardomachado.zulk@gmail.com | ricardozulkiewicz.com | linkedin.com/in/rick-zulk", x: 56, y: 712, size: 8 },
+
+  { text: "RESUMO EXECUTIVO", x: 56, y: 684, size: 11, font: "bold" },
+  { text: "Account Executive com experiencia em vendas consultivas B2B, outbound, CRM e estruturacao comercial para tecnologia, startups e IT Outsourcing.", x: 56, y: 668, size: 8.7 },
+  { text: "Atuacao full-cycle em prospeccao, discovery, qualificacao, proposta, negociacao e fechamento, com tickets de R$35k a R$120k.", x: 56, y: 655, size: 8.7 },
+  { text: "Media aproximada de 5 deals/mes e pipeline majoritariamente outbound. Perfil combina execucao comercial, ICP, decisores e processos.", x: 56, y: 642, size: 8.7 },
+
+  { text: "INDICADORES", x: 56, y: 616, size: 11, font: "bold" },
+  { text: "5 deals/mes - media aproximada de fechamentos na Talentu", x: 56, y: 600, size: 8.8 },
+  { text: "R$35k - R$120k - faixa de ticket comercial", x: 56, y: 587, size: 8.8 },
+  { text: "80% outbound - origem aproximada do pipeline", x: 56, y: 574, size: 8.8 },
+  { text: "~R$320k/mes - media aproximada de TCV na Talentu", x: 56, y: 561, size: 8.8 },
+
+  { text: "EXPERIENCIA PROFISSIONAL", x: 56, y: 535, size: 11, font: "bold" },
+  { text: "Account Executive | First Decision | 2026 - atual", x: 56, y: 519, size: 9.3, font: "bold" },
+  { text: "Vendas B2B para tecnologia e IT Outsourcing, com foco em outbound, new business, CRM, pipeline e mercado privado.", x: 56, y: 505, size: 8.5 },
+  { text: "Construcao da abordagem comercial: ICP, segmentos prioritarios, cadencias, criterios de qualificacao e materiais de apoio.", x: 56, y: 492, size: 8.5 },
+  { text: "Organizacao de governanca em Pipedrive: etapas de pipeline, historico, atividades, follow-ups e gestao de oportunidades.", x: 56, y: 479, size: 8.5 },
+  { text: "Criacao de materiais e guias de CRM para apoiar adocao, previsibilidade comercial e alinhamento do time.", x: 56, y: 466, size: 8.5 },
+
+  { text: "Account Executive | Talentu | 2023 - 2025", x: 56, y: 444, size: 9.3, font: "bold" },
+  { text: "Conducao end-to-end de vendas consultivas B2B para startups, scale-ups e empresas em transformacao digital.", x: 56, y: 430, size: 8.5 },
+  { text: "Atuacao com C-level, RH e founders em reunioes estrategicas, diagnostico, proposta, negociacao e fechamento.", x: 56, y: 417, size: 8.5 },
+  { text: "Pipeline com cerca de 80% outbound, ciclo medio de 30-45 dias, tickets R$35k a R$120k e media de 5 deals/mes.", x: 56, y: 404, size: 8.5 },
+  { text: "Geracao media aproximada de R$320k/mes em TCV, com variacao entre R$180k e R$500k.", x: 56, y: 391, size: 8.5 },
+
+  { text: "Business Development Representative | Talentu | 2022 - 2023", x: 56, y: 369, size: 9.3, font: "bold" },
+  { text: "Prospeccao, qualificacao, mapeamento de mercado e geracao de conversas qualificadas para o time comercial.", x: 56, y: 355, size: 8.5 },
+  { text: "Apoio na definicao de ICP, pesquisa de mercado, cadencias outbound e passagem de oportunidades qualificadas.", x: 56, y: 342, size: 8.5 },
+
+  { text: "PROJETOS SELECIONADOS", x: 56, y: 316, size: 11, font: "bold" },
+  { text: "Estruturacao de pipeline e governanca de Pipedrive para operacao comercial B2B, com criterios de avanco.", x: 56, y: 300, size: 8.5 },
+  { text: "Criacao de materiais de Sales Enablement: playbooks, one-pagers, roteiros comerciais e guias de CRM.", x: 56, y: 287, size: 8.5 },
+
+  { text: "COMPETENCIAS", x: 56, y: 261, size: 11, font: "bold" },
+  { text: "Vendas consultivas B2B | Outbound | Discovery | Qualificacao | Negociacao | CRM | Pipeline | Forecast | Sales Enablement", x: 56, y: 245, size: 8.5 },
+  { text: "FERRAMENTAS: Pipedrive CRM | LinkedIn | Google Workspace | Calendly | Slack", x: 56, y: 226, size: 8.5 },
+  { text: "IDIOMAS: Portugues nativo | Ingles profissional | Espanhol basico", x: 56, y: 207, size: 8.5 },
+  { text: "EXPERIENCIA ADICIONAL: Consultor Voluntario - NAPEN: consultoria estrategica para pequenos negocios.", x: 56, y: 188, size: 8.5 },
+
+  { text: "ricardozulkiewicz.com | CV em portugues - versao para site", x: 56, y: 42, size: 8 },
+];
 
 export function GET() {
-  const pdfBuffer = Buffer.from(pdfBase64, "base64");
+  const pdfBuffer = buildSimplePdf(lines);
 
   return new Response(new Uint8Array(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
-      "Content-Disposition": 'attachment; filename="Ricardo_Zulkiewicz_CV_PT_PREMIUM_SITE.pdf"',
-      "Cache-Control": "public, max-age=31536000, immutable",
+      "Content-Disposition": 'attachment; filename="Ricardo_Zulkiewicz_CV_PT.pdf"',
+      "Cache-Control": "no-store, max-age=0",
     },
   });
 }
