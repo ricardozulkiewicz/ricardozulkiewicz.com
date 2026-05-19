@@ -4,7 +4,7 @@ import "./globals.css";
 const siteUrl = "https://ricardozulkiewicz.com";
 const title = "Ricardo Zulkiewicz | B2B Sales, CRM & IT Outsourcing";
 const description =
-  "Site pessoal e portfólio profissional de Ricardo Zulkiewicz, Account Executive focado em vendas B2B, IT Outsourcing, outbound, CRM, Sales Enablement e estruturação comercial.";
+  "Bilingual personal website and professional portfolio of Ricardo Zulkiewicz, Account Executive focused on B2B Sales, IT Outsourcing, outbound, CRM, Sales Enablement and commercial process structuring.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -16,6 +16,7 @@ export const metadata: Metadata = {
   publisher: "Ricardo Zulkiewicz",
   keywords: [
     "Ricardo Zulkiewicz",
+    "Ricardo Zulkiewicz portfolio",
     "B2B Sales",
     "IT Outsourcing",
     "Account Executive",
@@ -23,11 +24,19 @@ export const metadata: Metadata = {
     "Sales Enablement",
     "Outbound Sales",
     "New Business",
+    "Consultative Sales",
     "Vendas consultivas",
     "Desenvolvimento comercial",
+    "Pipeline Management",
+    "Pipedrive",
+    "Technology Sales",
   ],
   alternates: {
     canonical: siteUrl,
+    languages: {
+      "pt-BR": siteUrl,
+      "en-US": siteUrl,
+    },
   },
   openGraph: {
     title,
@@ -35,7 +44,8 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "Ricardo Zulkiewicz",
     locale: "pt_BR",
-    type: "website",
+    alternateLocale: ["en_US"],
+    type: "profile",
   },
   twitter: {
     card: "summary_large_image",
