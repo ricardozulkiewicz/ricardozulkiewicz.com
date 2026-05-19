@@ -1,4 +1,4 @@
-import { buildSimplePdf, type PdfLine } from "../pdf-builder";
+import { buildSimplePdf, type PdfLine, type PdfLink } from "../pdf-builder";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -49,8 +49,15 @@ const lines: PdfLine[] = [
   { text: "ricardozulkiewicz.com | CV em portugues - versao final para site", x: 56, y: 42, size: 8 },
 ];
 
+const links: PdfLink[] = [
+  { url: "https://wa.me/5511992881425", x: 152, y: 708, width: 42, height: 14 },
+  { url: "mailto:ricardomachado.zulk@gmail.com", x: 200, y: 708, width: 148, height: 14 },
+  { url: "https://ricardozulkiewicz.com", x: 354, y: 708, width: 102, height: 14 },
+  { url: "https://www.linkedin.com/in/rick-zulk/", x: 462, y: 708, width: 94, height: 14 },
+];
+
 export function GET() {
-  const pdfBuffer = buildSimplePdf(lines);
+  const pdfBuffer = buildSimplePdf(lines, links);
 
   return new Response(new Uint8Array(pdfBuffer), {
     headers: {
