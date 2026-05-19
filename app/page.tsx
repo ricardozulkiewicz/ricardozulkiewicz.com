@@ -147,7 +147,7 @@ export default function Home() {
         >
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm text-slate-600 shadow-sm backdrop-blur">
             <span className="h-2 w-2 rounded-full bg-emerald-400" />
-            Account Executive · B2B Sales · IT Outsourcing
+            Account Executive · B2B Sales · CRM · IT Outsourcing
           </div>
 
           <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.045em] text-slate-950 md:text-7xl">
