@@ -20,8 +20,9 @@ import {
   Workflow,
 } from "lucide-react";
 
-const linkedinUrl = "https://www.linkedin.com/in/ricardozulkiewicz/";
-const emailUrl = "mailto:ricardomachado.zulk@gmail.com";
+const linkedinUrl = "https://www.linkedin.com/in/rick-zulk/";
+const emailAddress = "ricardomachado.zulk@gmail.com";
+const emailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
 
 const indicators = [
   "B2B Sales",
@@ -452,13 +453,17 @@ export default function Home() {
               <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
                 Para conversas sobre vendas B2B, tecnologia, desenvolvimento comercial, CRM, IT Outsourcing e Sales Enablement, entre em contato pelo LinkedIn ou por e-mail.
               </p>
-              <div className="mt-6 flex flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:items-center">
+              <div className="mt-6 flex flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:flex-wrap">
                 <span className="inline-flex items-center gap-2">
                   <MapPin size={16} /> São Paulo, Brasil
                 </span>
                 <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
                 <span className="inline-flex items-center gap-2">
                   <Compass size={16} /> Marca pessoal e portfólio profissional
+                </span>
+                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+                <span className="inline-flex items-center gap-2">
+                  <Mail size={16} /> {emailAddress}
                 </span>
               </div>
             </div>
@@ -474,6 +479,8 @@ export default function Home() {
               </a>
               <a
                 href={emailUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
               >
                 E-mail
