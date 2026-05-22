@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   authors: [{ name: "Ricardo Zulkiewicz", url: siteUrl }],
   creator: "Ricardo Zulkiewicz",
   publisher: "Ricardo Zulkiewicz",
+  manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [{ url: "/icon.svg?v=2", type: "image/svg+xml" }],
+    shortcut: [{ url: "/icon.svg?v=2", type: "image/svg+xml" }],
+    apple: [{ url: "/icon.svg?v=2", type: "image/svg+xml" }],
+  },
   keywords: [
     "Ricardo Zulk",
     "Ricardo Zulkiewicz",
