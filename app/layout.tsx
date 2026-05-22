@@ -17,8 +17,7 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
   icons: {
     icon: [{ url: "/icon.svg?v=2", type: "image/svg+xml" }],
-    shortcut: [{ url: "/icon.svg?v=2", type: "image/svg+xml" }],
-    apple: [{ url: "/icon.svg?v=2", type: "image/svg+xml" }],
+    shortcut: [{ url: "/favicon.svg?v=2", type: "image/svg+xml" }],
   },
   keywords: [
     "Ricardo Zulk",
