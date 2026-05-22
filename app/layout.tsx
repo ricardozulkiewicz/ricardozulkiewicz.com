@@ -30,12 +30,16 @@ export const metadata: Metadata = {
     "Pipedrive",
     "Commercial Strategy",
     "Predictable Revenue",
+    "Vendas B2B em tecnologia",
+    "Vendas consultivas",
+    "Governança de CRM",
+    "Outsourcing de TI",
   ],
   alternates: {
     canonical: siteUrl,
     languages: {
       "en-US": siteUrl,
-      "pt-BR": siteUrl,
+      "pt-BR": `${siteUrl}/pt`,
     },
   },
   openGraph: {
