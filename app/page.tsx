@@ -1,649 +1,209 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import type { LucideIcon } from "lucide-react";
 import {
   ArrowUpRight,
-  BarChart3,
   BriefcaseBusiness,
-  Building2,
   CheckCircle2,
   Compass,
+  Database,
   Download,
-  FileText,
-  Globe2,
-  GraduationCap,
-  Handshake,
-  Languages,
-  Laptop,
   Layers3,
   LineChart,
+  Linkedin,
   Mail,
   MapPin,
-  MessageSquareText,
-  Network,
-  Rocket,
-  Search,
+  Menu,
+  MessagesSquare,
   ShieldCheck,
-  Sparkles,
   Target,
-  Users2,
+  Users,
   Workflow,
+  X,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const siteUrl = "https://ricardozulkiewicz.com";
+const email = "ricardomachado.zulk@gmail.com";
 const linkedinUrl = "https://www.linkedin.com/in/rick-zulk/";
-const emailAddress = "ricardomachado.zulk@gmail.com";
-const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
-const mailtoUrl = `mailto:${emailAddress}`;
+const cvUrl = "/cv";
 
-type Locale = "pt" | "en";
+const navItems = [
+  ["About", "#about"],
+  ["Expertise", "#expertise"],
+  ["Approach", "#approach"],
+  ["Experience", "#experience"],
+  ["Work", "#work"],
+  ["Contact", "#contact"],
+];
 
-type IconCard = {
-  title: string;
-  description: string;
-};
+function BrandMark({ className = "", subtle = false, dark = false }) {
+  const line = dark
+    ? "border-[#1F1F1F]/80"
+    : subtle
+      ? "border-[#F7F5F0]/22"
+      : "border-[#F7F5F0]/85";
 
-type TimelineItem = {
-  period: string;
-  role: string;
-  company: string;
-  description: string;
-  tags: string[];
-};
-
-const copy = {
-  pt: {
-    nav: {
-      about: "Sobre",
-      expertise: "Atuação",
-      method: "Método",
-      experience: "Experiência",
-      projects: "Projetos",
-      contact: "Contato",
-    },
-    languageLabel: "Idioma",
-    hero: {
-      badge: "Account Executive · B2B Sales · CRM · IT Outsourcing",
-      eyebrow: "Marca pessoal e portfólio profissional",
-      title: "Construo pipeline, narrativa comercial e crescimento B2B com método.",
-      subtitle:
-        "Sou Ricardo Zulkiewicz, profissional de vendas consultivas B2B com foco em tecnologia, IT Outsourcing, outbound, CRM e estruturação comercial.",
-      description:
-        "Atuo na interseção entre prospecção, discovery, qualificação, relacionamento com decisores, proposta de valor, gestão de pipeline e governança de CRM. Meu diferencial é transformar contexto comercial em processo claro, conversas qualificadas e execução previsível.",
-      primaryCta: "Conectar no LinkedIn",
-      secondaryCta: "Baixar CV",
-      tertiaryCta: "Ver método de trabalho",
-      location: "São Paulo, Brasil",
-      cardLabel: "Posicionamento",
-      cardTitle: "Comercial consultivo para tecnologia e serviços B2B.",
-      cardText:
-        "Ajudo a organizar mercado, ICP, narrativa, cadência, CRM e próximos passos para que vendas deixe de depender de improviso e passe a operar com método.",
-      cardOneTitle: "Pipeline & CRM",
-      cardOneText: "Visibilidade, disciplina operacional e previsibilidade comercial.",
-      cardTwoTitle: "New Business",
-      cardTwoText: "Prospecção, relacionamento e abertura de mercado B2B.",
-    },
-    indicators: ["B2B Sales", "IT Outsourcing", "Outbound", "CRM", "Sales Enablement", "New Business"],
-    proofPoints: [
-      { value: "R$35k–R$120k", label: "faixa de ticket em experiências comerciais anteriores" },
-      { value: "3–7", label: "deals por mês em histórico de performance comercial" },
-      { value: "Full-cycle", label: "prospecção, discovery, negociação e fechamento" },
-      { value: "PT / EN", label: "presença profissional bilíngue para networking e oportunidades" },
-    ],
-    about: {
-      label: "Sobre",
-      title: "Um perfil comercial construído entre vendas, tecnologia e processo.",
-      paragraphs: [
-        "Minha trajetória foi construída em ambientes de crescimento, startups, recrutamento especializado, tecnologia e transformação digital. Atuei em desenvolvimento de negócios, vendas consultivas, relacionamento com decisores, diagnóstico de necessidades, negociação, fechamento, pós-venda e retenção.",
-        "Hoje, minha atuação está concentrada em IT Outsourcing, outbound e new business, com foco em construir uma abordagem comercial mais estruturada, consultiva e orientada a receita.",
-        "Acredito que vendas B2B de alta qualidade não depende apenas de carisma ou volume. Depende de leitura de contexto, clareza de posicionamento, disciplina operacional, domínio do CRM e capacidade de conduzir conversas relevantes com diferentes stakeholders.",
-      ],
-    },
-    strengths: [
-      {
-        title: "Clareza de posicionamento",
-        description:
-          "Traduzo ofertas complexas em mensagens comerciais objetivas, relevantes e conectadas à dor do cliente.",
-      },
-      {
-        title: "Conversas com decisores",
-        description:
-          "Construo relacionamento com diferentes personas, entendendo influência, prioridade, decisão e critérios de compra.",
-      },
-      {
-        title: "Disciplina operacional",
-        description:
-          "Registro contexto, próximos passos e aprendizados para transformar execução comercial em ativo de gestão.",
-      },
-    ],
-    expertise: {
-      label: "Como eu contribuo",
-      title: "Estrutura comercial para vender melhor, não apenas vender mais.",
-      intro:
-        "Minha contribuição combina execução de vendas, estruturação de processo, criação de materiais comerciais e disciplina de CRM.",
-      items: [
-        {
-          title: "Diagnóstico comercial",
-          description:
-            "Leitura de mercado, ICP, personas, dores, contexto de negócio, impacto financeiro e sinais reais de oportunidade.",
-        },
-        {
-          title: "Vendas consultivas B2B",
-          description:
-            "Condução de prospecção, discovery, qualificação, proposta, negociação e fechamento com foco em dor, valor e decisão.",
-        },
-        {
-          title: "Outbound e new business",
-          description:
-            "Mapeamento de contas, abordagem multicanal, criação de relacionamento e geração de conversas qualificadas com decisores.",
-        },
-        {
-          title: "Sales Enablement",
-          description:
-            "Construção de narrativas, roteiros, frameworks, guias e materiais que transformam conhecimento comercial em método de venda.",
-        },
-        {
-          title: "CRM e processo comercial",
-          description:
-            "Organização de pipeline, cadência, atividades, campos, histórico e governança para dar previsibilidade à operação.",
-        },
-        {
-          title: "Execução orientada a receita",
-          description:
-            "Priorização de oportunidades, disciplina comercial, follow-up, gestão de próximos passos e foco em conversão real.",
-        },
-      ],
-    },
-    method: {
-      label: "Método",
-      title: "Da leitura do mercado à gestão do pipeline.",
-      intro:
-        "Mais do que executar vendas, busco organizar contexto, narrativa e processo para que operações comerciais consigam vender com mais clareza, consistência e previsibilidade.",
-      steps: [
-        {
-          step: "01",
-          title: "Entender o contexto",
-          description:
-            "Antes de vender, busco entender mercado, momento da empresa, dor, urgência, estrutura decisória e custo de inação.",
-        },
-        {
-          step: "02",
-          title: "Organizar a narrativa",
-          description:
-            "Transformo informações dispersas em mensagem comercial clara, conectando problema, solução, impacto e próximos passos.",
-        },
-        {
-          step: "03",
-          title: "Executar com cadência",
-          description:
-            "Trabalho prospecção, relacionamento, discovery, follow-up e negociação com consistência, contexto e rastreabilidade.",
-        },
-        {
-          step: "04",
-          title: "Gerir pipeline com método",
-          description:
-            "Uso CRM, atividades e critérios de avanço para reduzir improviso, aumentar visibilidade e melhorar previsibilidade comercial.",
-        },
-      ],
-    },
-    experience: {
-      label: "Experiência",
-      title: "Experiência comercial em tecnologia, startups e operações B2B.",
-      intro:
-        "Atuação em ambientes de crescimento, com foco em geração de demanda, vendas consultivas, relacionamento com decisores, processos comerciais e CRM.",
-      items: [
-        {
-          period: "2026 — atual",
-          role: "Account Executive",
-          company: "First Decision",
-          description:
-            "Atuação em vendas B2B para tecnologia e IT Outsourcing, com foco em outbound, new business, estruturação comercial, CRM, pipeline e construção de materiais de apoio à operação comercial.",
-          tags: ["IT Outsourcing", "Outbound", "CRM", "New Business"],
-        },
-        {
-          period: "2023 — 2025",
-          role: "Account Executive",
-          company: "Talentu",
-          description:
-            "Condução de vendas consultivas full-cycle no ecossistema de startups e empresas em transformação digital, incluindo diagnóstico, reuniões estratégicas, negociação, fechamento e relacionamento com clientes.",
-          tags: ["Full-cycle sales", "B2B", "Startups", "Consultative selling"],
-        },
-        {
-          period: "2022 — 2023",
-          role: "Business Development Representative",
-          company: "Talentu",
-          description:
-            "Prospecção, qualificação de oportunidades, mapeamento de mercado, cadência comercial e geração de conversas com empresas de tecnologia, startups e negócios em crescimento.",
-          tags: ["Prospecting", "Qualification", "Market mapping", "BDR"],
-        },
-      ],
-    },
-    projects: {
-      label: "Projetos profissionais",
-      title: "Enablement, governança e processo aplicados à operação comercial.",
-      intro:
-        "Exemplos apresentados de forma institucional, sem exposição de materiais internos, dados sensíveis ou informações confidenciais.",
-      items: [
-        {
-          title: "Estruturação comercial B2B para tecnologia",
-          description:
-            "Organização de processos comerciais, pipeline, critérios de qualificação, materiais de apoio e rotinas para uma frente de IT Outsourcing.",
-        },
-        {
-          title: "Materiais de Sales Enablement",
-          description:
-            "Criação de documentos, playbooks, roteiros e guias para apoiar prospecção, discovery, objeções, negociação e gestão de oportunidades.",
-        },
-        {
-          title: "Governança de CRM e operação comercial",
-          description:
-            "Definição de padrões de cadastro, etapas de funil, campos essenciais, regras de uso e boas práticas para acompanhamento de pipeline.",
-        },
-      ],
-    },
-    operatingSystem: {
-      label: "Sistema de trabalho",
-      title: "Como penso uma operação comercial saudável.",
-      items: [
-        "ICP e segmentação claros antes de volume de prospecção.",
-        "CRM como fonte de verdade, não apenas ferramenta de registro.",
-        "Discovery orientado a dor, impacto, urgência e decisão.",
-        "Follow-up com contexto, próximo passo e racional de negócio.",
-        "Materiais comerciais como infraestrutura de escala.",
-        "Pipeline com critérios objetivos de avanço e forecast.",
-      ],
-    },
-    toolkit: {
-      label: "Ferramentas e repertório",
-      title: "Temas, métodos e ferramentas que fazem parte da minha atuação.",
-      groups: [
-        {
-          title: "Comercial",
-          items: ["Outbound", "Discovery", "Qualificação", "Negociação", "Forecast", "Follow-up"],
-        },
-        {
-          title: "Operação",
-          items: ["CRM", "Pipeline", "Pipedrive", "Playbooks", "Cadências", "Dashboards"],
-        },
-        {
-          title: "Mercado",
-          items: ["IT Outsourcing", "Startups", "SaaS", "Transformação digital", "Tecnologia", "B2B"],
-        },
-      ],
-    },
-    languages: {
-      label: "Idiomas",
-      title: "Comunicação profissional em português e inglês.",
-      items: [
-        "Português nativo para comunicação executiva, negociação e relacionamento comercial.",
-        "Inglês para leitura, escrita profissional, networking, pesquisa e construção de presença internacional.",
-      ],
-    },
-    faq: {
-      label: "Perguntas frequentes",
-      title: "Como este site deve ser lido profissionalmente.",
-      items: [
-        {
-          question: "Este site é um currículo?",
-          answer:
-            "Não exatamente. Ele funciona como presença profissional, reunindo posicionamento, repertório, experiência e formas de contato em uma estrutura mais executiva do que um currículo tradicional.",
-        },
-        {
-          question: "Que tipo de conversa faz sentido iniciar?",
-          answer:
-            "Conversas sobre vendas B2B, tecnologia, outsourcing, CRM, estruturação comercial, outbound, Sales Enablement, networking e oportunidades profissionais.",
-        },
-        {
-          question: "Os projetos apresentados são confidenciais?",
-          answer:
-            "Não. As descrições são institucionais e não expõem materiais internos, dados sensíveis, clientes, valores comerciais ou informações estratégicas confidenciais.",
-        },
-      ],
-    },
-    contact: {
-      label: "Contato",
-      title: "Conversas profissionais, networking e oportunidades.",
-      text:
-        "Para conversas sobre vendas B2B, tecnologia, desenvolvimento comercial, CRM, IT Outsourcing e Sales Enablement, entre em contato pelo LinkedIn ou por e-mail.",
-      linkedin: "LinkedIn",
-      email: "E-mail",
-      cv: "Baixar CV",
-      portfolio: "Marca pessoal e portfólio profissional",
-    },
-    footer: "Marca pessoal e portfólio profissional.",
-  },
-  en: {
-    nav: {
-      about: "About",
-      expertise: "Expertise",
-      method: "Method",
-      experience: "Experience",
-      projects: "Projects",
-      contact: "Contact",
-    },
-    languageLabel: "Language",
-    hero: {
-      badge: "Account Executive · B2B Sales · CRM · IT Outsourcing",
-      eyebrow: "Personal brand and professional portfolio",
-      title: "I build pipeline, commercial narrative and B2B growth with method.",
-      subtitle:
-        "I am Ricardo Zulkiewicz, a B2B consultative sales professional focused on technology, IT Outsourcing, outbound, CRM and commercial process structuring.",
-      description:
-        "I work at the intersection of prospecting, discovery, qualification, stakeholder relationships, value proposition, pipeline management and CRM governance. My differentiator is turning commercial context into clear process, qualified conversations and predictable execution.",
-      primaryCta: "Connect on LinkedIn",
-      secondaryCta: "Download CV",
-      tertiaryCta: "See working method",
-      location: "São Paulo, Brazil",
-      cardLabel: "Positioning",
-      cardTitle: "Consultative sales for technology and B2B services.",
-      cardText:
-        "I help organize market context, ICP, narrative, cadence, CRM and next steps so sales relies less on improvisation and more on method.",
-      cardOneTitle: "Pipeline & CRM",
-      cardOneText: "Visibility, operational discipline and commercial predictability.",
-      cardTwoTitle: "New Business",
-      cardTwoText: "Prospecting, relationships and B2B market development.",
-    },
-    indicators: ["B2B Sales", "IT Outsourcing", "Outbound", "CRM", "Sales Enablement", "New Business"],
-    proofPoints: [
-      { value: "R$35k–R$120k", label: "ticket range in previous commercial experience" },
-      { value: "3–7", label: "deals per month in commercial performance history" },
-      { value: "Full-cycle", label: "prospecting, discovery, negotiation and closing" },
-      { value: "PT / EN", label: "bilingual professional presence for networking and opportunities" },
-    ],
-    about: {
-      label: "About",
-      title: "A commercial profile built across sales, technology and process.",
-      paragraphs: [
-        "My background was built in growth environments, startups, specialized recruiting, technology and digital transformation. I have worked across business development, consultative sales, stakeholder relationships, needs diagnosis, negotiation, closing, post-sales and client retention.",
-        "Today, my work is focused on IT Outsourcing, outbound and new business, with an emphasis on building a more structured, consultative and revenue-oriented commercial approach.",
-        "I believe high-quality B2B sales does not depend only on charisma or volume. It depends on context reading, positioning clarity, operational discipline, CRM ownership and the ability to lead relevant conversations with different stakeholders.",
-      ],
-    },
-    strengths: [
-      {
-        title: "Positioning clarity",
-        description:
-          "I translate complex offerings into objective, relevant commercial messages connected to customer pain.",
-      },
-      {
-        title: "Executive conversations",
-        description:
-          "I build relationships with different personas, understanding influence, priorities, decision criteria and buying dynamics.",
-      },
-      {
-        title: "Operational discipline",
-        description:
-          "I document context, next steps and learnings to turn sales execution into a management asset.",
-      },
-    ],
-    expertise: {
-      label: "How I contribute",
-      title: "Commercial structure to sell better, not only to sell more.",
-      intro:
-        "My contribution combines sales execution, process design, enablement materials and CRM discipline.",
-      items: [
-        {
-          title: "Commercial diagnosis",
-          description:
-            "Market reading, ICP, personas, pains, business context, financial impact and real opportunity signals.",
-        },
-        {
-          title: "B2B consultative sales",
-          description:
-            "Prospecting, discovery, qualification, proposals, negotiation and closing focused on pain, value and decision.",
-        },
-        {
-          title: "Outbound and new business",
-          description:
-            "Account mapping, multichannel outreach, relationship creation and qualified conversations with decision makers.",
-        },
-        {
-          title: "Sales Enablement",
-          description:
-            "Narratives, scripts, frameworks, guides and materials that transform commercial knowledge into a sales method.",
-        },
-        {
-          title: "CRM and sales process",
-          description:
-            "Pipeline, cadence, activities, fields, history and governance to create operational predictability.",
-        },
-        {
-          title: "Revenue-oriented execution",
-          description:
-            "Opportunity prioritization, commercial discipline, follow-up, next-step management and focus on real conversion.",
-        },
-      ],
-    },
-    method: {
-      label: "Method",
-      title: "From market reading to pipeline management.",
-      intro:
-        "More than executing sales, I organize context, narrative and process so commercial teams can sell with more clarity, consistency and predictability.",
-      steps: [
-        {
-          step: "01",
-          title: "Understand the context",
-          description:
-            "Before selling, I seek to understand the market, company moment, pain, urgency, decision structure and cost of inaction.",
-        },
-        {
-          step: "02",
-          title: "Organize the narrative",
-          description:
-            "I turn scattered information into a clear commercial message connecting problem, solution, impact and next steps.",
-        },
-        {
-          step: "03",
-          title: "Execute with cadence",
-          description:
-            "I work prospecting, relationships, discovery, follow-up and negotiation with consistency, context and traceability.",
-        },
-        {
-          step: "04",
-          title: "Manage pipeline with method",
-          description:
-            "I use CRM, activities and stage criteria to reduce improvisation, increase visibility and improve sales predictability.",
-        },
-      ],
-    },
-    experience: {
-      label: "Experience",
-      title: "Commercial experience in technology, startups and B2B operations.",
-      intro:
-        "Work in growth environments, focused on demand generation, consultative sales, stakeholder relationships, commercial processes and CRM.",
-      items: [
-        {
-          period: "2026 — present",
-          role: "Account Executive",
-          company: "First Decision",
-          description:
-            "B2B sales work for technology and IT Outsourcing, focused on outbound, new business, commercial structuring, CRM, pipeline and enablement materials for the commercial operation.",
-          tags: ["IT Outsourcing", "Outbound", "CRM", "New Business"],
-        },
-        {
-          period: "2023 — 2025",
-          role: "Account Executive",
-          company: "Talentu",
-          description:
-            "Full-cycle consultative sales in the startup and digital transformation ecosystem, including diagnosis, strategic meetings, negotiation, closing and client relationships.",
-          tags: ["Full-cycle sales", "B2B", "Startups", "Consultative selling"],
-        },
-        {
-          period: "2022 — 2023",
-          role: "Business Development Representative",
-          company: "Talentu",
-          description:
-            "Prospecting, opportunity qualification, market mapping, commercial cadence and conversation generation with technology companies, startups and growing businesses.",
-          tags: ["Prospecting", "Qualification", "Market mapping", "BDR"],
-        },
-      ],
-    },
-    projects: {
-      label: "Professional projects",
-      title: "Enablement, governance and process applied to commercial operations.",
-      intro:
-        "Examples presented institutionally, without exposing internal materials, sensitive data or confidential information.",
-      items: [
-        {
-          title: "B2B commercial structuring for technology",
-          description:
-            "Organization of commercial processes, pipeline, qualification criteria, support materials and routines for an IT Outsourcing sales motion.",
-        },
-        {
-          title: "Sales Enablement materials",
-          description:
-            "Creation of documents, playbooks, scripts and guides to support prospecting, discovery, objections, negotiation and opportunity management.",
-        },
-        {
-          title: "CRM governance and commercial operations",
-          description:
-            "Definition of data standards, funnel stages, essential fields, usage rules and good practices for pipeline management.",
-        },
-      ],
-    },
-    operatingSystem: {
-      label: "Operating system",
-      title: "How I think about a healthy commercial operation.",
-      items: [
-        "Clear ICP and segmentation before prospecting volume.",
-        "CRM as the source of truth, not only a registration tool.",
-        "Discovery guided by pain, impact, urgency and decision.",
-        "Follow-up with context, next step and business rationale.",
-        "Commercial materials as scale infrastructure.",
-        "Pipeline with objective stage criteria and forecast discipline.",
-      ],
-    },
-    toolkit: {
-      label: "Tools and repertoire",
-      title: "Topics, methods and tools that are part of my work.",
-      groups: [
-        {
-          title: "Commercial",
-          items: ["Outbound", "Discovery", "Qualification", "Negotiation", "Forecast", "Follow-up"],
-        },
-        {
-          title: "Operations",
-          items: ["CRM", "Pipeline", "Pipedrive", "Playbooks", "Cadences", "Dashboards"],
-        },
-        {
-          title: "Market",
-          items: ["IT Outsourcing", "Startups", "SaaS", "Digital transformation", "Technology", "B2B"],
-        },
-      ],
-    },
-    languages: {
-      label: "Languages",
-      title: "Professional communication in Portuguese and English.",
-      items: [
-        "Native Portuguese for executive communication, negotiation and commercial relationships.",
-        "English for reading, professional writing, networking, research and building international presence.",
-      ],
-    },
-    faq: {
-      label: "FAQ",
-      title: "How this website should be read professionally.",
-      items: [
-        {
-          question: "Is this website a resume?",
-          answer:
-            "Not exactly. It works as a professional presence, bringing together positioning, repertoire, experience and contact channels in a more executive structure than a traditional resume.",
-        },
-        {
-          question: "What kind of conversation makes sense?",
-          answer:
-            "Conversations about B2B sales, technology, outsourcing, CRM, commercial structuring, outbound, Sales Enablement, networking and professional opportunities.",
-        },
-        {
-          question: "Are the projects confidential?",
-          answer:
-            "No. The descriptions are institutional and do not expose internal materials, sensitive data, clients, commercial values or confidential strategic information.",
-        },
-      ],
-    },
-    contact: {
-      label: "Contact",
-      title: "Professional conversations, networking and opportunities.",
-      text:
-        "For conversations about B2B sales, technology, business development, CRM, IT Outsourcing and Sales Enablement, reach out through LinkedIn or e-mail.",
-      linkedin: "LinkedIn",
-      email: "E-mail",
-      cv: "Download CV",
-      portfolio: "Personal brand and professional portfolio",
-    },
-    footer: "Personal brand and professional portfolio.",
-  },
-};
-
-const expertiseIcons: LucideIcon[] = [Search, Target, Network, Layers3, Workflow, LineChart];
-const strengthIcons: LucideIcon[] = [Sparkles, Users2, ShieldCheck];
-const projectIcons: LucideIcon[] = [Building2, FileText, BarChart3];
-const toolkitIcons: LucideIcon[] = [Handshake, Laptop, Rocket];
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mb-5 inline-flex items-center rounded-full border border-slate-200 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 shadow-sm backdrop-blur">
-      {children}
+    <div className={`relative ${className}`} aria-hidden="true">
+      <div className={`absolute border ${line}`} style={{ inset: "18% 6% 6% 18%" }} />
+      <div className={`absolute border ${line}`} style={{ inset: "10% 14% 14% 10%" }} />
+      <div className={`absolute border ${line}`} style={{ inset: "2% 22% 22% 2%" }} />
+      <div
+        className="absolute bg-[#0F4C5C] shadow-[0_0_28px_rgba(15,76,92,0.65)]"
+        style={{ width: "18%", height: "18%", left: "28%", top: "56%" }}
+      />
     </div>
   );
 }
 
-function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function LogoLockup({ compact = false }: { compact?: boolean }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.45, delay }}
-    >
+    <div className="flex items-center gap-4">
+      <BrandMark className={compact ? "h-10 w-10" : "h-12 w-12"} />
+      <div className="leading-none">
+        <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">
+          RICARDO ZULK
+        </div>
+        <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">
+          B2B TECHNOLOGY SALES
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
+  return (
+    <p className={`mb-5 text-[11px] font-semibold uppercase tracking-[0.28em] ${dark ? "text-[#0F4C5C]" : "text-[#57a6b7]"}`}>
       {children}
-    </motion.div>
+    </p>
   );
 }
 
-function IconCard({ item, icon: Icon, delay = 0 }: { item: IconCard; icon: LucideIcon; delay?: number }) {
-  return (
-    <FadeIn delay={delay}>
-      <article className="group h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-950/10">
-        <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm transition duration-300 group-hover:scale-105">
-          <Icon size={20} aria-hidden="true" />
-        </div>
-        <h3 className="text-lg font-semibold tracking-tight text-slate-950">{item.title}</h3>
-        <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-      </article>
-    </FadeIn>
-  );
-}
+const expertise = [
+  {
+    icon: Target,
+    number: "01",
+    title: "B2B Sales Strategy",
+    text: "Commercial positioning, sales narrative, ICP logic, qualification criteria, buying triggers and execution discipline.",
+  },
+  {
+    icon: Workflow,
+    number: "02",
+    title: "Outbound Execution",
+    text: "Account mapping, prospecting logic, contact prioritization, messaging, cadence and next-step management.",
+  },
+  {
+    icon: Database,
+    number: "03",
+    title: "IT Outsourcing Sales",
+    text: "Commercial conversations around technical capacity, talent allocation, delivery risk, continuity and business impact.",
+  },
+  {
+    icon: LineChart,
+    number: "04",
+    title: "CRM & Pipeline Governance",
+    text: "Pipedrive structure, field discipline, activity management, forecast visibility and commercial operating rhythm.",
+  },
+];
 
-function TimelineCard({ item, delay }: { item: TimelineItem; delay: number }) {
-  return (
-    <FadeIn delay={delay}>
-      <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{item.period}</p>
-            <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">{item.role}</h3>
-            <p className="mt-1 text-sm font-medium text-slate-600">{item.company}</p>
-          </div>
-          <GraduationCap className="text-slate-300" size={24} aria-hidden="true" />
-        </div>
-        <p className="mt-5 text-sm leading-6 text-slate-600">{item.description}</p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {item.tags.map((tag) => (
-            <span key={tag} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
-              {tag}
-            </span>
-          ))}
-        </div>
-      </article>
-    </FadeIn>
-  );
-}
+const metrics = [
+  ["First Decision", "Current focus", "Private-market IT Outsourcing, outbound and CRM governance."],
+  ["R$35k–R$120k", "Deal range", "Historical consultative B2B sales context."],
+  ["5 deals/mo", "Average closed deals", "Historical sales performance in Talentu context."],
+  ["B2B Tech", "Market focus", "Technology, startups, digital transformation and IT services."],
+];
+
+const services = [
+  {
+    icon: BriefcaseBusiness,
+    title: "For technology companies",
+    text: "Sharper commercial positioning, better qualification, clearer sales narrative and structured pipeline execution.",
+  },
+  {
+    icon: Layers3,
+    title: "For commercial teams",
+    text: "CRM standards, field governance, outbound routines, activity discipline and playbooks that make execution easier to manage.",
+  },
+  {
+    icon: Users,
+    title: "For leaders and founders",
+    text: "A practical bridge between business strategy and day-to-day sales execution, with focus on visibility, consistency and revenue quality.",
+  },
+];
+
+const method = [
+  ["01", "Diagnose", "Understand market context, ICP, stakeholders, pain, urgency, buying process and cost of inaction."],
+  ["02", "Structure", "Turn dispersed context into clear messaging, qualification logic, CRM rules and commercial materials."],
+  ["03", "Execute", "Run prospecting, discovery, follow-up, negotiation and next steps with discipline and traceability."],
+  ["04", "Improve", "Use pipeline governance, enablement and operating rhythm to make revenue execution more predictable."],
+];
+
+const principles = [
+  {
+    icon: Compass,
+    title: "Context before cadence",
+    text: "Outbound only works when it starts from market context, business pain and a clear reason to engage.",
+  },
+  {
+    icon: MessagesSquare,
+    title: "Discovery before pitch",
+    text: "Complex technology sales require diagnosis, stakeholder mapping and impact clarity before any proposal makes sense.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "CRM as a management system",
+    text: "A CRM should guide decisions, forecast, accountability and next steps — not just store notes after meetings.",
+  },
+];
+
+const experience = [
+  {
+    period: "2026 — Present",
+    role: "Account Executive",
+    company: "First Decision",
+    text: "B2B sales for technology and IT Outsourcing, focused on outbound, new business, CRM, pipeline governance and sales enablement for the private market.",
+    tags: ["IT Outsourcing", "Outbound", "Pipedrive", "New Business"],
+  },
+  {
+    period: "2023 — 2025",
+    role: "Account Executive",
+    company: "Talentu",
+    text: "Full-cycle consultative sales for startups and companies in digital transformation, including diagnosis, strategic meetings, negotiation, closing and retention.",
+    tags: ["Full-cycle Sales", "B2B", "Startups", "Consultative Selling"],
+  },
+  {
+    period: "2022 — 2023",
+    role: "Business Development Representative",
+    company: "Talentu",
+    text: "Prospecting, qualification, market mapping, cadence execution and generation of commercial conversations with technology and growth companies.",
+    tags: ["Prospecting", "Qualification", "Market Mapping", "BDR"],
+  },
+];
+
+const selectedWork = [
+  {
+    title: "Sales Enablement for IT Outsourcing",
+    description: "Commercial narrative, ICP, personas, discovery, objection handling, proposal structure and pipeline action plan.",
+  },
+  {
+    title: "Pipedrive CRM Governance",
+    description: "Pipeline architecture, field groups, required fields, loss reasons, activities, forecast logic and operating discipline.",
+  },
+  {
+    title: "Outbound Operating System",
+    description: "Account prioritization, buying triggers, contact mapping, messaging, cadence and next-step discipline.",
+  },
+  {
+    title: "Commercial Materials & Playbooks",
+    description: "Executive-grade materials that translate commercial context into usable sales assets for teams and leadership.",
+  },
+];
 
 export default function Home() {
-  const [locale, setLocale] = useState<Locale>("pt");
-  const t = copy[locale];
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const mailto = `mailto:${email}`;
 
   const jsonLd = useMemo(
     () => ({
@@ -653,35 +213,31 @@ export default function Home() {
           "@type": "Person",
           "@id": `${siteUrl}/#person`,
           name: "Ricardo Zulkiewicz",
+          alternateName: "Ricardo Zulk",
           url: siteUrl,
           sameAs: [linkedinUrl],
-          email: emailAddress,
+          email,
           jobTitle: "Account Executive",
-          worksFor: {
-            "@type": "Organization",
-            name: "First Decision",
-          },
+          knowsAbout: [
+            "B2B Technology Sales",
+            "IT Outsourcing",
+            "CRM Governance",
+            "Outbound Sales",
+            "Sales Enablement",
+            "Pipeline Management",
+          ],
           address: {
             "@type": "PostalAddress",
             addressLocality: "São Paulo",
             addressCountry: "BR",
           },
-          knowsAbout: [
-            "B2B Sales",
-            "IT Outsourcing",
-            "CRM",
-            "Outbound Sales",
-            "Sales Enablement",
-            "New Business",
-            "Commercial Strategy",
-          ],
         },
         {
           "@type": "WebSite",
           "@id": `${siteUrl}/#website`,
           name: "Ricardo Zulkiewicz",
           url: siteUrl,
-          inLanguage: ["pt-BR", "en-US"],
+          inLanguage: "en-US",
           publisher: { "@id": `${siteUrl}/#person` },
         },
       ],
@@ -690,224 +246,187 @@ export default function Home() {
   );
 
   return (
-    <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_#dbeafe,_transparent_30%),radial-gradient(circle_at_top_right,_#dcfce7,_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#ffffff_42%,_#f1f5f9_100%)] text-slate-950">
+    <main className="min-h-screen bg-[#1F1F1F] text-[#F7F5F0] antialiased selection:bg-[#0F4C5C] selection:text-[#F7F5F0]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <style>{`
+        :root { font-family: Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+        html { scroll-behavior: smooth; }
+        .hairline { border-color: rgba(247,245,240,.14); }
+        .dark-hairline { border-color: rgba(31,31,31,.12); }
+        .soft-glow { box-shadow: 0 0 80px rgba(15,76,92,.22); }
+      `}</style>
 
-      <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/75 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
-          <a href="#top" className="text-sm font-semibold tracking-tight text-slate-950">
-            Ricardo Zulkiewicz
+      <section className="relative overflow-hidden border-b hairline">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_26%,rgba(15,76,92,0.24),transparent_32%),radial-gradient(circle_at_12%_0%,rgba(255,255,255,0.06),transparent_24%)]" />
+        <div className="absolute right-[-7%] top-[11%] hidden h-[540px] w-[540px] opacity-45 lg:block">
+          <BrandMark className="h-full w-full" subtle />
+        </div>
+
+        <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-7 lg:px-10">
+          <a href="#top" aria-label="Ricardo Zulk home">
+            <LogoLockup compact />
           </a>
-          <nav className="hidden items-center gap-7 text-sm text-slate-600 lg:flex" aria-label="Main navigation">
-            <a href="#about" className="transition hover:text-slate-950">
-              {t.nav.about}
-            </a>
-            <a href="#expertise" className="transition hover:text-slate-950">
-              {t.nav.expertise}
-            </a>
-            <a href="#method" className="transition hover:text-slate-950">
-              {t.nav.method}
-            </a>
-            <a href="#experience" className="transition hover:text-slate-950">
-              {t.nav.experience}
-            </a>
-            <a href="#projects" className="transition hover:text-slate-950">
-              {t.nav.projects}
-            </a>
-            <a href="#contact" className="transition hover:text-slate-950">
-              {t.nav.contact}
-            </a>
+          <nav className="hidden items-center gap-10 text-[11px] font-medium uppercase tracking-[0.24em] text-[#D8D8D8]/75 lg:flex">
+            {navItems.map(([label, href]) => (
+              <a key={label} className="transition hover:text-[#F7F5F0]" href={href}>
+                {label}
+              </a>
+            ))}
           </nav>
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 text-xs font-semibold shadow-sm" aria-label={t.languageLabel}>
-            <Languages size={15} className="ml-2 text-slate-500" aria-hidden="true" />
-            <button
-              type="button"
-              onClick={() => setLocale("pt")}
-              className={`rounded-full px-3 py-1.5 transition ${locale === "pt" ? "bg-slate-950 text-white" : "text-slate-600 hover:text-slate-950"}`}
-              aria-label="Português"
-              aria-pressed={locale === "pt"}
+          <div className="flex items-center gap-3">
+            <a
+              href={mailto}
+              className="hidden items-center gap-3 border border-[#0F4C5C]/70 bg-[#0F4C5C]/80 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.20em] text-[#F7F5F0] transition hover:bg-[#0F4C5C] md:flex"
             >
-              PT
-            </button>
+              Contact <ArrowUpRight size={15} />
+            </a>
             <button
-              type="button"
-              onClick={() => setLocale("en")}
-              className={`rounded-full px-3 py-1.5 transition ${locale === "en" ? "bg-slate-950 text-white" : "text-slate-600 hover:text-slate-950"}`}
-              aria-label="English"
-              aria-pressed={locale === "en"}
+              onClick={() => setIsMenuOpen((value) => !value)}
+              className="inline-flex h-11 w-11 items-center justify-center border hairline text-[#F7F5F0] lg:hidden"
+              aria-label="Toggle navigation"
+              aria-expanded={isMenuOpen}
             >
-              EN
+              {isMenuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <section id="top" className="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-12 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:pb-28 lg:pt-24">
-        <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
-          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">{t.hero.eyebrow}</p>
-          <div className="mb-6 inline-flex flex-wrap items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm text-slate-600 shadow-sm backdrop-blur">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
-            {t.hero.badge}
+        {isMenuOpen && (
+          <div className="relative z-20 mx-6 mb-6 border hairline bg-[#1F1F1F]/95 p-5 backdrop-blur lg:hidden">
+            <nav className="grid gap-4 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#D8D8D8]/80">
+              {navItems.map(([label, href]) => (
+                <a key={label} href={href} onClick={() => setIsMenuOpen(false)} className="border-b hairline pb-4 last:border-b-0 last:pb-0">
+                  {label}
+                </a>
+              ))}
+            </nav>
           </div>
+        )}
 
-          <h1 className="max-w-5xl text-5xl font-semibold tracking-[-0.05em] text-slate-950 md:text-7xl">{t.hero.title}</h1>
-
-          <p className="mt-7 max-w-3xl text-xl leading-8 text-slate-700">{t.hero.subtitle}</p>
-          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600">{t.hero.description}</p>
-
-          <div className="mt-7 flex flex-wrap gap-2" aria-label="Professional focus areas">
-            {t.indicators.map((item) => (
-              <span key={item} className="rounded-full border border-slate-200 bg-white/75 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
-                {item}
-              </span>
-            ))}
-          </div>
-
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <a href={linkedinUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800">
-              {t.hero.primaryCta}
-              <ArrowUpRight className="ml-2" size={17} aria-hidden="true" />
-            </a>
-            <a href="/cv" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-              {t.hero.secondaryCta}
-              <Download className="ml-2" size={17} aria-hidden="true" />
-            </a>
-            <a href="#method" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-              {t.hero.tertiaryCta}
-            </a>
-          </div>
-        </motion.div>
-
-        <motion.aside initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative">
-          <div className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-blue-100 via-white to-emerald-100 blur-2xl" aria-hidden="true" />
-          <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-950/10">
-            <div className="rounded-[1.5rem] bg-slate-950 p-7 text-white">
-              <p className="text-sm uppercase tracking-[0.24em] text-emerald-300">{t.hero.cardLabel}</p>
-              <h2 className="mt-5 text-3xl font-semibold tracking-tight">{t.hero.cardTitle}</h2>
-              <p className="mt-4 text-sm leading-6 text-slate-300">{t.hero.cardText}</p>
+        <div id="top" className="relative z-10 mx-auto grid max-w-7xl gap-14 px-6 pb-20 pt-10 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:pb-28 lg:pt-20">
+          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+            <p className="mb-8 text-[11px] font-semibold uppercase tracking-[0.28em] text-[#57a6b7]">
+              Strategy. Pipeline. Revenue.
+            </p>
+            <h1 className="max-w-5xl text-5xl font-light leading-[1.04] tracking-[-0.06em] text-[#F7F5F0] md:text-7xl lg:text-[84px]">
+              I build the commercial structure behind <span className="italic tracking-[-0.075em] text-[#F7F5F0]/90">predictable</span> B2B technology revenue.
+            </h1>
+            <p className="mt-8 max-w-2xl text-base leading-8 text-[#D8D8D8]/78 md:text-lg">
+              From outbound and discovery to CRM governance and sales enablement, I translate business context into a practical sales system teams can execute, measure and improve.
+            </p>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <a
+                href={mailto}
+                className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.20em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]"
+              >
+                Start a conversation <ArrowUpRight size={16} />
+              </a>
+              <a
+                href="#work"
+                className="inline-flex items-center justify-center gap-3 border border-[#D8D8D8]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.20em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45"
+              >
+                View the work
+              </a>
             </div>
-            <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-slate-200 p-5">
-                <LineChart className="mb-4 text-slate-950" size={22} aria-hidden="true" />
-                <p className="text-2xl font-semibold tracking-tight">{t.hero.cardOneTitle}</p>
-                <p className="mt-2 text-sm leading-5 text-slate-500">{t.hero.cardOneText}</p>
-              </div>
-              <div className="rounded-3xl border border-slate-200 p-5">
-                <BriefcaseBusiness className="mb-4 text-slate-950" size={22} aria-hidden="true" />
-                <p className="text-2xl font-semibold tracking-tight">{t.hero.cardTwoTitle}</p>
-                <p className="mt-2 text-sm leading-5 text-slate-500">{t.hero.cardTwoText}</p>
-              </div>
-            </div>
-            <div className="mt-5 flex items-center gap-2 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-              <MapPin size={16} aria-hidden="true" />
-              {t.hero.location}
-            </div>
-          </div>
-        </motion.aside>
-      </section>
+          </motion.div>
 
-      <section className="mx-auto max-w-7xl px-6 pb-12 lg:px-8" aria-label="Proof points">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {t.proofPoints.map((stat, index) => (
-            <FadeIn key={stat.value} delay={index * 0.04}>
-              <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <p className="text-2xl font-semibold tracking-tight text-slate-950">{stat.value}</p>
-                <p className="mt-2 text-sm leading-6 text-slate-600">{stat.label}</p>
+          <motion.aside
+            initial={{ opacity: 0, x: 22 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="self-end border hairline bg-[#F7F5F0]/[0.035] p-6 backdrop-blur soft-glow"
+          >
+            <div className="mb-12 flex items-start justify-between gap-6">
+              <div>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#57a6b7]">Commercial profile</p>
+                <p className="mt-3 max-w-xs text-sm leading-6 text-[#D8D8D8]/65">
+                  Sales, CRM, outbound, IT Outsourcing and commercial operations.
+                </p>
               </div>
-            </FadeIn>
-          ))}
+              <BrandMark className="h-24 w-24 shrink-0" />
+            </div>
+            <div className="grid gap-6">
+              {metrics.map(([value, label, detail]) => (
+                <div key={label} className="border-t hairline pt-5">
+                  <div className="text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] md:text-3xl">{value}</div>
+                  <div className="mt-2 text-[11px] font-semibold uppercase tracking-[0.20em] text-[#57a6b7]">{label}</div>
+                  <div className="mt-2 text-sm leading-6 text-[#D8D8D8]/65">{detail}</div>
+                </div>
+              ))}
+            </div>
+          </motion.aside>
         </div>
       </section>
 
-      <section id="about" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr]">
+      <section id="expertise" className="border-b hairline bg-[#1F1F1F] px-6 py-20 lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <Eyebrow>Expertise</Eyebrow>
+          <div className="grid gap-10 lg:grid-cols-[0.48fr_1fr]">
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">
+              Sales structure for complex B2B technology conversations.
+            </h2>
+            <div className="grid gap-px overflow-hidden border hairline bg-[#F7F5F0]/10 md:grid-cols-2">
+              {expertise.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <article key={item.number} className="bg-[#1F1F1F] p-8 transition hover:bg-[#F7F5F0]/[0.035]">
+                    <div className="mb-8 flex items-center justify-between">
+                      <div className="text-sm font-light tracking-[0.20em] text-[#D8D8D8]/65">{item.number}</div>
+                      <Icon className="text-[#57a6b7]" size={22} strokeWidth={1.5} />
+                    </div>
+                    <h3 className="text-base font-semibold uppercase tracking-[0.18em] text-[#F7F5F0]">{item.title}</h3>
+                    <p className="mt-5 text-sm leading-7 text-[#D8D8D8]/68">{item.text}</p>
+                  </article>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="bg-[#F7F5F0] px-6 py-24 text-[#1F1F1F] lg:px-10">
+        <div className="mx-auto grid max-w-7xl gap-16 lg:grid-cols-[0.86fr_1fr]">
           <div>
-            <SectionLabel>{t.about.label}</SectionLabel>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.about.title}</h2>
+            <Eyebrow dark>About</Eyebrow>
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-6xl">
+              A commercial operator built between technology, process and business context.
+            </h2>
           </div>
-          <div className="space-y-5 text-base leading-8 text-slate-600">
-            {t.about.paragraphs.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {t.strengths.map((item, index) => (
-            <IconCard key={item.title} item={item} icon={strengthIcons[index] ?? Sparkles} delay={index * 0.04} />
-          ))}
-        </div>
-      </section>
-
-      <section id="expertise" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="mb-10 max-w-3xl">
-          <SectionLabel>{t.expertise.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.expertise.title}</h2>
-          <p className="mt-5 text-base leading-8 text-slate-600">{t.expertise.intro}</p>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {t.expertise.items.map((item, index) => (
-            <IconCard key={item.title} item={item} icon={expertiseIcons[index] ?? Search} delay={index * 0.04} />
-          ))}
-        </div>
-      </section>
-
-      <section id="method" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="mb-10 max-w-3xl">
-          <SectionLabel>{t.method.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.method.title}</h2>
-          <p className="mt-5 text-base leading-8 text-slate-600">{t.method.intro}</p>
-        </div>
-
-        <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-          {t.method.steps.map((item, index) => (
-            <FadeIn key={item.step} delay={index * 0.04}>
-              <article className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <span className="text-sm font-semibold text-slate-400">{item.step}</span>
-                <h3 className="mt-5 text-lg font-semibold tracking-tight text-slate-950">{item.title}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-              </article>
-            </FadeIn>
-          ))}
-        </div>
-      </section>
-
-      <section id="experience" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
-          <div>
-            <SectionLabel>{t.experience.label}</SectionLabel>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.experience.title}</h2>
-            <p className="mt-5 text-base leading-8 text-slate-600">{t.experience.intro}</p>
-          </div>
-          <div className="space-y-5">
-            {t.experience.items.map((item, index) => (
-              <TimelineCard key={`${item.company}-${item.role}`} item={item} delay={index * 0.04} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="projects" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="rounded-[2.2rem] bg-slate-950 p-6 text-white shadow-2xl shadow-slate-950/10 md:p-10 lg:p-12">
-          <div className="mb-10 grid gap-8 lg:grid-cols-[1fr_0.7fr] lg:items-end">
-            <div>
-              <div className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-300">
-                {t.projects.label}
-              </div>
-              <h2 className="text-4xl font-semibold tracking-[-0.03em] md:text-5xl">{t.projects.title}</h2>
+          <div className="space-y-7 text-base leading-8 text-[#4A4A4A]">
+            <p>
+              My work sits at the intersection of consultative B2B sales, technology, CRM governance and commercial operations. I help turn scattered market context into clear sales execution: who to target, what to say, how to qualify, what to track and how to move opportunities forward.
+            </p>
+            <p>
+              Today, my focus is IT Outsourcing, outbound and new business, building a more structured, consultative and revenue-oriented commercial approach for complex technology conversations.
+            </p>
+            <div className="grid gap-4 pt-6 md:grid-cols-3">
+              {["Positioning clarity", "Decision-maker conversations", "Operational discipline"].map((item) => (
+                <div key={item} className="border dark-hairline bg-white/45 p-5">
+                  <CheckCircle2 className="mb-5 text-[#0F4C5C]" size={20} />
+                  <h3 className="text-sm font-semibold uppercase tracking-[0.12em]">{item}</h3>
+                </div>
+              ))}
             </div>
-            <p className="text-sm leading-6 text-slate-300">{t.projects.intro}</p>
           </div>
+        </div>
+      </section>
 
-          <div className="grid gap-5 lg:grid-cols-3">
-            {t.projects.items.map((project, index) => {
-              const Icon = projectIcons[index] ?? Building2;
+      <section className="border-b hairline px-6 py-24 lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 max-w-3xl">
+            <Eyebrow>Who I help</Eyebrow>
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">
+              For teams that need a clearer path from market context to qualified pipeline.
+            </h2>
+          </div>
+          <div className="grid gap-px overflow-hidden border hairline bg-[#F7F5F0]/10 lg:grid-cols-3">
+            {services.map((service) => {
+              const Icon = service.icon;
               return (
-                <article key={project.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur">
-                  <Icon className="mb-5 text-emerald-300" size={22} aria-hidden="true" />
-                  <h3 className="text-lg font-semibold tracking-tight">{project.title}</h3>
-                  <p className="mt-4 text-sm leading-6 text-slate-300">{project.description}</p>
+                <article key={service.title} className="bg-[#1F1F1F] p-8">
+                  <Icon className="mb-10 text-[#57a6b7]" size={24} strokeWidth={1.5} />
+                  <h3 className="text-base font-semibold uppercase tracking-[0.18em] text-[#F7F5F0]">{service.title}</h3>
+                  <p className="mt-5 text-sm leading-7 text-[#D8D8D8]/68">{service.text}</p>
                 </article>
               );
             })}
@@ -915,128 +434,158 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
-          <div>
-            <SectionLabel>{t.operatingSystem.label}</SectionLabel>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.operatingSystem.title}</h2>
+      <section id="approach" className="border-b hairline px-6 py-20 lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14 grid gap-8 lg:grid-cols-[0.5fr_1fr]">
+            <div>
+              <Eyebrow>Approach</Eyebrow>
+              <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">Strategy first. Execution that scales.</h2>
+            </div>
+            <p className="max-w-3xl text-base leading-8 text-[#D8D8D8]/70">
+              I partner with leadership and commercial teams to align context, refine process and implement execution systems that make pipeline more visible, measurable and predictable.
+            </p>
           </div>
-          <div className="grid gap-3">
-            {t.operatingSystem.items.map((item) => (
-              <div key={item} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium leading-6 text-slate-700 shadow-sm">
-                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-slate-950" aria-hidden="true" />
-                <span>{item}</span>
-              </div>
+          <div className="grid gap-6 md:grid-cols-4">
+            {method.map(([number, title, text]) => (
+              <article key={number} className="relative border-t hairline pt-8">
+                <div className="mb-10 text-4xl font-light tracking-[-0.04em] text-[#F7F5F0]/55">{number}</div>
+                <h3 className="text-sm font-semibold uppercase tracking-[0.20em] text-[#F7F5F0]">{title}</h3>
+                <p className="mt-5 text-sm leading-7 text-[#D8D8D8]/65">{text}</p>
+              </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="mb-10 max-w-3xl">
-          <SectionLabel>{t.toolkit.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.toolkit.title}</h2>
+      <section className="bg-[#F7F5F0] px-6 py-24 text-[#1F1F1F] lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 max-w-4xl">
+            <Eyebrow dark>Operating principles</Eyebrow>
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">
+              The work is not about adding activity. It is about improving the quality of commercial decisions.
+            </h2>
+          </div>
+          <div className="grid gap-px overflow-hidden border dark-hairline bg-[#1F1F1F]/10 lg:grid-cols-3">
+            {principles.map((principle) => {
+              const Icon = principle.icon;
+              return (
+                <article key={principle.title} className="bg-[#F7F5F0] p-8">
+                  <Icon className="mb-10 text-[#0F4C5C]" size={24} strokeWidth={1.5} />
+                  <h3 className="text-base font-semibold uppercase tracking-[0.16em] text-[#1F1F1F]">{principle.title}</h3>
+                  <p className="mt-5 text-sm leading-7 text-[#4A4A4A]">{principle.text}</p>
+                </article>
+              );
+            })}
+          </div>
         </div>
-        <div className="grid gap-5 md:grid-cols-3">
-          {t.toolkit.groups.map((group, index) => {
-            const Icon = toolkitIcons[index] ?? Laptop;
-            return (
-              <article key={group.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <Icon className="mb-5 text-slate-950" size={22} aria-hidden="true" />
-                <h3 className="text-lg font-semibold tracking-tight text-slate-950">{group.title}</h3>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {group.items.map((item) => (
-                    <span key={item} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
-                      {item}
-                    </span>
-                  ))}
+      </section>
+
+      <section id="experience" className="bg-[#F7F5F0] px-6 pb-24 text-[#1F1F1F] lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-14 max-w-3xl border-t dark-hairline pt-20">
+            <Eyebrow dark>Experience</Eyebrow>
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-6xl">
+              Commercial experience in technology, startups and B2B operations.
+            </h2>
+          </div>
+          <div className="space-y-5">
+            {experience.map((item) => (
+              <article key={item.company + item.period} className="grid gap-6 border dark-hairline bg-white/45 p-7 md:grid-cols-[0.25fr_0.75fr]">
+                <div className="text-sm font-medium uppercase tracking-[0.14em] text-[#0F4C5C]">{item.period}</div>
+                <div>
+                  <h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.role}</h3>
+                  <div className="mt-1 text-sm font-semibold uppercase tracking-[0.14em] text-[#4A4A4A]">{item.company}</div>
+                  <p className="mt-5 max-w-4xl text-base leading-8 text-[#4A4A4A]">{item.text}</p>
+                  <div className="mt-6 flex flex-wrap gap-2">
+                    {item.tags.map((tag) => (
+                      <span key={tag} className="border dark-hairline px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[#4A4A4A]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </article>
-            );
-          })}
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
-          <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <Globe2 className="mb-5 text-slate-950" size={24} aria-hidden="true" />
-            <SectionLabel>{t.languages.label}</SectionLabel>
-            <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-950">{t.languages.title}</h2>
+      <section id="work" className="px-6 py-24 lg:px-10">
+        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1fr]">
+          <div>
+            <Eyebrow>Selected Work</Eyebrow>
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">
+              Enablement, governance and process applied to commercial execution.
+            </h2>
           </div>
-          <div className="grid gap-4 md:grid-cols-2">
-            {t.languages.items.map((item) => (
-              <div key={item} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <MessageSquareText className="mb-4 text-slate-950" size={22} aria-hidden="true" />
-                <p className="text-sm leading-6 text-slate-600">{item}</p>
+          <div className="grid gap-4">
+            {selectedWork.map((project) => (
+              <article key={project.title} className="group border-b hairline py-6">
+                <div className="flex gap-5">
+                  <ArrowUpRight className="mt-1 shrink-0 text-[#57a6b7] transition group-hover:translate-x-1 group-hover:-translate-y-1" size={18} />
+                  <div>
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#F7F5F0]">{project.title}</h3>
+                    <p className="mt-4 text-base leading-7 text-[#D8D8D8]/74">{project.description}</p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#F7F5F0] px-6 py-20 text-[#1F1F1F] lg:px-10">
+        <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.55fr_1fr]">
+          <div>
+            <Eyebrow dark>Positioning</Eyebrow>
+            <h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">
+              Not just selling services. Building the system behind revenue execution.
+            </h2>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2">
+            {[
+              "Outbound that starts from business context, not generic messaging.",
+              "CRM as a management system, not a place to store notes after meetings.",
+              "Qualification based on urgency, impact, fit, stakeholders and timing.",
+              "Commercial materials that help teams sell with clarity and consistency.",
+            ].map((item) => (
+              <div key={item} className="border dark-hairline bg-white/50 p-6">
+                <ShieldCheck className="mb-6 text-[#0F4C5C]" size={21} strokeWidth={1.6} />
+                <p className="text-base leading-7 text-[#4A4A4A]">{item}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="mb-10 max-w-3xl">
-          <SectionLabel>{t.faq.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.faq.title}</h2>
-        </div>
-        <div className="grid gap-5 lg:grid-cols-3">
-          {t.faq.items.map((item) => (
-            <article key={item.question} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold tracking-tight text-slate-950">{item.question}</h3>
-              <p className="mt-4 text-sm leading-6 text-slate-600">{item.answer}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="contact" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
-        <div className="overflow-hidden rounded-[2.2rem] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-950/5 md:p-12">
-          <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
-            <div>
-              <SectionLabel>{t.contact.label}</SectionLabel>
-              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.contact.title}</h2>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">{t.contact.text}</p>
-              <div className="mt-6 flex flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:flex-wrap">
-                <span className="inline-flex items-center gap-2">
-                  <MapPin size={16} aria-hidden="true" /> {t.hero.location}
-                </span>
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" aria-hidden="true" />
-                <span className="inline-flex items-center gap-2">
-                  <Compass size={16} aria-hidden="true" /> {t.contact.portfolio}
-                </span>
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" aria-hidden="true" />
-                <span className="inline-flex items-center gap-2">
-                  <Mail size={16} aria-hidden="true" /> {emailAddress}
-                </span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <a href={linkedinUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800">
-                {t.contact.linkedin}
-                <ArrowUpRight className="ml-2" size={17} aria-hidden="true" />
-              </a>
-              <a href="/cv" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                {t.contact.cv}
-                <Download className="ml-2" size={17} aria-hidden="true" />
-              </a>
-              <a href={gmailComposeUrl} target="_blank" rel="noreferrer" className="hidden items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:inline-flex">
-                {t.contact.email}
-                <Mail className="ml-2" size={17} aria-hidden="true" />
-              </a>
-              <a href={mailtoUrl} className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:hidden">
-                {t.contact.email}
-                <Mail className="ml-2" size={17} aria-hidden="true" />
-              </a>
-            </div>
+      <section id="contact" className="px-6 pb-10 pt-10 lg:px-10">
+        <div className="mx-auto max-w-7xl border hairline bg-[#0F4C5C]/70 p-8 md:p-12">
+          <div className="grid gap-10 md:grid-cols-[0.9fr_1fr_0.6fr] md:items-center">
+            <h2 className="text-3xl font-light leading-tight tracking-[-0.05em] md:text-5xl">
+              Let’s build your next stage of growth.
+            </h2>
+            <p className="text-base leading-8 text-[#F7F5F0]/78">
+              For conversations about B2B sales, technology, IT Outsourcing, CRM, outbound and sales enablement, reach out directly.
+            </p>
+            <a
+              href={mailto}
+              className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 bg-[#F7F5F0] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1F1F1F] transition hover:-translate-y-0.5"
+            >
+              Contact <Mail size={15} />
+            </a>
           </div>
         </div>
-      </section>
 
-      <footer className="mx-auto flex max-w-7xl flex-col gap-3 px-6 pb-10 pt-4 text-sm text-slate-500 md:flex-row md:items-center md:justify-between lg:px-8">
-        <p>© {new Date().getFullYear()} Ricardo Zulkiewicz. {t.footer}</p>
-        <p>ricardozulkiewicz.com</p>
-      </footer>
+        <footer className="mx-auto mt-10 flex max-w-7xl flex-col gap-8 border-t hairline py-8 md:flex-row md:items-center md:justify-between">
+          <LogoLockup compact />
+          <div className="flex flex-wrap items-center gap-5 text-sm text-[#D8D8D8]/65">
+            <span className="inline-flex items-center gap-2"><MapPin size={15} /> São Paulo, Brazil</span>
+            <a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={mailto}><Mail size={15} /> Email</a>
+            <a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a>
+            <a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={cvUrl}><Download size={15} /> CV</a>
+          </div>
+        </footer>
+      </section>
     </main>
   );
 }
