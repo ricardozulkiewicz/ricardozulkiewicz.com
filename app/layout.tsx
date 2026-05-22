@@ -2,49 +2,49 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const siteUrl = "https://ricardozulkiewicz.com";
-const title = "Ricardo Zulkiewicz | B2B Sales, CRM & IT Outsourcing";
+const title = "Ricardo Zulk | B2B Technology Sales Strategy";
 const description =
-  "Bilingual personal website and professional portfolio of Ricardo Zulkiewicz, Account Executive focused on B2B Sales, IT Outsourcing, outbound, CRM, Sales Enablement and commercial process structuring.";
+  "Personal website of Ricardo Zulkiewicz, focused on B2B technology sales, IT Outsourcing, outbound, CRM governance, Sales Enablement and predictable revenue execution.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  applicationName: "Ricardo Zulkiewicz",
+  applicationName: "Ricardo Zulk",
   authors: [{ name: "Ricardo Zulkiewicz", url: siteUrl }],
   creator: "Ricardo Zulkiewicz",
   publisher: "Ricardo Zulkiewicz",
   keywords: [
+    "Ricardo Zulk",
     "Ricardo Zulkiewicz",
-    "Ricardo Zulkiewicz portfolio",
-    "B2B Sales",
+    "B2B Technology Sales",
+    "Technology Sales Strategy",
     "IT Outsourcing",
     "Account Executive",
-    "CRM",
+    "CRM Governance",
     "Sales Enablement",
     "Outbound Sales",
     "New Business",
     "Consultative Sales",
-    "Vendas consultivas",
-    "Desenvolvimento comercial",
     "Pipeline Management",
     "Pipedrive",
-    "Technology Sales",
+    "Commercial Strategy",
+    "Predictable Revenue",
   ],
   alternates: {
     canonical: siteUrl,
     languages: {
-      "pt-BR": siteUrl,
       "en-US": siteUrl,
+      "pt-BR": siteUrl,
     },
   },
   openGraph: {
     title,
     description,
     url: siteUrl,
-    siteName: "Ricardo Zulkiewicz",
-    locale: "pt_BR",
-    alternateLocale: ["en_US"],
+    siteName: "Ricardo Zulk",
+    locale: "en_US",
+    alternateLocale: ["pt_BR"],
     type: "profile",
   },
   twitter: {
@@ -71,16 +71,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body>
-        {children}
-        <a
-          href="/cv"
-          className="fixed bottom-5 right-5 z-50 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-semibold text-white shadow-2xl shadow-slate-950/20 transition hover:-translate-y-0.5 hover:bg-slate-800"
-        >
-          CV
-        </a>
-      </body>
+    <html lang="en-US">
+      <body>{children}</body>
     </html>
   );
 }
