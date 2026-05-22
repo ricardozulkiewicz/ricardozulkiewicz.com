@@ -2,6 +2,7 @@
 
 import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import type { LucideIcon } from "lucide-react";
 import {
   ArrowUpRight,
   BarChart3,
@@ -9,6 +10,7 @@ import {
   Building2,
   CheckCircle2,
   Compass,
+  Download,
   FileText,
   Globe2,
   GraduationCap,
@@ -30,6 +32,7 @@ import {
   Workflow,
 } from "lucide-react";
 
+const siteUrl = "https://ricardozulkiewicz.com";
 const linkedinUrl = "https://www.linkedin.com/in/rick-zulk/";
 const emailAddress = "ricardomachado.zulk@gmail.com";
 const gmailComposeUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${emailAddress}`;
@@ -37,10 +40,24 @@ const mailtoUrl = `mailto:${emailAddress}`;
 
 type Locale = "pt" | "en";
 
+type IconCard = {
+  title: string;
+  description: string;
+};
+
+type TimelineItem = {
+  period: string;
+  role: string;
+  company: string;
+  description: string;
+  tags: string[];
+};
+
 const copy = {
   pt: {
     nav: {
       about: "Sobre",
+      expertise: "Atuação",
       method: "Método",
       experience: "Experiência",
       projects: "Projetos",
@@ -49,37 +66,31 @@ const copy = {
     languageLabel: "Idioma",
     hero: {
       badge: "Account Executive · B2B Sales · CRM · IT Outsourcing",
-      title:
-        "Transformo contexto comercial em pipeline, relacionamento e crescimento B2B.",
+      eyebrow: "Marca pessoal e portfólio profissional",
+      title: "Construo pipeline, narrativa comercial e crescimento B2B com método.",
       subtitle:
-        "Sou Ricardo Zulkiewicz, profissional de vendas consultivas B2B com atuação em tecnologia, IT Outsourcing, outbound, CRM e estruturação comercial.",
+        "Sou Ricardo Zulkiewicz, profissional de vendas consultivas B2B com foco em tecnologia, IT Outsourcing, outbound, CRM e estruturação comercial.",
       description:
-        "Meu trabalho combina prospecção, discovery, qualificação, narrativa comercial, CRM, relacionamento com decisores e disciplina de pipeline para transformar oportunidades em conversas qualificadas, propostas mais fortes e crescimento previsível.",
+        "Atuo na interseção entre prospecção, discovery, qualificação, relacionamento com decisores, proposta de valor, gestão de pipeline e governança de CRM. Meu diferencial é transformar contexto comercial em processo claro, conversas qualificadas e execução previsível.",
       primaryCta: "Conectar no LinkedIn",
-      secondaryCta: "Ver método de trabalho",
+      secondaryCta: "Baixar CV",
+      tertiaryCta: "Ver método de trabalho",
       location: "São Paulo, Brasil",
-      cardLabel: "Forma de atuação",
-      cardTitle: "Estratégia comercial com execução prática.",
+      cardLabel: "Posicionamento",
+      cardTitle: "Comercial consultivo para tecnologia e serviços B2B.",
       cardText:
-        "Organizo narrativa, pipeline, CRM, cadência comercial e próximos passos para que vendas deixe de depender de improviso e passe a operar com método.",
+        "Ajudo a organizar mercado, ICP, narrativa, cadência, CRM e próximos passos para que vendas deixe de depender de improviso e passe a operar com método.",
       cardOneTitle: "Pipeline & CRM",
-      cardOneText: "Visibilidade, previsibilidade e gestão comercial.",
-      cardTwoTitle: "New business",
+      cardOneText: "Visibilidade, disciplina operacional e previsibilidade comercial.",
+      cardTwoTitle: "New Business",
       cardTwoText: "Prospecção, relacionamento e abertura de mercado B2B.",
     },
-    indicators: [
-      "B2B Sales",
-      "IT Outsourcing",
-      "Outbound",
-      "CRM",
-      "Sales Enablement",
-      "New Business",
-    ],
-    stats: [
-      { value: "Full-cycle", label: "Atuação em prospecção, negociação e fechamento" },
-      { value: "B2B", label: "Experiência em vendas consultivas e relacionamento" },
-      { value: "Tech", label: "Foco em tecnologia, outsourcing e transformação digital" },
-      { value: "CRM", label: "Pipeline, governança comercial e previsibilidade" },
+    indicators: ["B2B Sales", "IT Outsourcing", "Outbound", "CRM", "Sales Enablement", "New Business"],
+    proofPoints: [
+      { value: "R$35k–R$120k", label: "faixa de ticket em experiências comerciais anteriores" },
+      { value: "3–7", label: "deals por mês em histórico de performance comercial" },
+      { value: "Full-cycle", label: "prospecção, discovery, negociação e fechamento" },
+      { value: "PT / EN", label: "presença profissional bilíngue para networking e oportunidades" },
     ],
     about: {
       label: "Sobre",
@@ -111,7 +122,7 @@ const copy = {
       label: "Como eu contribuo",
       title: "Estrutura comercial para vender melhor, não apenas vender mais.",
       intro:
-        "Minha contribuição combina execução de vendas com construção de processo, materiais e método comercial.",
+        "Minha contribuição combina execução de vendas, estruturação de processo, criação de materiais comerciais e disciplina de CRM.",
       items: [
         {
           title: "Diagnóstico comercial",
@@ -213,7 +224,7 @@ const copy = {
       label: "Projetos profissionais",
       title: "Enablement, governança e processo aplicados à operação comercial.",
       intro:
-        "Exemplos de frentes apresentados de forma institucional, sem exposição de materiais internos, dados sensíveis ou informações confidenciais.",
+        "Exemplos apresentados de forma institucional, sem exposição de materiais internos, dados sensíveis ou informações confidenciais.",
       items: [
         {
           title: "Estruturação comercial B2B para tecnologia",
@@ -264,7 +275,7 @@ const copy = {
     },
     languages: {
       label: "Idiomas",
-      title: "Atuação com comunicação em português e inglês.",
+      title: "Comunicação profissional em português e inglês.",
       items: [
         "Português nativo para comunicação executiva, negociação e relacionamento comercial.",
         "Inglês para leitura, escrita profissional, networking, pesquisa e construção de presença internacional.",
@@ -277,7 +288,7 @@ const copy = {
         {
           question: "Este site é um currículo?",
           answer:
-            "Não exatamente. Ele funciona como uma presença profissional, reunindo posicionamento, repertório, experiência e formas de contato em uma estrutura mais executiva do que um currículo tradicional.",
+            "Não exatamente. Ele funciona como presença profissional, reunindo posicionamento, repertório, experiência e formas de contato em uma estrutura mais executiva do que um currículo tradicional.",
         },
         {
           question: "Que tipo de conversa faz sentido iniciar?",
@@ -293,11 +304,12 @@ const copy = {
     },
     contact: {
       label: "Contato",
-      title: "Conversas profissionais, networking e troca de ideias.",
+      title: "Conversas profissionais, networking e oportunidades.",
       text:
         "Para conversas sobre vendas B2B, tecnologia, desenvolvimento comercial, CRM, IT Outsourcing e Sales Enablement, entre em contato pelo LinkedIn ou por e-mail.",
       linkedin: "LinkedIn",
       email: "E-mail",
+      cv: "Baixar CV",
       portfolio: "Marca pessoal e portfólio profissional",
     },
     footer: "Marca pessoal e portfólio profissional.",
@@ -305,6 +317,7 @@ const copy = {
   en: {
     nav: {
       about: "About",
+      expertise: "Expertise",
       method: "Method",
       experience: "Experience",
       projects: "Projects",
@@ -313,36 +326,31 @@ const copy = {
     languageLabel: "Language",
     hero: {
       badge: "Account Executive · B2B Sales · CRM · IT Outsourcing",
-      title: "I turn commercial context into pipeline, relationships and B2B growth.",
+      eyebrow: "Personal brand and professional portfolio",
+      title: "I build pipeline, commercial narrative and B2B growth with method.",
       subtitle:
         "I am Ricardo Zulkiewicz, a B2B consultative sales professional focused on technology, IT Outsourcing, outbound, CRM and commercial process structuring.",
       description:
-        "My work combines prospecting, discovery, qualification, commercial narrative, CRM, stakeholder relationships and pipeline discipline to turn opportunities into qualified conversations, stronger proposals and more predictable growth.",
+        "I work at the intersection of prospecting, discovery, qualification, stakeholder relationships, value proposition, pipeline management and CRM governance. My differentiator is turning commercial context into clear process, qualified conversations and predictable execution.",
       primaryCta: "Connect on LinkedIn",
-      secondaryCta: "See working method",
+      secondaryCta: "Download CV",
+      tertiaryCta: "See working method",
       location: "São Paulo, Brazil",
-      cardLabel: "Working style",
-      cardTitle: "Commercial strategy with practical execution.",
+      cardLabel: "Positioning",
+      cardTitle: "Consultative sales for technology and B2B services.",
       cardText:
-        "I organize narrative, pipeline, CRM, commercial cadence and next steps so sales relies less on improvisation and more on method.",
+        "I help organize market context, ICP, narrative, cadence, CRM and next steps so sales relies less on improvisation and more on method.",
       cardOneTitle: "Pipeline & CRM",
-      cardOneText: "Visibility, predictability and commercial management.",
-      cardTwoTitle: "New business",
+      cardOneText: "Visibility, operational discipline and commercial predictability.",
+      cardTwoTitle: "New Business",
       cardTwoText: "Prospecting, relationships and B2B market development.",
     },
-    indicators: [
-      "B2B Sales",
-      "IT Outsourcing",
-      "Outbound",
-      "CRM",
-      "Sales Enablement",
-      "New Business",
-    ],
-    stats: [
-      { value: "Full-cycle", label: "Prospecting, negotiation and closing experience" },
-      { value: "B2B", label: "Consultative sales and relationship-driven selling" },
-      { value: "Tech", label: "Technology, outsourcing and digital transformation focus" },
-      { value: "CRM", label: "Pipeline, commercial governance and predictability" },
+    indicators: ["B2B Sales", "IT Outsourcing", "Outbound", "CRM", "Sales Enablement", "New Business"],
+    proofPoints: [
+      { value: "R$35k–R$120k", label: "ticket range in previous commercial experience" },
+      { value: "3–7", label: "deals per month in commercial performance history" },
+      { value: "Full-cycle", label: "prospecting, discovery, negotiation and closing" },
+      { value: "PT / EN", label: "bilingual professional presence for networking and opportunities" },
     ],
     about: {
       label: "About",
@@ -374,7 +382,7 @@ const copy = {
       label: "How I contribute",
       title: "Commercial structure to sell better, not only to sell more.",
       intro:
-        "My contribution combines sales execution with process design, enablement materials and commercial method.",
+        "My contribution combines sales execution, process design, enablement materials and CRM discipline.",
       items: [
         {
           title: "Commercial diagnosis",
@@ -556,21 +564,22 @@ const copy = {
     },
     contact: {
       label: "Contact",
-      title: "Professional conversations, networking and exchange of ideas.",
+      title: "Professional conversations, networking and opportunities.",
       text:
         "For conversations about B2B sales, technology, business development, CRM, IT Outsourcing and Sales Enablement, reach out through LinkedIn or e-mail.",
       linkedin: "LinkedIn",
       email: "E-mail",
+      cv: "Download CV",
       portfolio: "Personal brand and professional portfolio",
     },
     footer: "Personal brand and professional portfolio.",
   },
 };
 
-const expertiseIcons = [Search, Target, Network, Layers3, Workflow, LineChart];
-const strengthIcons = [Sparkles, Users2, ShieldCheck];
-const projectIcons = [Building2, FileText, BarChart3];
-const toolkitIcons = [Handshake, Laptop, Rocket];
+const expertiseIcons: LucideIcon[] = [Search, Target, Network, Layers3, Workflow, LineChart];
+const strengthIcons: LucideIcon[] = [Sparkles, Users2, ShieldCheck];
+const projectIcons: LucideIcon[] = [Building2, FileText, BarChart3];
+const toolkitIcons: LucideIcon[] = [Handshake, Laptop, Rocket];
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
@@ -593,6 +602,45 @@ function FadeIn({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
   );
 }
 
+function IconCard({ item, icon: Icon, delay = 0 }: { item: IconCard; icon: LucideIcon; delay?: number }) {
+  return (
+    <FadeIn delay={delay}>
+      <article className="group h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-950/10">
+        <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm transition duration-300 group-hover:scale-105">
+          <Icon size={20} aria-hidden="true" />
+        </div>
+        <h3 className="text-lg font-semibold tracking-tight text-slate-950">{item.title}</h3>
+        <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
+      </article>
+    </FadeIn>
+  );
+}
+
+function TimelineCard({ item, delay }: { item: TimelineItem; delay: number }) {
+  return (
+    <FadeIn delay={delay}>
+      <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">{item.period}</p>
+            <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">{item.role}</h3>
+            <p className="mt-1 text-sm font-medium text-slate-600">{item.company}</p>
+          </div>
+          <GraduationCap className="text-slate-300" size={24} aria-hidden="true" />
+        </div>
+        <p className="mt-5 text-sm leading-6 text-slate-600">{item.description}</p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          {item.tags.map((tag) => (
+            <span key={tag} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </article>
+    </FadeIn>
+  );
+}
+
 export default function Home() {
   const [locale, setLocale] = useState<Locale>("pt");
   const t = copy[locale];
@@ -600,25 +648,42 @@ export default function Home() {
   const jsonLd = useMemo(
     () => ({
       "@context": "https://schema.org",
-      "@type": "Person",
-      name: "Ricardo Zulkiewicz",
-      url: "https://ricardozulkiewicz.com",
-      sameAs: [linkedinUrl],
-      email: emailAddress,
-      jobTitle: "Account Executive",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "São Paulo",
-        addressCountry: "BR",
-      },
-      knowsAbout: [
-        "B2B Sales",
-        "IT Outsourcing",
-        "CRM",
-        "Outbound Sales",
-        "Sales Enablement",
-        "New Business",
-        "Commercial Strategy",
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": `${siteUrl}/#person`,
+          name: "Ricardo Zulkiewicz",
+          url: siteUrl,
+          sameAs: [linkedinUrl],
+          email: emailAddress,
+          jobTitle: "Account Executive",
+          worksFor: {
+            "@type": "Organization",
+            name: "First Decision",
+          },
+          address: {
+            "@type": "PostalAddress",
+            addressLocality: "São Paulo",
+            addressCountry: "BR",
+          },
+          knowsAbout: [
+            "B2B Sales",
+            "IT Outsourcing",
+            "CRM",
+            "Outbound Sales",
+            "Sales Enablement",
+            "New Business",
+            "Commercial Strategy",
+          ],
+        },
+        {
+          "@type": "WebSite",
+          "@id": `${siteUrl}/#website`,
+          name: "Ricardo Zulkiewicz",
+          url: siteUrl,
+          inLanguage: ["pt-BR", "en-US"],
+          publisher: { "@id": `${siteUrl}/#person` },
+        },
       ],
     }),
     []
@@ -626,19 +691,19 @@ export default function Home() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_#dbeafe,_transparent_30%),radial-gradient(circle_at_top_right,_#dcfce7,_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#ffffff_42%,_#f1f5f9_100%)] text-slate-950">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
       <header className="sticky top-0 z-40 border-b border-slate-200/70 bg-white/75 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-8">
           <a href="#top" className="text-sm font-semibold tracking-tight text-slate-950">
             Ricardo Zulkiewicz
           </a>
-          <nav className="hidden items-center gap-7 text-sm text-slate-600 lg:flex">
+          <nav className="hidden items-center gap-7 text-sm text-slate-600 lg:flex" aria-label="Main navigation">
             <a href="#about" className="transition hover:text-slate-950">
               {t.nav.about}
+            </a>
+            <a href="#expertise" className="transition hover:text-slate-950">
+              {t.nav.expertise}
             </a>
             <a href="#method" className="transition hover:text-slate-950">
               {t.nav.method}
@@ -653,25 +718,23 @@ export default function Home() {
               {t.nav.contact}
             </a>
           </nav>
-          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 text-xs font-semibold shadow-sm">
+          <div className="flex items-center gap-2 rounded-full border border-slate-200 bg-white p-1 text-xs font-semibold shadow-sm" aria-label={t.languageLabel}>
             <Languages size={15} className="ml-2 text-slate-500" aria-hidden="true" />
             <button
               type="button"
               onClick={() => setLocale("pt")}
-              className={`rounded-full px-3 py-1.5 transition ${
-                locale === "pt" ? "bg-slate-950 text-white" : "text-slate-600 hover:text-slate-950"
-              }`}
+              className={`rounded-full px-3 py-1.5 transition ${locale === "pt" ? "bg-slate-950 text-white" : "text-slate-600 hover:text-slate-950"}`}
               aria-label="Português"
+              aria-pressed={locale === "pt"}
             >
               PT
             </button>
             <button
               type="button"
               onClick={() => setLocale("en")}
-              className={`rounded-full px-3 py-1.5 transition ${
-                locale === "en" ? "bg-slate-950 text-white" : "text-slate-600 hover:text-slate-950"
-              }`}
+              className={`rounded-full px-3 py-1.5 transition ${locale === "en" ? "bg-slate-950 text-white" : "text-slate-600 hover:text-slate-950"}`}
               aria-label="English"
+              aria-pressed={locale === "en"}
             >
               EN
             </button>
@@ -679,114 +742,75 @@ export default function Home() {
         </div>
       </header>
 
-      <section
-        id="top"
-        className="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-12 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:pb-28 lg:pt-24"
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-        >
+      <section id="top" className="mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-12 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:pb-28 lg:pt-24">
+        <motion.div initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">{t.hero.eyebrow}</p>
           <div className="mb-6 inline-flex flex-wrap items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm text-slate-600 shadow-sm backdrop-blur">
-            <span className="h-2 w-2 rounded-full bg-emerald-400" />
+            <span className="h-2 w-2 rounded-full bg-emerald-400" aria-hidden="true" />
             {t.hero.badge}
           </div>
 
-          <h1 className="max-w-5xl text-5xl font-semibold tracking-[-0.05em] text-slate-950 md:text-7xl">
-            {t.hero.title}
-          </h1>
+          <h1 className="max-w-5xl text-5xl font-semibold tracking-[-0.05em] text-slate-950 md:text-7xl">{t.hero.title}</h1>
 
-          <p className="mt-7 max-w-3xl text-xl leading-8 text-slate-700">
-            {t.hero.subtitle}
-          </p>
+          <p className="mt-7 max-w-3xl text-xl leading-8 text-slate-700">{t.hero.subtitle}</p>
+          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600">{t.hero.description}</p>
 
-          <p className="mt-5 max-w-3xl text-base leading-8 text-slate-600">
-            {t.hero.description}
-          </p>
-
-          <div className="mt-7 flex flex-wrap gap-2">
+          <div className="mt-7 flex flex-wrap gap-2" aria-label="Professional focus areas">
             {t.indicators.map((item) => (
-              <span
-                key={item}
-                className="rounded-full border border-slate-200 bg-white/75 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm"
-              >
+              <span key={item} className="rounded-full border border-slate-200 bg-white/75 px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
                 {item}
               </span>
             ))}
           </div>
 
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-            <a
-              href={linkedinUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
-            >
+          <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <a href={linkedinUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800">
               {t.hero.primaryCta}
-              <ArrowUpRight className="ml-2" size={17} />
+              <ArrowUpRight className="ml-2" size={17} aria-hidden="true" />
             </a>
-            <a
-              href="#method"
-              className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-            >
+            <a href="/cv" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
               {t.hero.secondaryCta}
+              <Download className="ml-2" size={17} aria-hidden="true" />
+            </a>
+            <a href="#method" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white/80 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+              {t.hero.tertiaryCta}
             </a>
           </div>
         </motion.div>
 
-        <motion.aside
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
-          className="relative"
-        >
-          <div className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-blue-100 via-white to-emerald-100 blur-2xl" />
+        <motion.aside initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative">
+          <div className="absolute -inset-5 rounded-[2.5rem] bg-gradient-to-br from-blue-100 via-white to-emerald-100 blur-2xl" aria-hidden="true" />
           <div className="relative overflow-hidden rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-950/10">
             <div className="rounded-[1.5rem] bg-slate-950 p-7 text-white">
-              <p className="text-sm uppercase tracking-[0.24em] text-emerald-300">
-                {t.hero.cardLabel}
-              </p>
-              <h2 className="mt-5 text-3xl font-semibold tracking-tight">
-                {t.hero.cardTitle}
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-slate-300">
-                {t.hero.cardText}
-              </p>
+              <p className="text-sm uppercase tracking-[0.24em] text-emerald-300">{t.hero.cardLabel}</p>
+              <h2 className="mt-5 text-3xl font-semibold tracking-tight">{t.hero.cardTitle}</h2>
+              <p className="mt-4 text-sm leading-6 text-slate-300">{t.hero.cardText}</p>
             </div>
             <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded-3xl border border-slate-200 p-5">
-                <LineChart className="mb-4 text-slate-950" size={22} />
-                <p className="text-2xl font-semibold tracking-tight">
-                  {t.hero.cardOneTitle}
-                </p>
-                <p className="mt-2 text-sm leading-5 text-slate-500">
-                  {t.hero.cardOneText}
-                </p>
+                <LineChart className="mb-4 text-slate-950" size={22} aria-hidden="true" />
+                <p className="text-2xl font-semibold tracking-tight">{t.hero.cardOneTitle}</p>
+                <p className="mt-2 text-sm leading-5 text-slate-500">{t.hero.cardOneText}</p>
               </div>
               <div className="rounded-3xl border border-slate-200 p-5">
-                <BriefcaseBusiness className="mb-4 text-slate-950" size={22} />
-                <p className="text-2xl font-semibold tracking-tight">
-                  {t.hero.cardTwoTitle}
-                </p>
-                <p className="mt-2 text-sm leading-5 text-slate-500">
-                  {t.hero.cardTwoText}
-                </p>
+                <BriefcaseBusiness className="mb-4 text-slate-950" size={22} aria-hidden="true" />
+                <p className="text-2xl font-semibold tracking-tight">{t.hero.cardTwoTitle}</p>
+                <p className="mt-2 text-sm leading-5 text-slate-500">{t.hero.cardTwoText}</p>
               </div>
             </div>
             <div className="mt-5 flex items-center gap-2 rounded-2xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-              <MapPin size={16} />
+              <MapPin size={16} aria-hidden="true" />
               {t.hero.location}
             </div>
           </div>
         </motion.aside>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 pb-12 lg:px-8">
+      <section className="mx-auto max-w-7xl px-6 pb-12 lg:px-8" aria-label="Proof points">
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {t.stats.map((stat, index) => (
+          {t.proofPoints.map((stat, index) => (
             <FadeIn key={stat.value} delay={index * 0.04}>
-              <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-2xl font-semibold tracking-tight text-slate-950">{stat.value}</p>
                 <p className="mt-2 text-sm leading-6 text-slate-600">{stat.label}</p>
               </div>
@@ -799,9 +823,7 @@ export default function Home() {
         <div className="grid gap-12 lg:grid-cols-[0.82fr_1.18fr]">
           <div>
             <SectionLabel>{t.about.label}</SectionLabel>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-              {t.about.title}
-            </h2>
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.about.title}</h2>
           </div>
           <div className="space-y-5 text-base leading-8 text-slate-600">
             {t.about.paragraphs.map((paragraph) => (
@@ -811,54 +833,30 @@ export default function Home() {
         </div>
 
         <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {t.strengths.map((item, index) => {
-            const Icon = strengthIcons[index];
-            return (
-              <FadeIn key={item.title} delay={index * 0.04}>
-                <div className="h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <Icon className="mb-4 text-slate-950" size={22} />
-                  <h3 className="font-semibold tracking-tight text-slate-950">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-                </div>
-              </FadeIn>
-            );
-          })}
+          {t.strengths.map((item, index) => (
+            <IconCard key={item.title} item={item} icon={strengthIcons[index] ?? Sparkles} delay={index * 0.04} />
+          ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+      <section id="expertise" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="mb-10 max-w-3xl">
           <SectionLabel>{t.expertise.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-            {t.expertise.title}
-          </h2>
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.expertise.title}</h2>
           <p className="mt-5 text-base leading-8 text-slate-600">{t.expertise.intro}</p>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {t.expertise.items.map((item, index) => {
-            const Icon = expertiseIcons[index];
-            return (
-              <FadeIn key={item.title} delay={index * 0.04}>
-                <article className="group h-full rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-950/10">
-                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-950 text-white shadow-sm transition duration-300 group-hover:scale-105">
-                    <Icon size={20} />
-                  </div>
-                  <h3 className="text-lg font-semibold tracking-tight text-slate-950">{item.title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{item.description}</p>
-                </article>
-              </FadeIn>
-            );
-          })}
+          {t.expertise.items.map((item, index) => (
+            <IconCard key={item.title} item={item} icon={expertiseIcons[index] ?? Search} delay={index * 0.04} />
+          ))}
         </div>
       </section>
 
       <section id="method" className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="mb-10 max-w-3xl">
           <SectionLabel>{t.method.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-            {t.method.title}
-          </h2>
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.method.title}</h2>
           <p className="mt-5 text-base leading-8 text-slate-600">{t.method.intro}</p>
         </div>
 
@@ -879,40 +877,12 @@ export default function Home() {
         <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <SectionLabel>{t.experience.label}</SectionLabel>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-              {t.experience.title}
-            </h2>
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.experience.title}</h2>
             <p className="mt-5 text-base leading-8 text-slate-600">{t.experience.intro}</p>
           </div>
           <div className="space-y-5">
             {t.experience.items.map((item, index) => (
-              <FadeIn key={`${item.company}-${item.role}`} delay={index * 0.04}>
-                <article className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                    <div>
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
-                        {item.period}
-                      </p>
-                      <h3 className="mt-2 text-xl font-semibold tracking-tight text-slate-950">
-                        {item.role}
-                      </h3>
-                      <p className="mt-1 text-sm font-medium text-slate-600">{item.company}</p>
-                    </div>
-                    <GraduationCap className="text-slate-300" size={24} />
-                  </div>
-                  <p className="mt-5 text-sm leading-6 text-slate-600">{item.description}</p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </article>
-              </FadeIn>
+              <TimelineCard key={`${item.company}-${item.role}`} item={item} delay={index * 0.04} />
             ))}
           </div>
         </div>
@@ -925,22 +895,17 @@ export default function Home() {
               <div className="mb-4 inline-flex items-center rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em] text-slate-300">
                 {t.projects.label}
               </div>
-              <h2 className="text-4xl font-semibold tracking-[-0.03em] md:text-5xl">
-                {t.projects.title}
-              </h2>
+              <h2 className="text-4xl font-semibold tracking-[-0.03em] md:text-5xl">{t.projects.title}</h2>
             </div>
             <p className="text-sm leading-6 text-slate-300">{t.projects.intro}</p>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-3">
             {t.projects.items.map((project, index) => {
-              const Icon = projectIcons[index];
+              const Icon = projectIcons[index] ?? Building2;
               return (
-                <article
-                  key={project.title}
-                  className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur"
-                >
-                  <Icon className="mb-5 text-emerald-300" size={22} />
+                <article key={project.title} className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur">
+                  <Icon className="mb-5 text-emerald-300" size={22} aria-hidden="true" />
                   <h3 className="text-lg font-semibold tracking-tight">{project.title}</h3>
                   <p className="mt-4 text-sm leading-6 text-slate-300">{project.description}</p>
                 </article>
@@ -954,17 +919,12 @@ export default function Home() {
         <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
           <div>
             <SectionLabel>{t.operatingSystem.label}</SectionLabel>
-            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-              {t.operatingSystem.title}
-            </h2>
+            <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.operatingSystem.title}</h2>
           </div>
           <div className="grid gap-3">
             {t.operatingSystem.items.map((item) => (
-              <div
-                key={item}
-                className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium leading-6 text-slate-700 shadow-sm"
-              >
-                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-slate-950" />
+              <div key={item} className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-4 text-sm font-medium leading-6 text-slate-700 shadow-sm">
+                <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-slate-950" aria-hidden="true" />
                 <span>{item}</span>
               </div>
             ))}
@@ -975,23 +935,18 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="mb-10 max-w-3xl">
           <SectionLabel>{t.toolkit.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-            {t.toolkit.title}
-          </h2>
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.toolkit.title}</h2>
         </div>
         <div className="grid gap-5 md:grid-cols-3">
           {t.toolkit.groups.map((group, index) => {
-            const Icon = toolkitIcons[index];
+            const Icon = toolkitIcons[index] ?? Laptop;
             return (
               <article key={group.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <Icon className="mb-5 text-slate-950" size={22} />
+                <Icon className="mb-5 text-slate-950" size={22} aria-hidden="true" />
                 <h3 className="text-lg font-semibold tracking-tight text-slate-950">{group.title}</h3>
                 <div className="mt-5 flex flex-wrap gap-2">
                   {group.items.map((item) => (
-                    <span
-                      key={item}
-                      className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600"
-                    >
+                    <span key={item} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-medium text-slate-600">
                       {item}
                     </span>
                   ))}
@@ -1005,16 +960,14 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="grid gap-5 lg:grid-cols-[0.75fr_1.25fr]">
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-            <Globe2 className="mb-5 text-slate-950" size={24} />
+            <Globe2 className="mb-5 text-slate-950" size={24} aria-hidden="true" />
             <SectionLabel>{t.languages.label}</SectionLabel>
-            <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-950">
-              {t.languages.title}
-            </h2>
+            <h2 className="text-3xl font-semibold tracking-[-0.03em] text-slate-950">{t.languages.title}</h2>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
             {t.languages.items.map((item) => (
               <div key={item} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-                <MessageSquareText className="mb-4 text-slate-950" size={22} />
+                <MessageSquareText className="mb-4 text-slate-950" size={22} aria-hidden="true" />
                 <p className="text-sm leading-6 text-slate-600">{item}</p>
               </div>
             ))}
@@ -1025,9 +978,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="mb-10 max-w-3xl">
           <SectionLabel>{t.faq.label}</SectionLabel>
-          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-            {t.faq.title}
-          </h2>
+          <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.faq.title}</h2>
         </div>
         <div className="grid gap-5 lg:grid-cols-3">
           {t.faq.items.map((item) => (
@@ -1044,51 +995,38 @@ export default function Home() {
           <div className="grid items-center gap-8 lg:grid-cols-[1fr_auto]">
             <div>
               <SectionLabel>{t.contact.label}</SectionLabel>
-              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">
-                {t.contact.title}
-              </h2>
-              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">
-                {t.contact.text}
-              </p>
+              <h2 className="text-4xl font-semibold tracking-[-0.03em] text-slate-950 md:text-5xl">{t.contact.title}</h2>
+              <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600">{t.contact.text}</p>
               <div className="mt-6 flex flex-col gap-3 text-sm text-slate-600 sm:flex-row sm:items-center sm:flex-wrap">
                 <span className="inline-flex items-center gap-2">
-                  <MapPin size={16} /> {t.hero.location}
+                  <MapPin size={16} aria-hidden="true" /> {t.hero.location}
                 </span>
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" aria-hidden="true" />
                 <span className="inline-flex items-center gap-2">
-                  <Compass size={16} /> {t.contact.portfolio}
+                  <Compass size={16} aria-hidden="true" /> {t.contact.portfolio}
                 </span>
-                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" />
+                <span className="hidden h-1 w-1 rounded-full bg-slate-300 sm:block" aria-hidden="true" />
                 <span className="inline-flex items-center gap-2">
-                  <Mail size={16} /> {emailAddress}
+                  <Mail size={16} aria-hidden="true" /> {emailAddress}
                 </span>
               </div>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row lg:flex-col">
-              <a
-                href={linkedinUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
-              >
+              <a href={linkedinUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center rounded-2xl bg-slate-950 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800">
                 {t.contact.linkedin}
-                <ArrowUpRight className="ml-2" size={17} />
+                <ArrowUpRight className="ml-2" size={17} aria-hidden="true" />
               </a>
-              <a
-                href={gmailComposeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="hidden items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:inline-flex"
-              >
-                {t.contact.email}
-                <Mail className="ml-2" size={17} />
+              <a href="/cv" className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                {t.contact.cv}
+                <Download className="ml-2" size={17} aria-hidden="true" />
               </a>
-              <a
-                href={mailtoUrl}
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:hidden"
-              >
+              <a href={gmailComposeUrl} target="_blank" rel="noreferrer" className="hidden items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:inline-flex">
                 {t.contact.email}
-                <Mail className="ml-2" size={17} />
+                <Mail className="ml-2" size={17} aria-hidden="true" />
+              </a>
+              <a href={mailtoUrl} className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-6 py-4 text-sm font-semibold text-slate-950 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md sm:hidden">
+                {t.contact.email}
+                <Mail className="ml-2" size={17} aria-hidden="true" />
               </a>
             </div>
           </div>
