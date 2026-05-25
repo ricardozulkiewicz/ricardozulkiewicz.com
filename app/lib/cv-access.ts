@@ -1,5 +1,3 @@
-import "server-only";
-
 import crypto from "crypto";
 
 export const cvVersions = ["pt", "en", "both"] as const;
