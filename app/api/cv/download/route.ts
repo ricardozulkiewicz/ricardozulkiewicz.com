@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import {
   buildAbsoluteUrl,
   getAllowedCvFiles,
-  getConfiguredCvUrl,
   getOwnerEmail,
   sendCvEmail,
   verifyCvAccessToken,
 } from "../../../lib/cv-access";
 import { appendCvLeadEvent } from "../../../lib/google-sheets";
+import { getPrivateCvFile, getPrivateCvDeliveryMode } from "../../../lib/private-cv-files";
 
 export const runtime = "nodejs";
 
@@ -32,18 +32,23 @@ export async function GET(request: Request) {
       return NextResponse.redirect(buildAbsoluteUrl("/cv/access?token=" + encodeURIComponent(token) + "&status=file-not-allowed"));
     }
 
-    const cvUrl = getConfiguredCvUrl(file);
+    const cvFile = await getPrivateCvFile(file);
 
-    if (!cvUrl) {
-      return NextResponse.redirect(buildAbsoluteUrl("/cv/access?token=" + encodeURIComponent(token) + "&status=file-not-configured"));
+    if (!cvFile.ok) {
+      return NextResponse.redirect(
+        buildAbsoluteUrl("/cv/access?token=" + encodeURIComponent(token) + "&status=file-not-configured")
+      );
     }
+
+    const accessedAt = new Date().toISOString();
+    const deliveryMode = getPrivateCvDeliveryMode(file);
 
     await appendCvLeadEvent({
       status: "download_accessed",
       lead: payload.lead,
       request,
       file,
-      notes: `Download redirect issued for ${file.toUpperCase()} CV.`,
+      notes: `Protected backend delivery issued for ${file.toUpperCase()} CV. Mode: ${deliveryMode}.`,
     });
 
     await sendCvEmail({
@@ -54,7 +59,8 @@ export async function GET(request: Request) {
         `${payload.lead.fullName} acessou o CV ${file.toUpperCase()}.`,
         `E-mail: ${payload.lead.professionalEmail}`,
         `WhatsApp: ${payload.lead.whatsapp}`,
-        `Acesso em: ${new Date().toISOString()}`,
+        `Entrega: ${deliveryMode}`,
+        `Acesso em: ${accessedAt}`,
       ].join("\n"),
       html: `
         <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;">
@@ -63,12 +69,21 @@ export async function GET(request: Request) {
           <p><strong>E-mail:</strong> ${payload.lead.professionalEmail}</p>
           <p><strong>WhatsApp:</strong> ${payload.lead.whatsapp}</p>
           <p><strong>Arquivo:</strong> ${file.toUpperCase()}</p>
-          <p><strong>Acesso em:</strong> ${new Date().toISOString()}</p>
+          <p><strong>Entrega:</strong> ${deliveryMode}</p>
+          <p><strong>Acesso em:</strong> ${accessedAt}</p>
         </div>
       `,
     });
 
-    return NextResponse.redirect(cvUrl);
+    return new NextResponse(cvFile.body, {
+      status: 200,
+      headers: {
+        "Content-Type": cvFile.contentType,
+        "Content-Disposition": `attachment; filename="${cvFile.fileName}"`,
+        "Cache-Control": "no-store, private, max-age=0",
+        "X-Robots-Tag": "noindex, nofollow, noarchive",
+      },
+    });
   } catch {
     return NextResponse.redirect(buildAbsoluteUrl("/cv?status=invalid-or-expired-token"));
   }
