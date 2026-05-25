@@ -5,6 +5,10 @@ import {
   type CvLead,
 } from "../../../lib/cv-access";
 import { isGoogleSheetsConfigured } from "../../../lib/google-sheets";
+import {
+  getPrivateCvDeliveryMode,
+  isPrivateCvDeliveryConfigured,
+} from "../../../lib/private-cv-files";
 
 export const runtime = "nodejs";
 
@@ -49,10 +53,13 @@ function getEnvironmentChecks(): EnvCheck[] {
     envCheck("RESEND_API_KEY", true, "Sends confirmation, access and owner-notification e-mails."),
     envCheck("CV_EMAIL_FROM", true, "Defines the verified sender used by Resend."),
     envCheck("CV_OWNER_EMAIL", true, "Receives lead notifications and access alerts."),
-    envCheck("CV_PT_DOWNLOAD_URL", true, "Protected/private URL for the Portuguese CV file."),
-    envCheck("CV_EN_DOWNLOAD_URL", true, "Protected/private URL for the English CV file."),
-    envCheck("GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL", false, "Optional: service account e-mail used to persist lead events in Google Sheets."),
-    envCheck("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY", false, "Optional: service account private key used to persist lead events in Google Sheets."),
+    envCheck("CV_PT_GOOGLE_DRIVE_FILE_ID", false, "Preferred: private Google Drive file ID for the Portuguese CV."),
+    envCheck("CV_EN_GOOGLE_DRIVE_FILE_ID", false, "Preferred: private Google Drive file ID for the English CV."),
+    envCheck("CV_PT_DOWNLOAD_URL", false, "Fallback: server-side source URL for the Portuguese CV."),
+    envCheck("CV_EN_DOWNLOAD_URL", false, "Fallback: server-side source URL for the English CV."),
+    envCheck("CV_FILE_SOURCE_AUTH_HEADER", false, "Optional Authorization header for fallback private source URLs."),
+    envCheck("GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL", false, "Optional: service account e-mail used for Google Sheets and private Google Drive files."),
+    envCheck("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY", false, "Optional: service account private key used for Google Sheets and private Google Drive files."),
     envCheck("CV_LEADS_SPREADSHEET_ID", false, "Optional: Google Sheets spreadsheet ID used to persist lead events."),
     envCheck("CV_LEADS_SHEET_NAME", false, "Optional: Google Sheets tab name. Defaults to CV Leads."),
   ];
@@ -98,16 +105,25 @@ export async function GET(request: Request) {
   }
 
   const sheetsConfigured = isGoogleSheetsConfigured();
+  const privateCvDeliveryConfigured = isPrivateCvDeliveryConfigured();
 
   return NextResponse.json({
-    ok: missingRequired.length === 0 && tokenSelfTest,
-    status: missingRequired.length === 0 && tokenSelfTest ? "ready" : "incomplete",
+    ok: missingRequired.length === 0 && tokenSelfTest && privateCvDeliveryConfigured,
+    status:
+      missingRequired.length === 0 && tokenSelfTest && privateCvDeliveryConfigured
+        ? "ready"
+        : "incomplete",
     environment: process.env.NODE_ENV || "unknown",
     checks,
     missingRequired: missingRequired.map((check) => check.key),
     tokenSelfTest: {
       ok: tokenSelfTest,
       error: tokenSelfTestError,
+    },
+    privateCvDelivery: {
+      configured: privateCvDeliveryConfigured,
+      ptMode: getPrivateCvDeliveryMode("pt"),
+      enMode: getPrivateCvDeliveryMode("en"),
     },
     persistence: {
       googleSheets: {
