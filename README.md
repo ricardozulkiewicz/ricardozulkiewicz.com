@@ -77,6 +77,17 @@ CV_FILE_SOURCE_AUTH_HEADER=optional-authorization-header-for-private-source
 
 The download route sets `Cache-Control: no-store` and `X-Robots-Tag: noindex, nofollow, noarchive`.
 
+### Selected master CV files
+
+The current production-intended CV files are tracked in the `CV Files` tab of the `CV Leads - Ricardo Zulkiewicz` spreadsheet.
+
+- PT master candidate: `CV_Ricardo_Zulkiewicz_PT_NOTA_10.pdf`
+- EN master candidate: `Ricardo_Zulkiewicz_CV_EN_PREMIUM.pdf`
+
+Both files were found in the ChatGPT File Library, not as private Google Drive files. They must still be uploaded to Google Drive, kept private, shared with the Service Account as Viewer, and then mapped to `CV_PT_GOOGLE_DRIVE_FILE_ID` and `CV_EN_GOOGLE_DRIVE_FILE_ID`.
+
+A Drive file named `Ricardo_Zulkiewicz_CV_English..pdf` already exists, but it appears older and should not be used as the production EN master unless explicitly selected.
+
 ### Optional Google Sheets lead persistence
 
 A Google Sheet has been created for lead/event persistence:
@@ -84,6 +95,7 @@ A Google Sheet has been created for lead/event persistence:
 - Spreadsheet: `CV Leads - Ricardo Zulkiewicz`
 - Spreadsheet ID: `1EPxPFHsoC5ErEFbYrv6zjYuFFa5GxnYW5FQINdNA_3A`
 - Sheet tab: `CV Leads`
+- Control tab: `CV Files`
 - Columns: `event_timestamp`, `status`, `lead_id`, `requested_at`, `full_name`, `professional_email`, `whatsapp`, `company`, `role`, `linkedin`, `cv_version`, `file`, `reason`, `message`, `user_agent`, `referer`, `forwarded_for`, `notes`
 
 Configure these variables to enable persistence:
