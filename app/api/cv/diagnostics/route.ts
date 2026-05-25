@@ -1,0 +1,106 @@
+import { NextResponse } from "next/server";
+import {
+  createCvAccessToken,
+  verifyCvAccessToken,
+  type CvLead,
+} from "../../../lib/cv-access";
+
+export const runtime = "nodejs";
+
+type EnvCheck = {
+  key: string;
+  required: boolean;
+  configured: boolean;
+  purpose: string;
+};
+
+function unauthorized(status = 404) {
+  return NextResponse.json({ ok: false, error: "Not found." }, { status });
+}
+
+function isAuthorized(request: Request) {
+  const configuredToken = process.env.CV_ADMIN_TOKEN;
+
+  if (!configuredToken) {
+    return false;
+  }
+
+  const header = request.headers.get("authorization") || "";
+  const token = header.startsWith("Bearer ") ? header.slice(7).trim() : "";
+
+  return token === configuredToken;
+}
+
+function envCheck(key: string, required: boolean, purpose: string): EnvCheck {
+  return {
+    key,
+    required,
+    configured: Boolean(process.env[key]),
+    purpose,
+  };
+}
+
+function getEnvironmentChecks(): EnvCheck[] {
+  return [
+    envCheck("NEXT_PUBLIC_SITE_URL", true, "Builds absolute confirmation and access links."),
+    envCheck("CV_ACCESS_SECRET", true, "Encrypts and validates temporary CV access tokens."),
+    envCheck("CV_ADMIN_TOKEN", true, "Protects this diagnostics endpoint."),
+    envCheck("RESEND_API_KEY", true, "Sends confirmation, access and owner-notification e-mails."),
+    envCheck("CV_EMAIL_FROM", true, "Defines the verified sender used by Resend."),
+    envCheck("CV_OWNER_EMAIL", true, "Receives lead notifications and access alerts."),
+    envCheck("CV_PT_DOWNLOAD_URL", true, "Protected/private URL for the Portuguese CV file."),
+    envCheck("CV_EN_DOWNLOAD_URL", true, "Protected/private URL for the English CV file."),
+  ];
+}
+
+function runTokenSelfTest() {
+  const lead: CvLead = {
+    fullName: "Diagnostics Lead",
+    professionalEmail: "diagnostics@example.com",
+    whatsapp: "+55 11 99999-9999",
+    cvVersion: "pt-br-commercial",
+    reason: "Production diagnostics token self-test.",
+    consent: true,
+    requestedAt: new Date().toISOString(),
+  };
+
+  const token = createCvAccessToken({
+    type: "email_confirmation",
+    lead,
+    expiresInSeconds: 60,
+  });
+  const payload = verifyCvAccessToken(token, "email_confirmation");
+
+  return payload.lead.professionalEmail === lead.professionalEmail;
+}
+
+export async function GET(request: Request) {
+  if (!isAuthorized(request)) {
+    return unauthorized(process.env.CV_ADMIN_TOKEN ? 401 : 404);
+  }
+
+  const checks = getEnvironmentChecks();
+  const missingRequired = checks.filter((check) => check.required && !check.configured);
+
+  let tokenSelfTest = false;
+  let tokenSelfTestError: string | null = null;
+
+  try {
+    tokenSelfTest = runTokenSelfTest();
+  } catch (error) {
+    tokenSelfTest = false;
+    tokenSelfTestError = error instanceof Error ? error.message : "Token self-test failed.";
+  }
+
+  return NextResponse.json({
+    ok: missingRequired.length === 0 && tokenSelfTest,
+    status: missingRequired.length === 0 && tokenSelfTest ? "ready" : "incomplete",
+    environment: process.env.NODE_ENV || "unknown",
+    checks,
+    missingRequired: missingRequired.map((check) => check.key),
+    tokenSelfTest: {
+      ok: tokenSelfTest,
+      error: tokenSelfTestError,
+    },
+  });
+}
