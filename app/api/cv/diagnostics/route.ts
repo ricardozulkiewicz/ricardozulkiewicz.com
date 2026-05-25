@@ -4,6 +4,7 @@ import {
   verifyCvAccessToken,
   type CvLead,
 } from "../../../lib/cv-access";
+import { isGoogleSheetsConfigured } from "../../../lib/google-sheets";
 
 export const runtime = "nodejs";
 
@@ -50,6 +51,10 @@ function getEnvironmentChecks(): EnvCheck[] {
     envCheck("CV_OWNER_EMAIL", true, "Receives lead notifications and access alerts."),
     envCheck("CV_PT_DOWNLOAD_URL", true, "Protected/private URL for the Portuguese CV file."),
     envCheck("CV_EN_DOWNLOAD_URL", true, "Protected/private URL for the English CV file."),
+    envCheck("GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL", false, "Optional: service account e-mail used to persist lead events in Google Sheets."),
+    envCheck("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY", false, "Optional: service account private key used to persist lead events in Google Sheets."),
+    envCheck("CV_LEADS_SPREADSHEET_ID", false, "Optional: Google Sheets spreadsheet ID used to persist lead events."),
+    envCheck("CV_LEADS_SHEET_NAME", false, "Optional: Google Sheets tab name. Defaults to CV Leads."),
   ];
 }
 
@@ -92,6 +97,8 @@ export async function GET(request: Request) {
     tokenSelfTestError = error instanceof Error ? error.message : "Token self-test failed.";
   }
 
+  const sheetsConfigured = isGoogleSheetsConfigured();
+
   return NextResponse.json({
     ok: missingRequired.length === 0 && tokenSelfTest,
     status: missingRequired.length === 0 && tokenSelfTest ? "ready" : "incomplete",
@@ -101,6 +108,12 @@ export async function GET(request: Request) {
     tokenSelfTest: {
       ok: tokenSelfTest,
       error: tokenSelfTestError,
+    },
+    persistence: {
+      googleSheets: {
+        configured: sheetsConfigured,
+        mode: sheetsConfigured ? "enabled" : "disabled_optional",
+      },
     },
   });
 }
