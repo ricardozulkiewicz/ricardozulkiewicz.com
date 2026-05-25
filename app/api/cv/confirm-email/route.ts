@@ -11,6 +11,7 @@ import {
   sendCvEmail,
   verifyCvAccessToken,
 } from "../../../lib/cv-access";
+import { appendCvLeadEvent } from "../../../lib/google-sheets";
 
 export const runtime = "nodejs";
 
@@ -32,6 +33,13 @@ export async function GET(request: Request) {
     });
     const accessUrl = buildAbsoluteUrl(`/cv/access?token=${downloadToken}`);
     const files = getAllowedCvFiles(lead.cvVersion);
+
+    await appendCvLeadEvent({
+      status: "email_confirmed",
+      lead,
+      request,
+      notes: `Arquivos liberados: ${files.join(", ")}`,
+    });
 
     await sendCvEmail({
       to: lead.professionalEmail,
