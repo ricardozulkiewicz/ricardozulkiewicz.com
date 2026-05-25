@@ -43,7 +43,7 @@ The `/cv` page uses a controlled access flow instead of exposing direct public C
 5. `GET /api/cv/confirm-email` validates the confirmation token, persists `email_confirmed` when Google Sheets is configured, and sends a temporary CV access link.
 6. Visitor opens `/cv/access?token=...`.
 7. Visitor clicks the permitted CV file.
-8. `GET /api/cv/download` validates the download token, persists `download_accessed` when Google Sheets is configured, records the access by e-mail notification, and redirects to the configured private CV file URL.
+8. `GET /api/cv/download` validates the download token, fetches the private PDF server-side, persists `download_accessed` when Google Sheets is configured, records the access by e-mail notification, and returns the PDF as an attachment.
 
 ### Required production environment variables
 
@@ -51,14 +51,31 @@ Copy `.env.example` and configure the variables in the production deployment pro
 
 ```bash
 NEXT_PUBLIC_SITE_URL=https://ricardozulkiewicz.com
-CV_ACCESS_SECRET=replace-with-a-long-random-secret
-CV_ADMIN_TOKEN=replace-with-a-different-long-random-secret
+CV_ACCESS_SECRET=replace-with-long-random-secret
+CV_ADMIN_TOKEN=replace-with-different-long-random-secret
 RESEND_API_KEY=replace-with-resend-api-key
 CV_EMAIL_FROM="Ricardo Zulk <cv@ricardozulkiewicz.com>"
 CV_OWNER_EMAIL=ricardomachado.zulk@gmail.com
+```
+
+### Private CV file delivery
+
+Preferred mode: upload the PT and EN PDFs to Google Drive as private files and share each file with the same Google Service Account used by the app as Viewer. Then configure:
+
+```bash
+CV_PT_GOOGLE_DRIVE_FILE_ID=replace-with-portuguese-cv-google-drive-file-id
+CV_EN_GOOGLE_DRIVE_FILE_ID=replace-with-english-cv-google-drive-file-id
+```
+
+Fallback mode: configure source URLs that are fetched only by the backend. Visitors never see these URLs because `/api/cv/download` returns the file directly as an attachment.
+
+```bash
 CV_PT_DOWNLOAD_URL=https://example.com/private/ricardo-zulkiewicz-cv-pt.pdf
 CV_EN_DOWNLOAD_URL=https://example.com/private/ricardo-zulkiewicz-cv-en.pdf
+CV_FILE_SOURCE_AUTH_HEADER=optional-authorization-header-for-private-source
 ```
+
+The download route sets `Cache-Control: no-store` and `X-Robots-Tag: noindex, nofollow, noarchive`.
 
 ### Optional Google Sheets lead persistence
 
@@ -72,13 +89,13 @@ A Google Sheet has been created for lead/event persistence:
 Configure these variables to enable persistence:
 
 ```bash
-GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL=cv-leads-service-account@project-id.iam.gserviceaccount.com
-GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nreplace-with-service-account-private-key\n-----END PRIVATE KEY-----\n"
+GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL=service-account-email-from-google-cloud
+GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY=service-account-private-key-with-escaped-newlines
 CV_LEADS_SPREADSHEET_ID=1EPxPFHsoC5ErEFbYrv6zjYuFFa5GxnYW5FQINdNA_3A
 CV_LEADS_SHEET_NAME="CV Leads"
 ```
 
-The target spreadsheet must be shared with the service account e-mail as Editor. If these variables are not configured, the CV flow still works through e-mail, but lead/event rows are not appended to Google Sheets.
+The target spreadsheet must be shared with the service account e-mail as Editor. Private CV files stored in Google Drive must be shared with the same service account as Viewer. If Google Sheets variables are not configured, the CV flow still works through e-mail, but lead/event rows are not appended to Google Sheets.
 
 ### Production diagnostics
 
@@ -98,7 +115,7 @@ Expected result when production is ready:
 }
 ```
 
-If the endpoint returns `status: "incomplete"`, configure the missing environment variables listed in `missingRequired`. The response also includes `persistence.googleSheets.configured`, which indicates whether Google Sheets persistence is enabled.
+If the endpoint returns `status: "incomplete"`, configure the missing environment variables listed in `missingRequired`. The response also includes `privateCvDelivery` and `persistence.googleSheets.configured`.
 
 ### Google Sheets smoke test
 
@@ -125,8 +142,8 @@ This creates a test row with `status=request_submitted` and `full_name=CV Access
 1. Deploy the latest `main` branch.
 2. Configure all required CV environment variables.
 3. Configure Resend domain/sender and confirm `CV_EMAIL_FROM` is verified.
-4. Upload the PT and EN CV PDFs to controlled/private storage.
-5. Configure `CV_PT_DOWNLOAD_URL` and `CV_EN_DOWNLOAD_URL`.
+4. Upload the PT and EN CV PDFs to private Google Drive files or another controlled private source.
+5. Share the private Google Drive files with the service account as Viewer, or configure private source URLs with `CV_FILE_SOURCE_AUTH_HEADER` if needed.
 6. Configure Google Sheets service account variables.
 7. Share the `CV Leads - Ricardo Zulkiewicz` spreadsheet with the service account as Editor.
 8. Run `/api/cv/diagnostics`.
@@ -135,8 +152,9 @@ This creates a test row with `status=request_submitted` and `full_name=CV Access
 11. Confirm the e-mail.
 12. Open the temporary `/cv/access` link.
 13. Download the permitted CV file.
-14. Confirm that the sheet has `request_submitted`, `email_confirmed`, and `download_accessed` rows for the same `lead_id`.
-15. Delete any smoke-test rows if desired.
+14. Confirm that the browser downloads a PDF from `/api/cv/download`, not from a public source URL.
+15. Confirm that the sheet has `request_submitted`, `email_confirmed`, and `download_accessed` rows for the same `lead_id`.
+16. Delete any smoke-test rows if desired.
 
 ### Security notes
 
@@ -144,8 +162,8 @@ This creates a test row with `status=request_submitted` and `full_name=CV Access
 - `CV_ADMIN_TOKEN` protects the diagnostics endpoint and must be different from `CV_ACCESS_SECRET`.
 - `/cv/access` is configured as `noindex, nofollow`.
 - Legacy direct CV URLs redirect back to `/cv`.
-- `CV_PT_DOWNLOAD_URL` and `CV_EN_DOWNLOAD_URL` should point to private or controlled storage URLs, not obvious public file paths.
-- Google Sheets persistence is optional and should use a dedicated service account with access only to the CV leads spreadsheet.
+- The visitor never receives the configured source URL for the PDF; the file is fetched server-side and returned as an attachment.
+- Google Sheets persistence is optional and should use a dedicated service account with access only to the CV leads spreadsheet and private CV files.
 
 ## Notes
 
