@@ -10,6 +10,7 @@ import {
   sendCvEmail,
   validateCvLead,
 } from "../../../lib/cv-access";
+import { appendCvLeadEvent } from "../../../lib/google-sheets";
 
 export const runtime = "nodejs";
 
@@ -35,6 +36,11 @@ export async function POST(request: Request) {
   }
 
   const lead = validation.data;
+  const persistence = await appendCvLeadEvent({
+    status: "request_submitted",
+    lead,
+    request,
+  });
   const confirmationToken = createCvAccessToken({
     type: "email_confirmation",
     lead,
@@ -98,6 +104,7 @@ export async function POST(request: Request) {
       ownerNotificationSent: ownerNotification.sent,
       providerConfigured: confirmationEmail.sent && ownerNotification.sent,
     },
+    persistence,
   };
 
   return NextResponse.json(response);
