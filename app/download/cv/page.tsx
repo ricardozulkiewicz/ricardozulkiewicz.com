@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Download, FileText, TimerReset } from "lucide-react";
-import { readCvToken, versionLabel } from "@/app/lib/cv-access";
+import { readCvToken, type CvVersion, versionLabel } from "@/app/lib/cv-access";
 
 export const metadata: Metadata = {
   title: "Download do CV | Ricardo Zulkiewicz",
@@ -17,11 +17,36 @@ type PageProps = {
   };
 };
 
+function getDownloadLinks(token: string, cvVersion: CvVersion) {
+  const encodedToken = encodeURIComponent(token);
+
+  if (cvVersion === "both") {
+    return [
+      {
+        label: "Baixar CV em português",
+        href: `/api/cv/download?token=${encodedToken}&version=pt`,
+      },
+      {
+        label: "Baixar CV em inglês",
+        href: `/api/cv/download?token=${encodedToken}&version=en`,
+      },
+    ];
+  }
+
+  return [
+    {
+      label: cvVersion === "en" ? "Baixar CV em inglês" : "Baixar CV em português",
+      href: `/api/cv/download?token=${encodedToken}&version=${cvVersion}`,
+    },
+  ];
+}
+
 export default function CvDownloadPage({ searchParams }: PageProps) {
   const token = searchParams?.token || "";
 
   try {
     const payload = readCvToken(token, "download");
+    const links = getDownloadLinks(token, payload.cvVersion);
 
     return (
       <main className="flex min-h-screen items-center justify-center overflow-hidden bg-[#1F1F1F] px-5 py-12 text-[#F7F5F0] antialiased">
@@ -59,13 +84,18 @@ export default function CvDownloadPage({ searchParams }: PageProps) {
             </div>
           </div>
 
-          <Link
-            href={`/api/cv/download?token=${encodeURIComponent(token)}`}
-            className="group mt-8 inline-flex items-center justify-center gap-3 rounded-2xl bg-[#F7F5F0] px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#1F1F1F] transition hover:translate-y-[-1px]"
-          >
-            Baixar CV em PDF
-            <Download className="h-4 w-4 transition group-hover:translate-y-0.5" />
-          </Link>
+          <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="group inline-flex items-center justify-center gap-3 rounded-2xl bg-[#F7F5F0] px-6 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-[#1F1F1F] transition hover:translate-y-[-1px]"
+              >
+                {link.label}
+                <Download className="h-4 w-4 transition group-hover:translate-y-0.5" />
+              </Link>
+            ))}
+          </div>
         </section>
       </main>
     );
