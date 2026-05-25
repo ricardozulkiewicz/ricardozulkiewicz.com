@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
-import { getCvFileUrl, logLeadEvent, readCvToken } from "@/app/lib/cv-access";
+import { getCvFileUrl, logLeadEvent, readCvToken, type CvVersion } from "@/app/lib/cv-access";
 
 export const runtime = "nodejs";
 
-function resolveCvUrl(version: "pt" | "en" | "both") {
-  if (version === "en") return getCvFileUrl("en");
-  return getCvFileUrl("pt");
+type DownloadVersion = "pt" | "en";
+
+function isDownloadVersion(value: string | null): value is DownloadVersion {
+  return value === "pt" || value === "en";
+}
+
+function resolveRequestedVersion(cvVersion: CvVersion, requestedVersion: string | null): DownloadVersion {
+  if (cvVersion === "both") {
+    return isDownloadVersion(requestedVersion) ? requestedVersion : "pt";
+  }
+
+  return cvVersion;
+}
+
+function resolveCvUrl(version: DownloadVersion) {
+  return getCvFileUrl(version);
 }
 
 export async function GET(request: Request) {
@@ -18,9 +31,11 @@ export async function GET(request: Request) {
 
   try {
     const payload = readCvToken(token, "download");
-    await logLeadEvent("cv_download_accessed", payload);
+    const requestedVersion = resolveRequestedVersion(payload.cvVersion, url.searchParams.get("version"));
 
-    const cvUrl = resolveCvUrl(payload.cvVersion);
+    await logLeadEvent(`cv_download_accessed_${requestedVersion}`, payload);
+
+    const cvUrl = resolveCvUrl(requestedVersion);
     return NextResponse.redirect(cvUrl);
   } catch (error) {
     console.error("CV download failed", error);
