@@ -1,95 +1,133 @@
-import { ArrowLeft, Download, FileText, Globe2 } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { FileText, LockKeyhole, MailCheck, ShieldCheck, UserRound } from "lucide-react";
+import CvRequestForm from "./CvRequestForm";
 
-const cvOptions = [
-  {
-    language: "Português",
-    title: "CV em português",
-    description:
-      "Versão premium do currículo profissional de Ricardo Zulkiewicz em português, com posicionamento executivo, experiência, competências, projetos e idiomas.",
-    href: "/cv/pt-final",
-  },
-  {
-    language: "English",
-    title: "English CV",
-    description:
-      "Premium English version of Ricardo Zulkiewicz's professional CV, covering executive summary, experience, core skills, tools and languages.",
-    href: "/cv/ricardo-zulkiewicz-cv-en",
-  },
-];
-
-export const metadata = {
-  title: "CV | Ricardo Zulkiewicz",
+export const metadata: Metadata = {
+  title: "Solicitar acesso ao CV | Ricardo Zulkiewicz",
   description:
-    "Download Ricardo Zulkiewicz's CV in Portuguese or English. B2B Sales, CRM, IT Outsourcing, Outbound and Sales Enablement.",
+    "Solicite acesso controlado ao CV profissional de Ricardo Zulkiewicz. O download é liberado após confirmação de e-mail.",
+  robots: {
+    index: false,
+    follow: true,
+  },
 };
 
-export default function CVPage() {
+function BrandMark({ className = "" }: { className?: string }) {
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#dbeafe,_transparent_30%),linear-gradient(180deg,_#f8fafc_0%,_#ffffff_55%,_#f1f5f9_100%)] text-slate-950">
-      <div className="mx-auto max-w-5xl px-6 py-10 lg:px-8">
-        <a
-          href="/"
-          className="inline-flex items-center rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:text-slate-950 hover:shadow-md"
-        >
-          <ArrowLeft className="mr-2" size={16} />
-          Voltar / Back
-        </a>
+    <div className={`relative ${className}`} aria-hidden="true">
+      <div className="absolute border border-[#F7F5F0]/80" style={{ inset: "18% 6% 6% 18%" }} />
+      <div className="absolute border border-[#F7F5F0]/80" style={{ inset: "10% 14% 14% 10%" }} />
+      <div className="absolute border border-[#F7F5F0]/80" style={{ inset: "2% 22% 22% 2%" }} />
+      <div
+        className="absolute bg-[#0F4C5C] shadow-[0_0_28px_rgba(15,76,92,0.65)]"
+        style={{ width: "18%", height: "18%", left: "28%", top: "56%" }}
+      />
+    </div>
+  );
+}
 
-        <section className="py-20">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 shadow-sm backdrop-blur">
-            <Globe2 size={16} />
-            CV · Portuguese / English
-          </div>
-
-          <h1 className="max-w-4xl text-5xl font-semibold tracking-[-0.05em] text-slate-950 md:text-7xl">
-            Download CV
-          </h1>
-
-          <p className="mt-7 max-w-3xl text-lg leading-8 text-slate-600">
-            Escolha a versão premium do currículo para download. Choose the premium CV version you want to download.
-          </p>
-        </section>
-
-        <section className="grid gap-5 md:grid-cols-2">
-          {cvOptions.map((option) => (
-            <article
-              key={option.language}
-              className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-xl shadow-slate-950/5"
-            >
-              <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-950 text-white">
-                <FileText size={22} />
-              </div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">
-                {option.language}
-              </p>
-              <h2 className="mt-3 text-2xl font-semibold tracking-tight text-slate-950">
-                {option.title}
-              </h2>
-              <p className="mt-4 text-sm leading-6 text-slate-600">
-                {option.description}
-              </p>
-              <a
-                href={option.href}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-7 inline-flex items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-slate-950/10 transition hover:-translate-y-0.5 hover:bg-slate-800"
-              >
-                Download PDF
-                <Download className="ml-2" size={17} />
-              </a>
-            </article>
-          ))}
-        </section>
-
-        <section className="mt-12 rounded-[2rem] border border-slate-200 bg-white p-8 text-sm leading-7 text-slate-600 shadow-sm">
-          <p>
-            Esta página complementa o site principal e serve como ponto rápido para compartilhar currículo em processos seletivos, networking e conversas profissionais.
-          </p>
-          <p className="mt-3">
-            This page complements the main website and provides a quick place to share CV files for hiring processes, networking and professional conversations.
-          </p>
-        </section>
+function FlowStep({
+  icon: Icon,
+  title,
+  description,
+  active,
+}: {
+  icon: typeof UserRound;
+  title: string;
+  description: string;
+  active?: boolean;
+}) {
+  return (
+    <div
+      className={`rounded-2xl border p-4 transition ${
+        active
+          ? "border-[#0F4C5C]/60 bg-[#0F4C5C]/15 shadow-[0_0_40px_rgba(15,76,92,0.22)]"
+          : "border-white/10 bg-white/[0.035]"
+      }`}
+    >
+      <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-black/20">
+        <Icon className="h-5 w-5 text-[#F7F5F0]" />
       </div>
+      <h3 className="text-sm font-semibold text-[#F7F5F0]">{title}</h3>
+      <p className="mt-1 text-xs leading-relaxed text-[#D8D8D8]/65">{description}</p>
+    </div>
+  );
+}
+
+export default function CvPage() {
+  return (
+    <main className="min-h-screen overflow-hidden bg-[#1F1F1F] text-[#F7F5F0] antialiased selection:bg-[#0F4C5C] selection:text-[#F7F5F0]">
+      <section className="relative isolate px-5 py-8 sm:px-8 lg:px-12">
+        <div className="pointer-events-none absolute -left-28 top-10 h-80 w-80 rounded-full bg-[#0F4C5C]/25 blur-3xl" />
+        <div className="pointer-events-none absolute -right-40 top-56 h-[28rem] w-[28rem] rounded-full bg-white/[0.035] blur-3xl" />
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D8D8D8]/25 to-transparent" />
+
+        <nav className="relative mx-auto flex max-w-7xl items-center justify-between py-4">
+          <Link href="/" className="flex items-center gap-3" aria-label="Voltar para a home">
+            <BrandMark className="h-9 w-9" />
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.28em]">Ricardo Zulk</p>
+              <p className="text-[10px] uppercase tracking-[0.22em] text-[#D8D8D8]/55">
+                B2B Technology Sales
+              </p>
+            </div>
+          </Link>
+
+          <Link
+            href="/"
+            className="rounded-full border border-white/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.18em] text-[#D8D8D8]/75 transition hover:border-[#0F4C5C]/70 hover:text-[#F7F5F0]"
+          >
+            Voltar ao site
+          </Link>
+        </nav>
+
+        <div className="relative mx-auto grid max-w-7xl gap-8 pb-16 pt-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-12 lg:pt-20">
+          <aside className="lg:sticky lg:top-8 lg:self-start">
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#0F4C5C]/40 bg-[#0F4C5C]/10 px-4 py-2 text-xs font-medium uppercase tracking-[0.2em] text-[#D8D8D8]">
+              <LockKeyhole className="h-4 w-4" />
+              Acesso controlado
+            </div>
+
+            <h1 className="max-w-2xl text-4xl font-semibold tracking-[-0.04em] text-[#F7F5F0] sm:text-5xl lg:text-6xl">
+              Solicite acesso ao meu CV profissional.
+            </h1>
+
+            <p className="mt-6 max-w-xl text-base leading-8 text-[#D8D8D8]/72">
+              Para receber a versão mais recente do meu CV em PDF, preencha seus dados profissionais. Após
+              confirmar seu e-mail, o link individual de acesso será enviado automaticamente.
+            </p>
+
+            <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+              <FlowStep
+                icon={UserRound}
+                title="1. Dados profissionais"
+                description="Nome, e-mail, WhatsApp, versão do CV e motivo do interesse."
+                active
+              />
+              <FlowStep
+                icon={MailCheck}
+                title="2. Confirmação"
+                description="Validação obrigatória do e-mail antes de liberar o documento."
+              />
+              <FlowStep
+                icon={FileText}
+                title="3. Envio do CV"
+                description="Segundo e-mail com link individual para download."
+              />
+              <FlowStep
+                icon={ShieldCheck}
+                title="4. Link temporário"
+                description="Token único com validade limitada e registro de acesso."
+              />
+            </div>
+          </aside>
+
+          <section className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-4 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-6 lg:p-8">
+            <CvRequestForm />
+          </section>
+        </div>
+      </section>
     </main>
   );
 }
