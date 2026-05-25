@@ -29,7 +29,7 @@ export async function GET(request: Request) {
     const downloadToken = createCvAccessToken({
       type: "download_access",
       lead,
-      expiresInSeconds: 60 * 60 * 24 * 7,
+      expiresInSeconds: 60 * 60 * 24,
     });
     const accessUrl = buildAbsoluteUrl(`/cv/access?token=${downloadToken}`);
     const files = getAllowedCvFiles(lead.cvVersion);
@@ -54,7 +54,7 @@ export async function GET(request: Request) {
         "Acesse seu link temporário abaixo:",
         accessUrl,
         "",
-        "Este link expira em 7 dias.",
+        "Este link expira em 24 horas.",
         "",
         "Ricardo Zulk",
       ].join("\n"),
@@ -65,7 +65,7 @@ export async function GET(request: Request) {
           <p style="margin:0 0 20px 0;line-height:1.7;">Seu e-mail foi confirmado. Use o link abaixo para acessar a versão solicitada do CV.</p>
           <p style="margin:0 0 16px 0;line-height:1.7;"><strong>Versão solicitada:</strong> ${getCvVersionLabel(lead.cvVersion)}</p>
           <p style="margin:24px 0;"><a href="${accessUrl}" style="display:inline-block;background:#0f4c5c;color:#f7f5f0;text-decoration:none;padding:14px 20px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">Acessar CV</a></p>
-          <p style="margin:0;color:#6b7280;font-size:13px;line-height:1.6;">Este link expira em 7 dias e foi gerado apenas para este acesso.</p>
+          <p style="margin:0;color:#6b7280;font-size:13px;line-height:1.6;">Este link expira em 24 horas e foi gerado apenas para este acesso.</p>
         `
       ),
     });
