@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import CvAccessPage from "../components/CvAccessPage";
+import { Suspense } from "react";
+import CvAccessRequestPage from "../components/CvAccessRequestPage";
 
 const siteUrl = "https://ricardozulkiewicz.com";
 
@@ -26,5 +27,9 @@ export const metadata: Metadata = {
 };
 
 export default function CvPage() {
-  return <CvAccessPage />;
+  return (
+    <Suspense fallback={null}>
+      <CvAccessRequestPage />
+    </Suspense>
+  );
 }
