@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { type FormEvent, type ReactNode, useMemo, useState } from "react";
 import { ArrowRight, CheckCircle2, Clock3, MailCheck } from "lucide-react";
 
 const inputBase =
@@ -41,7 +41,7 @@ function Field({
 }: {
   label: string;
   required?: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <label className="block">
@@ -73,7 +73,7 @@ export default function CvRequestForm() {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!requiredComplete || status === "submitting") return;
 
