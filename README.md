@@ -100,6 +100,44 @@ Expected result when production is ready:
 
 If the endpoint returns `status: "incomplete"`, configure the missing environment variables listed in `missingRequired`. The response also includes `persistence.googleSheets.configured`, which indicates whether Google Sheets persistence is enabled.
 
+### Google Sheets smoke test
+
+After Google Sheets variables are configured and the spreadsheet has been shared with the service account as Editor, run:
+
+```bash
+curl -X POST -H "Authorization: Bearer $CV_ADMIN_TOKEN" \
+  https://ricardozulkiewicz.com/api/cv/diagnostics/google-sheets-test
+```
+
+Expected success response:
+
+```json
+{
+  "ok": true,
+  "status": "google_sheets_append_ok"
+}
+```
+
+This creates a test row with `status=request_submitted` and `full_name=CV Access Smoke Test`. The row can be deleted after validation.
+
+### Production validation checklist
+
+1. Deploy the latest `main` branch.
+2. Configure all required CV environment variables.
+3. Configure Resend domain/sender and confirm `CV_EMAIL_FROM` is verified.
+4. Upload the PT and EN CV PDFs to controlled/private storage.
+5. Configure `CV_PT_DOWNLOAD_URL` and `CV_EN_DOWNLOAD_URL`.
+6. Configure Google Sheets service account variables.
+7. Share the `CV Leads - Ricardo Zulkiewicz` spreadsheet with the service account as Editor.
+8. Run `/api/cv/diagnostics`.
+9. Run `/api/cv/diagnostics/google-sheets-test`.
+10. Submit a real `/cv` request using a controlled test e-mail.
+11. Confirm the e-mail.
+12. Open the temporary `/cv/access` link.
+13. Download the permitted CV file.
+14. Confirm that the sheet has `request_submitted`, `email_confirmed`, and `download_accessed` rows for the same `lead_id`.
+15. Delete any smoke-test rows if desired.
+
 ### Security notes
 
 - `CV_ACCESS_SECRET` is required in production and is used to encrypt temporary tokens.
