@@ -17,8 +17,13 @@ export async function GET(request: Request) {
     const lead = readCvToken(token, "confirm");
 
     await sendEmail(buildCvLinkEmail(lead, request));
-    await sendEmail(buildInternalNotificationEmail(lead));
     await logLeadEvent("cv_email_confirmed", lead);
+
+    try {
+      await sendEmail(buildInternalNotificationEmail(lead));
+    } catch (notificationError) {
+      console.error("CV internal notification failed", notificationError);
+    }
 
     return NextResponse.redirect(`${baseUrl}/cv/confirmado`);
   } catch (error) {
