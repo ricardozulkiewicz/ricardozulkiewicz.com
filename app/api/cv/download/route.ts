@@ -7,6 +7,7 @@ import {
   sendCvEmail,
   verifyCvAccessToken,
 } from "../../../lib/cv-access";
+import { appendCvLeadEvent } from "../../../lib/google-sheets";
 
 export const runtime = "nodejs";
 
@@ -36,6 +37,14 @@ export async function GET(request: Request) {
     if (!cvUrl) {
       return NextResponse.redirect(buildAbsoluteUrl("/cv/access?token=" + encodeURIComponent(token) + "&status=file-not-configured"));
     }
+
+    await appendCvLeadEvent({
+      status: "download_accessed",
+      lead: payload.lead,
+      request,
+      file,
+      notes: `Download redirect issued for ${file.toUpperCase()} CV.`,
+    });
 
     await sendCvEmail({
       to: getOwnerEmail(),
