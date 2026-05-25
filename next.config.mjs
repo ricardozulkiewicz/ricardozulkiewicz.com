@@ -4,17 +4,32 @@ const nextConfig = {
     return [
       {
         source: "/Ricardo_Zulkiewicz_CV_EN.pdf",
-        destination: "/cv/ricardo-zulkiewicz-cv-en",
+        destination: "/cv",
         permanent: false,
       },
       {
         source: "/CV_Ricardo_Zulkiewicz_PT.pdf",
-        destination: "/cv/ricardo-zulkiewicz-cv-pt",
+        destination: "/cv",
         permanent: false,
       },
       {
         source: "/Ricardo_Zulkiewicz_CV_PT.pdf",
-        destination: "/cv/ricardo-zulkiewicz-cv-pt",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/cv/pt-final",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/cv/ricardo-zulkiewicz-cv-en",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/cv/ricardo-zulkiewicz-cv-pt",
+        destination: "/cv",
         permanent: false,
       },
     ];
