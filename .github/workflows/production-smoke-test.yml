@@ -1,0 +1,28 @@
+name: Production smoke test
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Production or preview URL to validate"
+        required: true
+        default: "https://ricardozulkiewicz.com"
+
+jobs:
+  smoke-test:
+    name: Run production smoke test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run smoke test
+        run: node scripts/production-smoke-test.mjs "${{ github.event.inputs.base_url }}"
+        env:
+          CV_ADMIN_TOKEN: ${{ secrets.CV_ADMIN_TOKEN }}
