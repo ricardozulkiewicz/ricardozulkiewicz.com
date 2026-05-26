@@ -3,6 +3,7 @@ import {
   buildAbsoluteUrl,
   createCvAccessToken,
   emailShell,
+  escapeHtml,
   formatLeadHtml,
   formatLeadText,
   getAllowedCvFiles,
@@ -33,12 +34,18 @@ export async function GET(request: Request) {
     });
     const accessUrl = buildAbsoluteUrl(`/cv/access?token=${downloadToken}`);
     const files = getAllowedCvFiles(lead.cvVersion);
+    const cvVersionLabel = getCvVersionLabel(lead.cvVersion);
+    const releasedFiles = files.join(", ");
+    const escapedLeadName = escapeHtml(lead.fullName);
+    const escapedAccessUrl = escapeHtml(accessUrl);
+    const escapedCvVersionLabel = escapeHtml(cvVersionLabel);
+    const escapedReleasedFiles = escapeHtml(releasedFiles);
 
     await appendCvLeadEvent({
       status: "email_confirmed",
       lead,
       request,
-      notes: `Arquivos liberados: ${files.join(", ")}`,
+      notes: `Arquivos liberados: ${releasedFiles}`,
     });
 
     await sendCvEmail({
@@ -49,7 +56,7 @@ export async function GET(request: Request) {
         `Olá, ${lead.fullName}.`,
         "",
         "Seu e-mail foi confirmado.",
-        `Versão solicitada: ${getCvVersionLabel(lead.cvVersion)}.`,
+        `Versão solicitada: ${cvVersionLabel}.`,
         "",
         "Acesse seu link temporário abaixo:",
         accessUrl,
@@ -61,10 +68,10 @@ export async function GET(request: Request) {
       html: emailShell(
         "Seu link temporário de acesso ao CV",
         `
-          <p style="margin:0 0 16px 0;line-height:1.7;">Olá, <strong>${lead.fullName}</strong>.</p>
+          <p style="margin:0 0 16px 0;line-height:1.7;">Olá, <strong>${escapedLeadName}</strong>.</p>
           <p style="margin:0 0 20px 0;line-height:1.7;">Seu e-mail foi confirmado. Use o link abaixo para acessar a versão solicitada do CV.</p>
-          <p style="margin:0 0 16px 0;line-height:1.7;"><strong>Versão solicitada:</strong> ${getCvVersionLabel(lead.cvVersion)}</p>
-          <p style="margin:24px 0;"><a href="${accessUrl}" style="display:inline-block;background:#0f4c5c;color:#f7f5f0;text-decoration:none;padding:14px 20px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">Acessar CV</a></p>
+          <p style="margin:0 0 16px 0;line-height:1.7;"><strong>Versão solicitada:</strong> ${escapedCvVersionLabel}</p>
+          <p style="margin:24px 0;"><a href="${escapedAccessUrl}" style="display:inline-block;background:#0f4c5c;color:#f7f5f0;text-decoration:none;padding:14px 20px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">Acessar CV</a></p>
           <p style="margin:0;color:#6b7280;font-size:13px;line-height:1.6;">Este link expira em 24 horas e foi gerado apenas para este acesso.</p>
         `
       ),
@@ -79,13 +86,13 @@ export async function GET(request: Request) {
         "",
         formatLeadText(lead),
         "",
-        `Arquivos liberados: ${files.join(", ")}`,
+        `Arquivos liberados: ${releasedFiles}`,
       ].join("\n"),
       html: emailShell(
         "E-mail confirmado para acesso ao CV",
         `
           <p style="margin:0 0 20px 0;line-height:1.7;">O e-mail do lead foi confirmado e o link temporário do CV foi enviado.</p>
-          <p style="margin:0 0 20px 0;line-height:1.7;"><strong>Arquivos liberados:</strong> ${files.join(", ")}</p>
+          <p style="margin:0 0 20px 0;line-height:1.7;"><strong>Arquivos liberados:</strong> ${escapedReleasedFiles}</p>
           <table style="border-collapse:collapse;width:100%;font-size:14px;">${formatLeadHtml(lead)}</table>
         `
       ),

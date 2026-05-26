@@ -32,6 +32,7 @@ type FormData = {
   cvVersion: string;
   reason: string;
   message: string;
+  website: string;
   consent: boolean;
 };
 
@@ -39,6 +40,7 @@ type ApiResponse = {
   ok: boolean;
   status?: string;
   message?: string;
+  error?: string;
   errors?: Record<string, string>;
   email?: {
     confirmationSent: boolean;
@@ -57,6 +59,7 @@ const initialForm: FormData = {
   cvVersion: "pt-br-commercial",
   reason: "",
   message: "",
+  website: "",
   consent: false,
 };
 
@@ -222,7 +225,7 @@ export default function CvAccessRequestPage() {
 
       if (!response.ok || !result.ok) {
         setServerErrors(result.errors || {});
-        setApiMessage(result.message || "Não foi possível registrar a solicitação agora.");
+        setApiMessage(result.message || result.error || "Não foi possível registrar a solicitação agora.");
         setFlowStep("error");
         return;
       }
@@ -338,6 +341,18 @@ export default function CvAccessRequestPage() {
 
           {flowStep === "form" || flowStep === "error" ? (
             <form onSubmit={handleSubmit} className="border border-[#F7F5F0]/14 bg-[#F7F5F0]/[0.035] p-6 md:p-8">
+              <div className="hidden" aria-hidden="true">
+                <label htmlFor="website">Website</label>
+                <input
+                  id="website"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={formData.website}
+                  onChange={(event) => updateField("website", event.target.value)}
+                />
+              </div>
+
               <div className="mb-6 space-y-4">
                 {urlStatus && <Notice type={urlStatus.type}>{urlStatus.text}</Notice>}
                 {apiMessage && flowStep === "error" && <Notice type="error">{apiMessage}</Notice>}
@@ -346,15 +361,15 @@ export default function CvAccessRequestPage() {
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <Label htmlFor="fullName" required>Nome completo</Label>
-                  <input id="fullName" className={inputClass(hasError("fullName"))} value={formData.fullName} onChange={(event) => updateField("fullName", event.target.value)} placeholder="Nome e sobrenome" />
+                  <input id="fullName" autoComplete="name" className={inputClass(hasError("fullName"))} value={formData.fullName} onChange={(event) => updateField("fullName", event.target.value)} placeholder="Nome e sobrenome" />
                 </div>
                 <div>
                   <Label htmlFor="professionalEmail" required>E-mail profissional</Label>
-                  <input id="professionalEmail" type="email" className={inputClass(hasError("professionalEmail"))} value={formData.professionalEmail} onChange={(event) => updateField("professionalEmail", event.target.value)} placeholder="nome@empresa.com" />
+                  <input id="professionalEmail" type="email" autoComplete="email" className={inputClass(hasError("professionalEmail"))} value={formData.professionalEmail} onChange={(event) => updateField("professionalEmail", event.target.value)} placeholder="nome@empresa.com" />
                 </div>
                 <div>
                   <Label htmlFor="whatsapp" required>WhatsApp</Label>
-                  <input id="whatsapp" className={inputClass(hasError("whatsapp"))} value={formData.whatsapp} onChange={(event) => updateField("whatsapp", event.target.value)} placeholder="+55 11 99999-9999" />
+                  <input id="whatsapp" type="tel" inputMode="tel" autoComplete="tel" className={inputClass(hasError("whatsapp"))} value={formData.whatsapp} onChange={(event) => updateField("whatsapp", event.target.value)} placeholder="+55 11 99999-9999" />
                 </div>
                 <div>
                   <Label htmlFor="cvVersion" required>Versão desejada do CV</Label>
@@ -366,15 +381,15 @@ export default function CvAccessRequestPage() {
                 </div>
                 <div>
                   <Label htmlFor="company">Empresa</Label>
-                  <input id="company" className={inputClass()} value={formData.company} onChange={(event) => updateField("company", event.target.value)} placeholder="Empresa / organização" />
+                  <input id="company" autoComplete="organization" className={inputClass()} value={formData.company} onChange={(event) => updateField("company", event.target.value)} placeholder="Empresa / organização" />
                 </div>
                 <div>
                   <Label htmlFor="role">Cargo</Label>
-                  <input id="role" className={inputClass()} value={formData.role} onChange={(event) => updateField("role", event.target.value)} placeholder="Seu cargo atual" />
+                  <input id="role" autoComplete="organization-title" className={inputClass()} value={formData.role} onChange={(event) => updateField("role", event.target.value)} placeholder="Seu cargo atual" />
                 </div>
                 <div className="md:col-span-2">
                   <Label htmlFor="linkedin">LinkedIn</Label>
-                  <input id="linkedin" className={inputClass()} value={formData.linkedin} onChange={(event) => updateField("linkedin", event.target.value)} placeholder="https://www.linkedin.com/in/..." />
+                  <input id="linkedin" autoComplete="url" className={inputClass()} value={formData.linkedin} onChange={(event) => updateField("linkedin", event.target.value)} placeholder="https://www.linkedin.com/in/..." />
                 </div>
                 <div className="md:col-span-2">
                   <Label htmlFor="reason" required>Motivo do interesse</Label>
