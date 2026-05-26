@@ -42,6 +42,51 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/contact",
+        destination: "/#contact",
+        permanent: false,
+      },
+      {
+        source: "/contato",
+        destination: "/pt#contact",
+        permanent: false,
+      },
+      {
+        source: "/about",
+        destination: "/#about",
+        permanent: false,
+      },
+      {
+        source: "/sobre",
+        destination: "/pt#about",
+        permanent: false,
+      },
+      {
+        source: "/portfolio",
+        destination: "/#work",
+        permanent: false,
+      },
+      {
+        source: "/projetos",
+        destination: "/pt#work",
+        permanent: false,
+      },
+      {
+        source: "/curriculo",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/currículo",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/resume",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
         source: "/Ricardo_Zulkiewicz_CV_EN.pdf",
         destination: "/cv",
         permanent: false,
