@@ -107,12 +107,37 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: "/privacy-policy",
+        destination: "/privacidade",
+        permanent: false,
+      },
+      {
+        source: "/politica-de-privacidade",
+        destination: "/privacidade",
+        permanent: false,
+      },
+      {
+        source: "/política-de-privacidade",
+        destination: "/privacidade",
+        permanent: false,
+      },
+      {
         source: "/lgpd",
         destination: "/privacidade",
         permanent: false,
       },
       {
         source: "/terms",
+        destination: "/termos",
+        permanent: false,
+      },
+      {
+        source: "/terms-of-use",
+        destination: "/termos",
+        permanent: false,
+      },
+      {
+        source: "/termos-de-uso",
         destination: "/termos",
         permanent: false,
       },
