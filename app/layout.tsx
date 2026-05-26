@@ -6,6 +6,61 @@ const title = "Ricardo Zulkiewicz | B2B Technology Sales Strategy";
 const description =
   "Personal website of Ricardo Zulkiewicz, focused on B2B technology sales, IT Outsourcing, outbound, CRM governance, Sales Enablement and predictable revenue execution.";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": `${siteUrl}/#person`,
+      name: "Ricardo Zulkiewicz",
+      url: siteUrl,
+      email: "mailto:ricardomachado.zulk@gmail.com",
+      jobTitle: "Account Executive",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "São Paulo",
+        addressCountry: "BR",
+      },
+      knowsAbout: [
+        "B2B Technology Sales",
+        "IT Outsourcing",
+        "Outbound Sales",
+        "CRM Governance",
+        "Sales Enablement",
+        "Pipedrive",
+        "Consultative Selling",
+        "Pipeline Management",
+      ],
+      sameAs: ["https://www.linkedin.com/in/rick-zulk/"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}/#website`,
+      url: siteUrl,
+      name: "Ricardo Zulkiewicz",
+      description,
+      inLanguage: ["en-US", "pt-BR"],
+      publisher: {
+        "@id": `${siteUrl}/#person`,
+      },
+    },
+    {
+      "@type": "WebPage",
+      "@id": `${siteUrl}/#webpage`,
+      url: siteUrl,
+      name: title,
+      description,
+      isPartOf: {
+        "@id": `${siteUrl}/#website`,
+      },
+      about: {
+        "@id": `${siteUrl}/#person`,
+      },
+      inLanguage: "en-US",
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
@@ -81,7 +136,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en-US">
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+        {children}
+      </body>
     </html>
   );
 }
