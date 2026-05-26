@@ -2,74 +2,75 @@
 
 This directory centralizes operational documentation for `ricardozulkiewicz.com`.
 
-## Project status
+## Start here
 
+- [`VALIDATION_STATUS.md`](./VALIDATION_STATUS.md)
 - [`PROJECT_STATUS.md`](./PROJECT_STATUS.md)
-
-Current status of the project, including what is complete in code, what is complete in documentation and what still depends on external infrastructure.
-
-## Architecture
-
-- [`ARCHITECTURE.md`](./ARCHITECTURE.md)
-
-Technical map of public routes, redirects, API endpoints, internal modules, token model, CV file delivery model, e-mail model, persistence, abuse protection, SEO and operational validation.
-
-## Production deployment
-
-- [`DEPLOYMENT.md`](./DEPLOYMENT.md)
-
-End-to-end Vercel deployment guide covering project import, environment variables, domain setup, diagnostics and final validation.
-
-## Launch checklist
-
+- [`ROADMAP.md`](./ROADMAP.md)
+- [`LAUNCH_RUNBOOK.md`](./LAUNCH_RUNBOOK.md)
 - [`LAUNCH_CHECKLIST.md`](./LAUNCH_CHECKLIST.md)
 
-Single go-live checklist covering repository readiness, Vercel, domain, environment variables, CV files, Resend, Google Sheets, public pages, diagnostics, SEO and final end-to-end testing.
+Use these files to understand the current state of the project, what is already implemented, what still needs production validation and the order of execution for launch.
 
-## Smoke tests
+## Architecture and routes
 
-- [`SMOKE_TESTS.md`](./SMOKE_TESTS.md)
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+- [`ROUTES_MATRIX.md`](./ROUTES_MATRIX.md)
 
-Guide for running `scripts/production-smoke-test.mjs` after deploy to validate public routes, redirects, health check and optional diagnostics.
+Use these files to understand the page structure, redirects, API routes, protected routes and expected public/private behavior.
 
-## Environment variables
+## Production setup
 
+- [`VERCEL_SETUP.md`](./VERCEL_SETUP.md)
+- [`DOMAIN_DNS_SETUP.md`](./DOMAIN_DNS_SETUP.md)
+- [`ENVIRONMENT.md`](./ENVIRONMENT.md)
 - [`PRODUCTION_ENVIRONMENT.md`](./PRODUCTION_ENVIRONMENT.md)
+- [`DEPLOYMENT.md`](./DEPLOYMENT.md)
 
-Matrix of required and optional production environment variables, including which values are secrets, what service uses each variable and how to validate configuration.
+Use these files to configure Vercel, domain/DNS, production variables and deployment behavior.
 
-## Google service account
+## Controlled CV access flow
 
+- [`PRIVATE_CV_FILES.md`](./PRIVATE_CV_FILES.md)
 - [`GOOGLE_SERVICE_ACCOUNT.md`](./GOOGLE_SERVICE_ACCOUNT.md)
-
-Guide for configuring Google Drive private CV delivery and optional Google Sheets persistence using a Google service account.
-
-## Resend e-mail setup
-
-- [`RESEND_EMAIL_SETUP.md`](./RESEND_EMAIL_SETUP.md)
-
-Guide for configuring Resend transactional e-mails used by the controlled CV access flow.
-
-## Spam protection
-
+- [`GOOGLE_SHEETS_LEADS.md`](./GOOGLE_SHEETS_LEADS.md)
 - [`SPAM_PROTECTION.md`](./SPAM_PROTECTION.md)
 
-Guide for the CV form abuse-protection layer, including rate limiting, honeypot behavior, limitations and future hardening options.
+Use these files to configure private CV files, Google service account access, optional lead persistence and abuse protection.
+
+## E-mail setup
+
+- [`RESEND_SETUP.md`](./RESEND_SETUP.md)
+- [`RESEND_EMAIL_SETUP.md`](./RESEND_EMAIL_SETUP.md)
+
+Use these files to configure transactional email delivery for the CV request, confirmation and temporary access flow.
+
+## QA and validation
+
+- [`SMOKE_TESTS.md`](./SMOKE_TESTS.md)
+- [`VISUAL_QA_CHECKLIST.md`](./VISUAL_QA_CHECKLIST.md)
+
+Use these files after deployment to validate routes, redirects, diagnostics, visual quality, responsive behavior and final launch readiness.
 
 ## Recommended production order
 
-1. Read `PROJECT_STATUS.md` to confirm what is already complete.
-2. Read `ARCHITECTURE.md` to understand the route/API/module structure.
-3. Read `DEPLOYMENT.md`.
-4. Configure Vercel project and domain.
-5. Generate token secrets with `node scripts/generate-cv-secrets.mjs`.
-6. Configure variables from `PRODUCTION_ENVIRONMENT.md`.
-7. Configure Resend using `RESEND_EMAIL_SETUP.md`.
-8. Configure Google service account using `GOOGLE_SERVICE_ACCOUNT.md`.
-9. Review CV form abuse protection in `SPAM_PROTECTION.md`.
+1. Read `VALIDATION_STATUS.md`.
+2. Review `PROJECT_STATUS.md` and `ROADMAP.md`.
+3. Review `ARCHITECTURE.md` and `ROUTES_MATRIX.md`.
+4. Configure Vercel using `VERCEL_SETUP.md`.
+5. Configure domain/DNS using `DOMAIN_DNS_SETUP.md`.
+6. Configure variables using `ENVIRONMENT.md` and `PRODUCTION_ENVIRONMENT.md`.
+7. Configure Resend using `RESEND_SETUP.md`.
+8. Configure private CV file delivery using `PRIVATE_CV_FILES.md`.
+9. Configure Google Sheets lead persistence if desired using `GOOGLE_SHEETS_LEADS.md`.
 10. Deploy production.
-11. Test `/api/health`.
-12. Run the smoke tests from `SMOKE_TESTS.md`.
-13. Run `/api/cv/diagnostics`.
-14. Complete `LAUNCH_CHECKLIST.md`.
-15. Test the complete `/cv` request, confirmation and download flow.
+11. Validate `/api/health`.
+12. Run the GitHub Actions production smoke test or run the local script documented in `SMOKE_TESTS.md`.
+13. Run `/api/cv/diagnostics` with the admin token.
+14. Complete `VISUAL_QA_CHECKLIST.md`.
+15. Complete `LAUNCH_CHECKLIST.md`.
+16. Test the complete `/cv` request, confirmation and protected download flow.
+
+## Launch principle
+
+The site should be considered production-ready only when the public site, controlled CV access flow, email delivery, private CV delivery, diagnostics, redirects, SEO/privacy controls and visual QA all pass.
