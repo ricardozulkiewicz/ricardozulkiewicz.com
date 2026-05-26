@@ -44,6 +44,12 @@ Guide for configuring Google Drive private CV delivery and optional Google Sheet
 
 Guide for configuring Resend transactional e-mails used by the controlled CV access flow.
 
+## Spam protection
+
+- [`SPAM_PROTECTION.md`](./SPAM_PROTECTION.md)
+
+Guide for the CV form abuse-protection layer, including rate limiting, honeypot behavior, limitations and future hardening options.
+
 ## Recommended production order
 
 1. Read `PROJECT_STATUS.md` to confirm what is already complete.
@@ -53,9 +59,10 @@ Guide for configuring Resend transactional e-mails used by the controlled CV acc
 5. Configure variables from `PRODUCTION_ENVIRONMENT.md`.
 6. Configure Resend using `RESEND_EMAIL_SETUP.md`.
 7. Configure Google service account using `GOOGLE_SERVICE_ACCOUNT.md`.
-8. Deploy production.
-9. Test `/api/health`.
-10. Run the smoke tests from `SMOKE_TESTS.md`.
-11. Run `/api/cv/diagnostics`.
-12. Complete `LAUNCH_CHECKLIST.md`.
-13. Test the complete `/cv` request, confirmation and download flow.
+8. Review CV form abuse protection in `SPAM_PROTECTION.md`.
+9. Deploy production.
+10. Test `/api/health`.
+11. Run the smoke tests from `SMOKE_TESTS.md`.
+12. Run `/api/cv/diagnostics`.
+13. Complete `LAUNCH_CHECKLIST.md`.
+14. Test the complete `/cv` request, confirmation and download flow.
