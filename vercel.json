@@ -1,0 +1,43 @@
+{
+  "headers": [
+    {
+      "source": "/cv/access",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, private, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/api/cv/download",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, private, max-age=0"
+        }
+      ]
+    },
+    {
+      "source": "/api/cv/diagnostics",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow, noarchive"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "no-store, private, max-age=0"
+        }
+      ]
+    }
+  ]
+}
