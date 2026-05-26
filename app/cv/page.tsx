@@ -5,18 +5,18 @@ import CvAccessRequestPage from "../components/CvAccessRequestPage";
 const siteUrl = "https://ricardozulkiewicz.com";
 
 export const metadata: Metadata = {
-  title: "Solicitar acesso ao CV | Ricardo Zulk",
+  title: "Solicitar acesso ao CV | Ricardo Zulkiewicz",
   description:
     "Página de solicitação controlada de acesso ao CV de Ricardo Zulkiewicz, com formulário, confirmação de e-mail e link temporário.",
   alternates: {
     canonical: `${siteUrl}/cv`,
   },
   openGraph: {
-    title: "Solicitar acesso ao CV | Ricardo Zulk",
+    title: "Solicitar acesso ao CV | Ricardo Zulkiewicz",
     description:
       "Solicite acesso ao CV de Ricardo Zulkiewicz por meio de um fluxo controlado, profissional e rastreável.",
     url: `${siteUrl}/cv`,
-    siteName: "Ricardo Zulk",
+    siteName: "Ricardo Zulkiewicz",
     locale: "pt_BR",
     type: "website",
   },
