@@ -30,7 +30,7 @@ export default function NotFound() {
             <div className="mb-10 flex items-center gap-4">
               <BrandMark className="h-12 w-12" />
               <div className="leading-none">
-                <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
+                <div className="text-sm font-semibold tracking-[0.18em] text-[#F7F5F0] md:text-base md:tracking-[0.24em]">RICARDO ZULKIEWICZ</div>
                 <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">B2B TECHNOLOGY SALES</div>
               </div>
             </div>
