@@ -9,6 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: "https://ricardozulkiewicz.com/pt",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
       url: "https://ricardozulkiewicz.com/cv",
       lastModified: new Date(),
       changeFrequency: "monthly",
