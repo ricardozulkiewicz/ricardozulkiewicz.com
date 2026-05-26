@@ -1,0 +1,5 @@
+Contact: mailto:ricardomachado.zulk@gmail.com
+Preferred-Languages: pt-BR, en
+Canonical: https://ricardozulkiewicz.com/.well-known/security.txt
+Policy: https://ricardozulkiewicz.com/privacidade
+Expires: 2027-05-25T23:59:59-03:00
