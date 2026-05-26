@@ -7,14 +7,28 @@ const checks = [
   { name: "CV request page", path: "/cv", expectedStatus: 200 },
   { name: "Privacy page", path: "/privacidade", expectedStatus: 200 },
   { name: "Terms page", path: "/termos", expectedStatus: 200 },
+  { name: "Humans file", path: "/humans.txt", expectedStatus: 200 },
+  { name: "Security contact", path: "/.well-known/security.txt", expectedStatus: 200 },
+  { name: "Robots", path: "/robots.txt", expectedStatus: 200 },
+  { name: "Sitemap", path: "/sitemap.xml", expectedStatus: 200 },
   { name: "Health check", path: "/api/health", expectedStatus: 200 },
+  { name: "Contact redirect", path: "/contact", expectedStatus: 200, finalPath: "/" },
+  { name: "Contato redirect", path: "/contato", expectedStatus: 200, finalPath: "/pt" },
+  { name: "About redirect", path: "/about", expectedStatus: 200, finalPath: "/" },
+  { name: "Sobre redirect", path: "/sobre", expectedStatus: 200, finalPath: "/pt" },
+  { name: "Portfolio redirect", path: "/portfolio", expectedStatus: 200, finalPath: "/" },
+  { name: "Projetos redirect", path: "/projetos", expectedStatus: 200, finalPath: "/pt" },
   { name: "Resume redirect", path: "/resume", expectedStatus: 200, finalPath: "/cv" },
   { name: "Curriculo redirect", path: "/curriculo", expectedStatus: 200, finalPath: "/cv" },
   { name: "Download CV redirect", path: "/download-cv", expectedStatus: 200, finalPath: "/cv" },
   { name: "Baixar curriculo redirect", path: "/baixar-curriculo", expectedStatus: 200, finalPath: "/cv" },
   { name: "Privacy redirect", path: "/privacy", expectedStatus: 200, finalPath: "/privacidade" },
+  { name: "Privacy policy redirect", path: "/privacy-policy", expectedStatus: 200, finalPath: "/privacidade" },
+  { name: "Politica redirect", path: "/politica-de-privacidade", expectedStatus: 200, finalPath: "/privacidade" },
   { name: "LGPD redirect", path: "/lgpd", expectedStatus: 200, finalPath: "/privacidade" },
   { name: "Terms redirect", path: "/terms", expectedStatus: 200, finalPath: "/termos" },
+  { name: "Terms of use redirect", path: "/terms-of-use", expectedStatus: 200, finalPath: "/termos" },
+  { name: "Termos de uso redirect", path: "/termos-de-uso", expectedStatus: 200, finalPath: "/termos" },
 ];
 
 function absoluteUrl(path) {
@@ -25,6 +39,10 @@ function finalPathname(response) {
   return new URL(response.url).pathname;
 }
 
+function finalHash(response) {
+  return new URL(response.url).hash;
+}
+
 async function runCheck(check) {
   const response = await fetch(absoluteUrl(check.path), {
     redirect: "follow",
@@ -33,7 +51,8 @@ async function runCheck(check) {
 
   const statusOk = response.status === check.expectedStatus;
   const finalPathOk = check.finalPath ? finalPathname(response) === check.finalPath : true;
-  const ok = statusOk && finalPathOk;
+  const finalHashOk = check.finalHash ? finalHash(response) === check.finalHash : true;
+  const ok = statusOk && finalPathOk && finalHashOk;
 
   return {
     name: check.name,
@@ -42,6 +61,8 @@ async function runCheck(check) {
     expectedStatus: check.expectedStatus,
     finalPath: finalPathname(response),
     expectedFinalPath: check.finalPath || null,
+    finalHash: finalHash(response),
+    expectedFinalHash: check.finalHash || null,
   };
 }
 
