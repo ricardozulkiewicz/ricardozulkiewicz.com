@@ -4,9 +4,9 @@ import { ArrowLeft, FileText, Mail, Scale, ShieldCheck } from "lucide-react";
 const siteUrl = "https://ricardozulkiewicz.com";
 
 export const metadata: Metadata = {
-  title: "Termos de Uso | Ricardo Zulk",
+  title: "Termos de Uso | Ricardo Zulkiewicz",
   description:
-    "Termos de uso do site Ricardo Zulk, incluindo regras de navegação, contato profissional e solicitação controlada de acesso ao CV.",
+    "Termos de uso do site Ricardo Zulkiewicz, incluindo regras de navegação, contato profissional e solicitação controlada de acesso ao CV.",
   alternates: {
     canonical: `${siteUrl}/termos`,
   },
@@ -54,7 +54,7 @@ export default function TermsPage() {
           <a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
             <BrandMark className="h-10 w-10" />
             <div className="leading-none">
-              <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
+              <div className="text-sm font-semibold tracking-[0.18em] text-[#F7F5F0] md:text-base md:tracking-[0.24em]">RICARDO ZULKIEWICZ</div>
               <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">TERMOS DE USO</div>
             </div>
           </a>
@@ -71,7 +71,7 @@ export default function TermsPage() {
             Uso do site e acesso ao CV
           </p>
           <h1 className="max-w-5xl text-5xl font-light leading-[1.04] tracking-[-0.06em] md:text-7xl">
-            Termos de uso do site Ricardo Zulk.
+            Termos de uso do site Ricardo Zulkiewicz.
           </h1>
           <p className="mt-8 max-w-3xl text-base leading-8 text-[#D8D8D8]/72 md:text-lg">
             Estes termos explicam as condições gerais de navegação, contato profissional e uso do fluxo controlado de solicitação de acesso ao CV.
