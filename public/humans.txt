@@ -1,0 +1,19 @@
+/* TEAM */
+
+Name: Ricardo Zulkiewicz
+Site: https://ricardozulkiewicz.com
+Contact: ricardomachado.zulk@gmail.com
+Location: Sao Paulo, Brazil
+Focus: B2B technology sales, IT Outsourcing, outbound, CRM governance and Sales Enablement
+
+/* SITE */
+
+Domain: ricardozulkiewicz.com
+Stack: Next.js, React, TypeScript, Tailwind CSS, Framer Motion, Lucide React
+Language: Portuguese and English
+Design direction: premium, dark, executive, institutional and technology-oriented
+
+/* CV ACCESS */
+
+The CV flow is intentionally controlled through form submission, email confirmation and temporary access links.
+Direct public CV file links should not be used.
