@@ -87,6 +87,36 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: "/download-cv",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/baixar-curriculo",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/baixar-currículo",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/privacy",
+        destination: "/privacidade",
+        permanent: false,
+      },
+      {
+        source: "/lgpd",
+        destination: "/privacidade",
+        permanent: false,
+      },
+      {
+        source: "/terms",
+        destination: "/termos",
+        permanent: false,
+      },
+      {
         source: "/Ricardo_Zulkiewicz_CV_EN.pdf",
         destination: "/cv",
         permanent: false,
