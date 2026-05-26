@@ -15,6 +15,24 @@ import { checkRateLimit, getClientIp, getRetryAfterSeconds } from "../../../lib/
 
 export const runtime = "nodejs";
 
+function isSpamSubmission(body: unknown) {
+  if (!body || typeof body !== "object") {
+    return false;
+  }
+
+  const data = body as Record<string, unknown>;
+  const honeypotValues = [
+    data.website,
+    data.companyWebsite,
+    data.url,
+    data.homepage,
+  ];
+
+  return honeypotValues.some(
+    (value) => typeof value === "string" && value.trim().length > 0
+  );
+}
+
 export async function POST(request: Request) {
   const clientIp = getClientIp(request);
   const rateLimit = checkRateLimit({
@@ -51,6 +69,20 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { ok: false, error: "Invalid JSON payload." },
       { status: 400 }
+    );
+  }
+
+  if (isSpamSubmission(body)) {
+    return NextResponse.json(
+      { ok: true, status: "received" },
+      {
+        status: 202,
+        headers: {
+          "X-RateLimit-Limit": "5",
+          "X-RateLimit-Remaining": String(rateLimit.remaining),
+          "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+        },
+      }
     );
   }
 
