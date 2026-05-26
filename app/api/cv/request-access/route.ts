@@ -11,10 +11,38 @@ import {
   validateCvLead,
 } from "../../../lib/cv-access";
 import { appendCvLeadEvent } from "../../../lib/google-sheets";
+import { checkRateLimit, getClientIp, getRetryAfterSeconds } from "../../../lib/rate-limit";
 
 export const runtime = "nodejs";
 
 export async function POST(request: Request) {
+  const clientIp = getClientIp(request);
+  const rateLimit = checkRateLimit({
+    key: `cv-request:${clientIp}`,
+    limit: 5,
+    windowMs: 60 * 60 * 1000,
+  });
+
+  if (!rateLimit.allowed) {
+    const retryAfter = getRetryAfterSeconds(rateLimit.resetAt);
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "Too many CV access requests. Please try again later.",
+      },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(retryAfter),
+          "X-RateLimit-Limit": "5",
+          "X-RateLimit-Remaining": "0",
+          "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+        },
+      }
+    );
+  }
+
   let body: unknown;
 
   try {
@@ -107,5 +135,11 @@ export async function POST(request: Request) {
     persistence,
   };
 
-  return NextResponse.json(response);
+  return NextResponse.json(response, {
+    headers: {
+      "X-RateLimit-Limit": "5",
+      "X-RateLimit-Remaining": String(rateLimit.remaining),
+      "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+    },
+  });
 }
