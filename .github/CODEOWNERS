@@ -1,0 +1,20 @@
+# Repository ownership
+# All changes should be reviewed by the repository owner, especially changes touching the controlled CV access flow, secrets, deployment, security, privacy, or legal pages.
+
+* @ricardozulkiewicz
+
+# CV access flow and sensitive backend routes
+/app/cv/ @ricardozulkiewicz
+/app/api/cv/ @ricardozulkiewicz
+/app/lib/cv-access.ts @ricardozulkiewicz
+/app/lib/private-cv-files.ts @ricardozulkiewicz
+/app/lib/google-sheets.ts @ricardozulkiewicz
+/app/lib/rate-limit.ts @ricardozulkiewicz
+
+# Production, security, privacy and deployment files
+/vercel.json @ricardozulkiewicz
+/next.config.mjs @ricardozulkiewicz
+/.env.example @ricardozulkiewicz
+/SECURITY.md @ricardozulkiewicz
+/CONTRIBUTING.md @ricardozulkiewicz
+/docs/ @ricardozulkiewicz
