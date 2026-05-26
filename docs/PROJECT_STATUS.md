@@ -19,12 +19,16 @@ The codebase is ready for production deployment, but the site is not production-
 - Protected diagnostics API at `/api/cv/diagnostics`.
 - Public health check at `/api/health`.
 - Rate limiting for CV access requests.
+- Honeypot spam check for CV access requests.
 - Private Google Drive CV file delivery support.
 - Optional Google Sheets lead/event persistence support.
 - Resend transactional e-mail support.
 - Premium 404 page.
 - Privacy page at `/privacidade`.
+- Terms page at `/termos`.
 - `/privacy` redirect to `/privacidade`.
+- `/lgpd` redirect to `/privacidade`.
+- `/terms` redirect to `/termos`.
 - Legacy/intuitive CV redirects:
   - `/resume`
   - `/curriculo`
@@ -33,14 +37,15 @@ The codebase is ready for production deployment, but the site is not production-
   - `/pt/cv`
 - Known direct CV PDF redirects through Next config.
 - Robots configuration blocking sensitive CV routes.
-- Sitemap including `/`, `/pt`, `/cv` and `/privacidade`.
-- Vercel headers for sensitive CV routes.
+- Sitemap including `/`, `/pt`, `/cv`, `/privacidade` and `/termos`.
+- Global Vercel security headers.
+- Vercel no-cache/noindex headers for sensitive CV routes.
 - GitHub Actions build workflow.
 - Dependabot configuration.
 - Node 20 runtime standardization.
 - `.nvmrc`.
 - Secret generation script.
-- Production smoke test script.
+- Production smoke test script with legal-route and redirect coverage.
 
 ## Completed documentation
 
@@ -53,6 +58,7 @@ The codebase is ready for production deployment, but the site is not production-
 - `docs/RESEND_EMAIL_SETUP.md`
 - `docs/LAUNCH_CHECKLIST.md`
 - `docs/SMOKE_TESTS.md`
+- `docs/PROJECT_STATUS.md`
 
 ## External dependencies still required
 
@@ -91,15 +97,16 @@ These cannot be completed in code alone and must be configured in external servi
 The project is production-ready when all of the following are true:
 
 1. `https://ricardozulkiewicz.com` resolves correctly.
-2. `/`, `/pt`, `/cv` and `/privacidade` are live.
+2. `/`, `/pt`, `/cv`, `/privacidade` and `/termos` are live.
 3. `/api/health` returns `ok: true`.
-4. `/api/cv/diagnostics` returns `status: ready` with the production admin token.
-5. A real `/cv` request sends the confirmation e-mail.
-6. The confirmation link sends the temporary CV access e-mail.
-7. `/cv/access?token=...` opens correctly.
-8. `/api/cv/download` serves the selected PDF as a backend attachment.
-9. No private Google Drive URL or source file URL is exposed to visitors.
-10. Owner notifications are received for request and download events.
+4. Smoke tests pass with `scripts/production-smoke-test.mjs`.
+5. `/api/cv/diagnostics` returns `status: ready` with the production admin token.
+6. A real `/cv` request sends the confirmation e-mail.
+7. The confirmation link sends the temporary CV access e-mail.
+8. `/cv/access?token=...` opens correctly.
+9. `/api/cv/download` serves the selected PDF as a backend attachment.
+10. No private Google Drive URL or source file URL is exposed to visitors.
+11. Owner notifications are received for request and download events.
 
 ## Immediate next action
 
