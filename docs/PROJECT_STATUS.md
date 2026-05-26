@@ -40,6 +40,9 @@ The codebase is ready for production deployment, but the site is not production-
 - Sitemap including `/`, `/pt`, `/cv`, `/privacidade` and `/termos`.
 - Global Vercel security headers.
 - Vercel no-cache/noindex headers for sensitive CV routes.
+- Dynamic Open Graph image route.
+- Twitter/X social share image route.
+- Explicit Open Graph and Twitter image metadata.
 - GitHub Actions build workflow.
 - Dependabot configuration.
 - Node 20 runtime standardization.
@@ -107,6 +110,7 @@ The project is production-ready when all of the following are true:
 9. `/api/cv/download` serves the selected PDF as a backend attachment.
 10. No private Google Drive URL or source file URL is exposed to visitors.
 11. Owner notifications are received for request and download events.
+12. LinkedIn, WhatsApp and X/Twitter previews show the final social share image.
 
 ## Immediate next action
 
