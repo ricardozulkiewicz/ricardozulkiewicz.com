@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import {
   buildAbsoluteUrl,
+  emailShell,
+  escapeHtml,
   getAllowedCvFiles,
   getOwnerEmail,
   sendCvEmail,
@@ -42,13 +44,20 @@ export async function GET(request: Request) {
 
     const accessedAt = new Date().toISOString();
     const deliveryMode = getPrivateCvDeliveryMode(file);
+    const fileLabel = file.toUpperCase();
+    const escapedLeadName = escapeHtml(payload.lead.fullName);
+    const escapedLeadEmail = escapeHtml(payload.lead.professionalEmail);
+    const escapedWhatsapp = escapeHtml(payload.lead.whatsapp);
+    const escapedFileLabel = escapeHtml(fileLabel);
+    const escapedDeliveryMode = escapeHtml(deliveryMode);
+    const escapedAccessedAt = escapeHtml(accessedAt);
 
     await appendCvLeadEvent({
       status: "download_accessed",
       lead: payload.lead,
       request,
       file,
-      notes: `Protected backend delivery issued for ${file.toUpperCase()} CV. Mode: ${deliveryMode}.`,
+      notes: `Protected backend delivery issued for ${fileLabel} CV. Mode: ${deliveryMode}.`,
     });
 
     await sendCvEmail({
@@ -56,23 +65,26 @@ export async function GET(request: Request) {
       replyTo: payload.lead.professionalEmail,
       subject: `CV acessado — ${payload.lead.fullName}`,
       text: [
-        `${payload.lead.fullName} acessou o CV ${file.toUpperCase()}.`,
+        `${payload.lead.fullName} acessou o CV ${fileLabel}.`,
         `E-mail: ${payload.lead.professionalEmail}`,
         `WhatsApp: ${payload.lead.whatsapp}`,
         `Entrega: ${deliveryMode}`,
         `Acesso em: ${accessedAt}`,
       ].join("\n"),
-      html: `
-        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;">
-          <h1>CV acessado</h1>
-          <p><strong>Nome:</strong> ${payload.lead.fullName}</p>
-          <p><strong>E-mail:</strong> ${payload.lead.professionalEmail}</p>
-          <p><strong>WhatsApp:</strong> ${payload.lead.whatsapp}</p>
-          <p><strong>Arquivo:</strong> ${file.toUpperCase()}</p>
-          <p><strong>Entrega:</strong> ${deliveryMode}</p>
-          <p><strong>Acesso em:</strong> ${accessedAt}</p>
-        </div>
-      `,
+      html: emailShell(
+        "CV acessado",
+        `
+          <p style="margin:0 0 20px 0;line-height:1.7;">Um acesso ao CV foi registrado pelo backend protegido.</p>
+          <table style="border-collapse:collapse;width:100%;font-size:14px;">
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#4b5563;font-weight:700;vertical-align:top;width:160px;">Nome</td><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#111827;vertical-align:top;">${escapedLeadName}</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#4b5563;font-weight:700;vertical-align:top;width:160px;">E-mail</td><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#111827;vertical-align:top;">${escapedLeadEmail}</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#4b5563;font-weight:700;vertical-align:top;width:160px;">WhatsApp</td><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#111827;vertical-align:top;">${escapedWhatsapp}</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#4b5563;font-weight:700;vertical-align:top;width:160px;">Arquivo</td><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#111827;vertical-align:top;">${escapedFileLabel}</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#4b5563;font-weight:700;vertical-align:top;width:160px;">Entrega</td><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#111827;vertical-align:top;">${escapedDeliveryMode}</td></tr>
+            <tr><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#4b5563;font-weight:700;vertical-align:top;width:160px;">Acesso em</td><td style="padding:10px 12px;border-bottom:1px solid #e5e7eb;color:#111827;vertical-align:top;">${escapedAccessedAt}</td></tr>
+          </table>
+        `
+      ),
     });
 
     return new NextResponse(cvFile.body, {
