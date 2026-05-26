@@ -36,6 +36,17 @@ This matrix defines how the main routes should behave in production.
 | `/curriculo` | `/cv` | CV request flow. |
 | `/currículo` | `/cv` | CV request flow. |
 | `/resume` | `/cv` | CV request flow. |
+| `/download-cv` | `/cv` | CV request flow. |
+| `/baixar-curriculo` | `/cv` | CV request flow. |
+| `/baixar-currículo` | `/cv` | CV request flow. |
+| `/privacy` | `/privacidade` | Common English privacy route. |
+| `/privacy-policy` | `/privacidade` | Common English privacy route. |
+| `/politica-de-privacidade` | `/privacidade` | Common Portuguese privacy route. |
+| `/política-de-privacidade` | `/privacidade` | Common Portuguese privacy route. |
+| `/lgpd` | `/privacidade` | Brazilian privacy-related route. |
+| `/terms` | `/termos` | Common English terms route. |
+| `/terms-of-use` | `/termos` | Common English terms route. |
+| `/termos-de-uso` | `/termos` | Common Portuguese terms route. |
 
 ## Legacy CV redirects
 
