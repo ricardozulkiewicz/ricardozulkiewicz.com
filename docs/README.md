@@ -8,6 +8,12 @@ This directory centralizes operational documentation for `ricardozulkiewicz.com`
 
 Current status of the project, including what is complete in code, what is complete in documentation and what still depends on external infrastructure.
 
+## Architecture
+
+- [`ARCHITECTURE.md`](./ARCHITECTURE.md)
+
+Technical map of public routes, redirects, API endpoints, internal modules, token model, CV file delivery model, e-mail model, persistence, abuse protection, SEO and operational validation.
+
 ## Production deployment
 
 - [`DEPLOYMENT.md`](./DEPLOYMENT.md)
@@ -53,16 +59,17 @@ Guide for the CV form abuse-protection layer, including rate limiting, honeypot 
 ## Recommended production order
 
 1. Read `PROJECT_STATUS.md` to confirm what is already complete.
-2. Read `DEPLOYMENT.md`.
-3. Configure Vercel project and domain.
-4. Generate token secrets with `node scripts/generate-cv-secrets.mjs`.
-5. Configure variables from `PRODUCTION_ENVIRONMENT.md`.
-6. Configure Resend using `RESEND_EMAIL_SETUP.md`.
-7. Configure Google service account using `GOOGLE_SERVICE_ACCOUNT.md`.
-8. Review CV form abuse protection in `SPAM_PROTECTION.md`.
-9. Deploy production.
-10. Test `/api/health`.
-11. Run the smoke tests from `SMOKE_TESTS.md`.
-12. Run `/api/cv/diagnostics`.
-13. Complete `LAUNCH_CHECKLIST.md`.
-14. Test the complete `/cv` request, confirmation and download flow.
+2. Read `ARCHITECTURE.md` to understand the route/API/module structure.
+3. Read `DEPLOYMENT.md`.
+4. Configure Vercel project and domain.
+5. Generate token secrets with `node scripts/generate-cv-secrets.mjs`.
+6. Configure variables from `PRODUCTION_ENVIRONMENT.md`.
+7. Configure Resend using `RESEND_EMAIL_SETUP.md`.
+8. Configure Google service account using `GOOGLE_SERVICE_ACCOUNT.md`.
+9. Review CV form abuse protection in `SPAM_PROTECTION.md`.
+10. Deploy production.
+11. Test `/api/health`.
+12. Run the smoke tests from `SMOKE_TESTS.md`.
+13. Run `/api/cv/diagnostics`.
+14. Complete `LAUNCH_CHECKLIST.md`.
+15. Test the complete `/cv` request, confirmation and download flow.
