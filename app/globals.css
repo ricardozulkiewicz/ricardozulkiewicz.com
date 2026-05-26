@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
+  background: #1f1f1f;
 }
 
 * {
@@ -12,12 +13,13 @@
 
 html {
   scroll-behavior: smooth;
+  background: #1f1f1f;
 }
 
 body {
   margin: 0;
-  background: #f8fafc;
-  color: #020617;
+  background: #1f1f1f;
+  color: #f7f5f0;
 }
 
 a {
