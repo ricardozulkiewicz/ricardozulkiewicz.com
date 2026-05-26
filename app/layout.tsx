@@ -5,6 +5,12 @@ const siteUrl = "https://ricardozulkiewicz.com";
 const title = "Ricardo Zulkiewicz | B2B Technology Sales Strategy";
 const description =
   "Personal website of Ricardo Zulkiewicz, focused on B2B technology sales, IT Outsourcing, outbound, CRM governance, Sales Enablement and predictable revenue execution.";
+const socialImage = {
+  url: "/opengraph-image",
+  width: 1200,
+  height: 630,
+  alt: "Ricardo Zulk | B2B Technology Sales",
+};
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -110,11 +116,13 @@ export const metadata: Metadata = {
     locale: "en_US",
     alternateLocale: ["pt_BR"],
     type: "profile",
+    images: [socialImage],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
+    images: [socialImage],
   },
   robots: {
     index: true,
