@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/cv/access",
-        "/api/cv/",
+        "/api/",
       ],
     },
     sitemap: "https://ricardozulkiewicz.com/sitemap.xml",
