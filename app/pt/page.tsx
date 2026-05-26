@@ -4,7 +4,7 @@ import HomePage from "../components/HomePage";
 const siteUrl = "https://ricardozulkiewicz.com";
 
 export const metadata: Metadata = {
-  title: "Ricardo Zulk | Vendas B2B em Tecnologia",
+  title: "Ricardo Zulkiewicz | Vendas B2B em Tecnologia",
   description:
     "Site pessoal de Ricardo Zulkiewicz, com foco em vendas B2B em tecnologia, Outsourcing de TI, outbound, governança de CRM, Sales Enablement e execução previsível de receita.",
   alternates: {
@@ -15,11 +15,11 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "Ricardo Zulk | Vendas B2B em Tecnologia",
+    title: "Ricardo Zulkiewicz | Vendas B2B em Tecnologia",
     description:
       "Site pessoal de Ricardo Zulkiewicz, com foco em vendas B2B em tecnologia, Outsourcing de TI, outbound, governança de CRM, Sales Enablement e execução previsível de receita.",
     url: `${siteUrl}/pt`,
-    siteName: "Ricardo Zulk",
+    siteName: "Ricardo Zulkiewicz",
     locale: "pt_BR",
     alternateLocale: ["en_US"],
     type: "profile",
