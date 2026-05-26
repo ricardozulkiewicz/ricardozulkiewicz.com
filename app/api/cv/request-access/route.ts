@@ -3,6 +3,7 @@ import {
   buildAbsoluteUrl,
   createCvAccessToken,
   emailShell,
+  escapeHtml,
   formatLeadHtml,
   formatLeadText,
   getOwnerEmail,
@@ -107,6 +108,8 @@ export async function POST(request: Request) {
     expiresInSeconds: 60 * 60 * 24,
   });
   const confirmationUrl = buildAbsoluteUrl(`/api/cv/confirm-email?token=${confirmationToken}`);
+  const escapedLeadName = escapeHtml(lead.fullName);
+  const escapedConfirmationUrl = escapeHtml(confirmationUrl);
 
   const confirmationEmail = await sendCvEmail({
     to: lead.professionalEmail,
@@ -127,9 +130,9 @@ export async function POST(request: Request) {
     html: emailShell(
       "Confirme seu e-mail para acessar o CV",
       `
-        <p style="margin:0 0 16px 0;line-height:1.7;">Olá, <strong>${lead.fullName}</strong>.</p>
+        <p style="margin:0 0 16px 0;line-height:1.7;">Olá, <strong>${escapedLeadName}</strong>.</p>
         <p style="margin:0 0 20px 0;line-height:1.7;">Recebemos sua solicitação de acesso ao CV de Ricardo Zulkiewicz. Para continuar, confirme seu e-mail. Depois disso, você receberá um segundo e-mail com um link único e temporário para acessar o CV.</p>
-        <p style="margin:24px 0;"><a href="${confirmationUrl}" style="display:inline-block;background:#0f4c5c;color:#f7f5f0;text-decoration:none;padding:14px 20px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">Confirmar e-mail</a></p>
+        <p style="margin:24px 0;"><a href="${escapedConfirmationUrl}" style="display:inline-block;background:#0f4c5c;color:#f7f5f0;text-decoration:none;padding:14px 20px;font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;">Confirmar e-mail</a></p>
         <p style="margin:0;color:#6b7280;font-size:13px;line-height:1.6;">Este link expira em 24 horas. Caso você não tenha solicitado acesso, ignore este e-mail.</p>
       `
     ),
