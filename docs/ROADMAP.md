@@ -20,6 +20,9 @@ Premium personal website for Ricardo Zulkiewicz, focused on B2B technology sales
 - Sitemap
 - Robots configuration
 - Production setup documentation
+- Final Open Graph image route
+- Twitter/X social share image route
+- Explicit Open Graph and Twitter image metadata
 
 ## Remaining work
 
@@ -29,8 +32,7 @@ Premium personal website for Ricardo Zulkiewicz, focused on B2B technology sales
 - Configure private PT and EN CV file sources
 - Test the full access flow end-to-end
 - Review mobile layout
-- Add final Open Graph image
-- Review LinkedIn and WhatsApp previews
+- Review LinkedIn and WhatsApp previews after production deploy
 
 ## Safe autonomous changes
 
