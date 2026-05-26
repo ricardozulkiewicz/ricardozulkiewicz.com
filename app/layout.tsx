@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 const siteUrl = "https://ricardozulkiewicz.com";
-const title = "Ricardo Zulk | B2B Technology Sales Strategy";
+const title = "Ricardo Zulkiewicz | B2B Technology Sales Strategy";
 const description =
   "Personal website of Ricardo Zulkiewicz, focused on B2B technology sales, IT Outsourcing, outbound, CRM governance, Sales Enablement and predictable revenue execution.";
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title,
   description,
-  applicationName: "Ricardo Zulk",
+  applicationName: "Ricardo Zulkiewicz",
   authors: [{ name: "Ricardo Zulkiewicz", url: siteUrl }],
   creator: "Ricardo Zulkiewicz",
   publisher: "Ricardo Zulkiewicz",
@@ -20,8 +20,8 @@ export const metadata: Metadata = {
     shortcut: [{ url: "/favicon.svg?v=2", type: "image/svg+xml" }],
   },
   keywords: [
-    "Ricardo Zulk",
     "Ricardo Zulkiewicz",
+    "Ricardo Zulk",
     "B2B Technology Sales",
     "Technology Sales Strategy",
     "IT Outsourcing",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     title,
     description,
     url: siteUrl,
-    siteName: "Ricardo Zulk",
+    siteName: "Ricardo Zulkiewicz",
     locale: "en_US",
     alternateLocale: ["pt_BR"],
     type: "profile",
