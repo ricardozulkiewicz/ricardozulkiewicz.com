@@ -6,12 +6,15 @@ const checks = [
   { name: "Portuguese home", path: "/pt", expectedStatus: 200 },
   { name: "CV request page", path: "/cv", expectedStatus: 200 },
   { name: "Privacy page", path: "/privacidade", expectedStatus: 200 },
+  { name: "Terms page", path: "/termos", expectedStatus: 200 },
   { name: "Health check", path: "/api/health", expectedStatus: 200 },
   { name: "Resume redirect", path: "/resume", expectedStatus: 200, finalPath: "/cv" },
   { name: "Curriculo redirect", path: "/curriculo", expectedStatus: 200, finalPath: "/cv" },
   { name: "Download CV redirect", path: "/download-cv", expectedStatus: 200, finalPath: "/cv" },
   { name: "Baixar curriculo redirect", path: "/baixar-curriculo", expectedStatus: 200, finalPath: "/cv" },
   { name: "Privacy redirect", path: "/privacy", expectedStatus: 200, finalPath: "/privacidade" },
+  { name: "LGPD redirect", path: "/lgpd", expectedStatus: 200, finalPath: "/privacidade" },
+  { name: "Terms redirect", path: "/terms", expectedStatus: 200, finalPath: "/termos" },
 ];
 
 function absoluteUrl(path) {
