@@ -1,0 +1,8 @@
+.github
+.git
+.gitignore
+.editorconfig
+README.md
+docs
+*.md
+.env.example
