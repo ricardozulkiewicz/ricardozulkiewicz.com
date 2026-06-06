@@ -20,8 +20,40 @@ body {
   margin: 0;
   background: #1f1f1f;
   color: #f7f5f0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
   text-decoration: none;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: rgba(87, 166, 183, 0.22);
+}
+
+:focus-visible {
+  outline: 2px solid #57a6b7;
+  outline-offset: 4px;
+}
+
+::selection {
+  background: #0f4c5c;
+  color: #f7f5f0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
