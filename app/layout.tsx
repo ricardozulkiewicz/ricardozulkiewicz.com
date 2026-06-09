@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 
@@ -13,6 +14,12 @@ const socialImage = {
   alt: "Ricardo Zulk | B2B Technology Sales",
 };
 const googleAnalyticsId = "G-XPTT8J32R2";
+
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-montserrat",
+});
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -145,7 +152,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-US">
+    <html lang="en-US" className={montserrat.variable}>
       <body>
         <script
           type="application/ld+json"

@@ -13,6 +13,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 96px;
   background: #1f1f1f;
 }
 
@@ -20,6 +21,7 @@ body {
   margin: 0;
   background: #1f1f1f;
   color: #f7f5f0;
+  font-family: var(--font-montserrat, Inter), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -45,6 +47,29 @@ textarea {
 ::selection {
   background: #0f4c5c;
   color: #f7f5f0;
+}
+
+.tracking-\[-0\.075em\],
+.tracking-\[-0\.06em\],
+.tracking-\[-0\.055em\],
+.tracking-\[-0\.05em\],
+.tracking-\[-0\.04em\],
+.tracking-\[-0\.03em\] {
+  letter-spacing: 0 !important;
+}
+
+@supports (text-wrap: balance) {
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}
+
+@supports (text-wrap: pretty) {
+  p {
+    text-wrap: pretty;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
