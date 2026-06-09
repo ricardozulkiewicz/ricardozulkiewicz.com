@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 const siteUrl = "https://ricardozulkiewicz.com";
@@ -11,6 +12,7 @@ const socialImage = {
   height: 630,
   alt: "Ricardo Zulk | B2B Technology Sales",
 };
+const googleAnalyticsId = "G-XPTT8J32R2";
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -149,6 +151,18 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${googleAnalyticsId}');
+          `}
+        </Script>
         {children}
       </body>
     </html>
