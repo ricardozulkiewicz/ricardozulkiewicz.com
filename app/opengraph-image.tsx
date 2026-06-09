@@ -98,7 +98,7 @@ export default function Image() {
           <div style={{ color: "#57A6B7", fontSize: 18, fontWeight: 700, letterSpacing: "0.2em" }}>
             IT OUTSOURCING · OUTBOUND · CRM GOVERNANCE
           </div>
-          <div style={{ fontSize: 82, fontWeight: 400, letterSpacing: "-0.055em", lineHeight: 0.98 }}>
+          <div style={{ fontSize: 82, fontWeight: 400, letterSpacing: 0, lineHeight: 0.98 }}>
             Building the commercial system behind predictable B2B technology revenue.
           </div>
         </div>
