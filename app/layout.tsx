@@ -66,7 +66,7 @@ const structuredData = {
       name: title,
       description,
       isPartOf: {
-        "@id": `${siteUrl}/#website",
+        "@id": `${siteUrl}/#website`,
       },
       about: {
         "@id": `${siteUrl}/#person`,
