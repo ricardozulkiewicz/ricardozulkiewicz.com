@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowLeft, FileText, LockKeyhole, Mail, ShieldCheck } from "lucide-react";
 
 const siteUrl = "https://ricardozulkiewicz.com";
@@ -50,18 +51,18 @@ export default function PrivacyPage() {
         </div>
 
         <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-7 lg:px-10">
-          <a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
+          <Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
             <BrandMark className="h-10 w-10" />
             <div className="leading-none">
               <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
               <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">PRIVACIDADE</div>
             </div>
-          </a>
+          </Link>
 
-          <a href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
+          <Link href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
             <FileText size={15} />
             CV
-          </a>
+          </Link>
         </header>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 pb-20 pt-10 lg:px-10 lg:pb-28 lg:pt-20">
@@ -86,10 +87,10 @@ export default function PrivacyPage() {
             <p className="mt-4 text-sm leading-7 text-[#D8D8D8]/68">
               Os dados do formulário de CV são usados para avaliar e responder solicitações profissionais, confirmar e-mail, enviar link temporário e registrar acessos de forma controlada.
             </p>
-            <a href="/" className="mt-8 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
+            <Link href="/" className="mt-8 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
               <ArrowLeft size={15} />
               Voltar ao site
-            </a>
+            </Link>
           </aside>
 
           <article className="border border-[#F7F5F0]/14 bg-[#F7F5F0]/[0.025] p-6 md:p-10">

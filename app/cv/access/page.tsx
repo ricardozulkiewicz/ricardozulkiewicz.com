@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowLeft, Download, FileText, LockKeyhole, ShieldCheck } from "lucide-react";
 import {
   getAllowedCvFiles,
@@ -50,19 +51,20 @@ function InvalidAccessCard() {
       <p className="mx-auto mt-6 max-w-xl text-base leading-8 text-[#D8D8D8]/68">
         Por segurança, o acesso ao CV depende de um token temporário. Solicite um novo acesso para receber outro link por e-mail.
       </p>
-      <a href="/cv" className="mt-9 inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F7F5F0] transition hover:bg-[#126177]">
+      <Link href="/cv" className="mt-9 inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F7F5F0] transition hover:bg-[#126177]">
         Solicitar novo acesso
-      </a>
+      </Link>
     </section>
   );
 }
 
-export default function CvAccessTokenPage({
+export default async function CvAccessTokenPage({
   searchParams,
 }: {
-  searchParams?: { token?: string; status?: string };
+  searchParams?: Promise<{ token?: string; status?: string }>;
 }) {
-  const token = searchParams?.token;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const token = resolvedSearchParams.token;
 
   let leadName = "";
   let leadEmail = "";
@@ -90,17 +92,17 @@ export default function CvAccessTokenPage({
         </div>
 
         <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-7 lg:px-10">
-          <a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
+          <Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
             <BrandMark className="h-10 w-10" />
             <div className="leading-none">
               <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
               <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">TEMPORARY CV ACCESS</div>
             </div>
-          </a>
-          <a href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
+          </Link>
+          <Link href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
             <ArrowLeft size={15} />
             Solicitação
-          </a>
+          </Link>
         </header>
 
         <div className="relative z-10 mx-auto max-w-7xl px-6 pb-24 pt-12 lg:px-10 lg:pt-20">

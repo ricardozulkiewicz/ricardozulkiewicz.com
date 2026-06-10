@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FormEvent, useMemo, useState } from "react";
+import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
@@ -14,7 +15,6 @@ import {
   Sparkles,
   UserRound,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 const email = "ricardomachado.zulk@gmail.com";
 const linkedinUrl = "https://www.linkedin.com/in/rick-zulk/";
@@ -173,22 +173,22 @@ export default function CvAccessPage() {
         </div>
 
         <header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-7 lg:px-10">
-          <a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
+          <Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
             <BrandMark className="h-10 w-10" />
             <div className="leading-none">
               <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
               <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">CV ACCESS</div>
             </div>
-          </a>
+          </Link>
 
-          <a href="/" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
+          <Link href="/" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
             <ArrowLeft size={15} />
             Home
-          </a>
+          </Link>
         </header>
 
         <div className="relative z-10 mx-auto grid max-w-7xl gap-14 px-6 pb-20 pt-10 lg:grid-cols-[1fr_0.72fr] lg:px-10 lg:pb-28 lg:pt-20">
-          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>
+          <div className="animate-enter-up">
             <StatusPill>Acesso controlado ao CV</StatusPill>
             <h1 className="mt-8 max-w-5xl text-5xl font-light leading-[1.04] tracking-[-0.06em] text-[#F7F5F0] md:text-7xl lg:text-[82px]">
               Solicite acesso ao meu CV de forma <span className="italic tracking-[-0.075em] text-[#F7F5F0]/90">controlada</span>, profissional e rastreável.
@@ -214,9 +214,9 @@ export default function CvAccessPage() {
                 <p className="mt-3 text-sm leading-6 text-[#D8D8D8]/62">Acesso restrito, não indexado e rastreável.</p>
               </div>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.aside initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.1 }} className="self-end border border-[#F7F5F0]/14 bg-[#F7F5F0]/[0.035] p-6 backdrop-blur shadow-[0_0_80px_rgba(15,76,92,0.22)]">
+          <aside className="animate-enter-side self-end border border-[#F7F5F0]/14 bg-[#F7F5F0]/[0.035] p-6 backdrop-blur shadow-[0_0_80px_rgba(15,76,92,0.22)]">
             <div className="mb-8 flex items-start justify-between gap-6">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-[#57a6b7]">Fluxo previsto</p>
@@ -225,7 +225,7 @@ export default function CvAccessPage() {
               <LockKeyhole className="text-[#F7F5F0]/72" size={30} strokeWidth={1.5} />
             </div>
             <FlowStatus step={flowStep} />
-          </motion.aside>
+          </aside>
         </div>
       </section>
 
