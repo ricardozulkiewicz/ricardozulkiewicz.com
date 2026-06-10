@@ -259,7 +259,6 @@ export default function CvAccessRequestPage() {
 
   return (
     <main className="min-h-screen bg-[#1F1F1F] text-[#F7F5F0] antialiased selection:bg-[#0F4C5C] selection:text-[#F7F5F0]">
-      <style>{`:root { font-family: Montserrat, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; } html { scroll-behavior: smooth; }`}</style>
 
       <section className="relative overflow-hidden border-b border-[#F7F5F0]/14">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_20%,rgba(15,76,92,0.30),transparent_32%),radial-gradient(circle_at_8%_0%,rgba(247,245,240,0.07),transparent_28%)]" />
