@@ -1,0 +1,148 @@
+name: Codex Frontend Polish
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/frontend-10-polish-20260610
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Apply frontend polish
+        run: |
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+
+          const projectRoot = process.cwd();
+
+          function read(file) {
+            return fs.readFileSync(path.join(projectRoot, file), "utf8");
+          }
+
+          function write(file, content) {
+            fs.writeFileSync(path.join(projectRoot, file), content, "utf8");
+          }
+
+          function replaceOne(source, from, to, label) {
+            if (!source.includes(from)) throw new Error(`Missing pattern: ${label}`);
+            return source.replace(from, to);
+          }
+
+          function edit(file, fn) {
+            write(file, fn(read(file)));
+          }
+
+          function polishHomePage() {
+            edit("app/components/HomePage.tsx", (source) => {
+              source = replaceOne(source, 'import React, { useState } from "react";\nimport {', 'import React, { useState } from "react";\nimport Link from "next/link";\nimport {', "home link import");
+              source = replaceOne(source, 'import { motion } from "framer-motion";\n', '', "home framer import");
+              source = replaceOne(source, '  heroText: string;\n  primaryCta: string;', '  heroText: string;\n  heroSignals: [string, string][];\n  primaryCta: string;', "home copy type hero signals");
+              source = replaceOne(source, '    heroText: "From outbound and discovery to CRM governance and sales enablement, I translate business context into a practical sales system teams can execute, measure and improve.",\n    primaryCta: "Start a conversation",', '    heroText: "From outbound and discovery to CRM governance and sales enablement, I translate business context into a practical sales system teams can execute, measure and improve.",\n    heroSignals: [["Market signal", "ICP, trigger, pain and timing before outreach."], ["Qualified pipeline", "Discovery, urgency, stakeholder map and next step."], ["CRM discipline", "Fields, stages, activities and ownership with management value."], ["Forecast rhythm", "Operating cadence to read risk and improve decisions."]],\n    primaryCta: "Start a conversation",', "home en hero signals");
+              source = replaceOne(source, '    heroText: "Do outbound ao discovery, da governança de CRM ao sales enablement, eu transformo contexto de negócio em um sistema comercial prático, executável, mensurável e evolutivo.",\n    primaryCta: "Iniciar conversa",', '    heroText: "Do outbound ao discovery, da governança de CRM ao sales enablement, eu transformo contexto de negócio em um sistema comercial prático, executável, mensurável e evolutivo.",\n    heroSignals: [["Sinal de mercado", "ICP, gatilho, dor e timing antes da abordagem."], ["Pipeline qualificado", "Discovery, urgência, mapa de decisores e próximo passo."], ["Disciplina de CRM", "Campos, etapas, atividades e dono com valor de gestão."], ["Ritmo de forecast", "Cadência operacional para ler risco e melhorar decisões."]],\n    primaryCta: "Iniciar conversa",', "home pt hero signals");
+              source = replaceOne(source, '  return <div className="inline-flex items-center gap-4"><BrandMark className="h-10 w-10 shrink-0" /><div className="min-w-max leading-none"><div className="whitespace-nowrap text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div><div className="mt-2 whitespace-nowrap text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">{subtitle}</div></div></div>;', '  return <div className="inline-flex max-w-full items-center gap-3 sm:gap-4"><BrandMark className="h-9 w-9 shrink-0 sm:h-10 sm:w-10" /><div className="min-w-max leading-none"><div className="whitespace-nowrap text-[13px] font-semibold tracking-[0.22em] text-[#F7F5F0] sm:text-sm sm:tracking-[0.26em] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div><div className="mt-2 whitespace-nowrap text-[9px] font-medium tracking-[0.18em] text-[#57a6b7] sm:text-[10px] sm:tracking-[0.22em] md:text-xs md:tracking-[0.32em]">{subtitle}</div></div></div>;', "home logo lockup");
+              source = replaceOne(source, '  return <div className={base}><a href="/" className={`${item} ${language === "en" ? active : ""}`}>EN</a><a href="/pt" className={`${item} ${language === "pt" ? active : ""}`}>PT</a></div>;', '  return <div className={base} aria-label="Language"><Link href="/" aria-current={language === "en" ? "page" : undefined} className={`${item} ${language === "en" ? active : ""}`}>EN</Link><Link href="/pt" aria-current={language === "pt" ? "page" : undefined} className={`${item} ${language === "pt" ? active : ""}`}>PT</Link></div>;', "home language switch links");
+              source = replaceOne(source, '    <main lang={c.lang} className="min-h-screen bg-[#1F1F1F] text-[#F7F5F0] antialiased selection:bg-[#0F4C5C] selection:text-[#F7F5F0]">\n      <section', '    <main lang={c.lang} className="min-h-screen bg-[#1F1F1F] text-[#F7F5F0] antialiased selection:bg-[#0F4C5C] selection:text-[#F7F5F0]">\n      <a href="#top" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:bg-[#F7F5F0] focus:px-4 focus:py-3 focus:text-sm focus:font-semibold focus:text-[#1F1F1F]">\n        {language === "pt" ? "Pular para o conteúdo" : "Skip to content"}\n      </a>\n      <section', "home skip link");
+              source = replaceOne(source, '<header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-6 py-7 lg:px-10">', '<header className="relative z-20 mx-auto flex max-w-7xl items-center justify-between px-4 py-6 sm:px-6 sm:py-7 lg:px-10">', "home header spacing");
+              source = replaceOne(source, '<nav className="hidden items-center gap-10 text-[11px] font-medium uppercase tracking-[0.24em] text-[#D8D8D8]/75 lg:flex">', '<nav aria-label={language === "pt" ? "Navegação principal" : "Main navigation"} className="hidden items-center gap-10 text-[11px] font-medium uppercase tracking-[0.24em] text-[#D8D8D8]/75 lg:flex">', "home desktop nav label");
+              source = replaceOne(source, '<button onClick={() => setIsMenuOpen((value) => !value)} className="inline-flex h-11 w-11 items-center justify-center border hairline text-[#F7F5F0] lg:hidden" aria-label="Toggle navigation">', '<button type="button" onClick={() => setIsMenuOpen((value) => !value)} className="inline-flex h-11 w-11 items-center justify-center border hairline text-[#F7F5F0] lg:hidden" aria-label={isMenuOpen ? "Close navigation" : "Open navigation"} aria-expanded={isMenuOpen} aria-controls="mobile-navigation">', "home menu button a11y");
+              source = replaceOne(source, '{isMenuOpen && <div className="relative z-20 mx-6 mb-6 border hairline bg-[#1F1F1F]/95 p-5 backdrop-blur lg:hidden">', '{isMenuOpen && <div id="mobile-navigation" className="relative z-20 mx-4 mb-6 border hairline bg-[#1F1F1F]/95 p-5 backdrop-blur sm:mx-6 lg:hidden">', "home mobile menu wrapper");
+              source = replaceOne(source, '<nav className="grid gap-4 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#D8D8D8]/80">', '<nav aria-label={language === "pt" ? "Navegação mobile" : "Mobile navigation"} className="grid gap-4 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#D8D8D8]/80">', "home mobile nav label");
+              source = replaceOne(source, '<div id="top" className="relative z-10 mx-auto grid max-w-7xl gap-14 px-6 pb-20 pt-10 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:pb-28 lg:pt-20">', '<div id="top" className="relative z-10 mx-auto grid max-w-7xl gap-14 px-4 pb-14 pt-10 sm:px-6 lg:grid-cols-[1fr_0.78fr] lg:px-10 lg:pb-20 lg:pt-20">', "home hero spacing");
+              source = replaceOne(source, '<motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>', '<div className="animate-enter-up">', "home motion div open");
+              source = replaceOne(source, '</motion.div><motion.aside initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.1 }} className="self-end border hairline bg-[#F7F5F0]/[0.035] p-6 backdrop-blur soft-glow">', '</div><aside className="animate-enter-side self-end border hairline bg-[#F7F5F0]/[0.035] p-6 backdrop-blur soft-glow">', "home motion div close aside open");
+              source = replaceOne(source, '<h1 className="max-w-5xl text-5xl font-light leading-[1.04] tracking-[-0.06em] text-[#F7F5F0] md:text-7xl lg:text-[84px]">', '<h1 className="max-w-5xl text-[44px] font-light leading-[1.04] tracking-[-0.06em] text-[#F7F5F0] sm:text-5xl md:text-7xl lg:text-[84px]">', "home hero h1 size");
+              source = replaceOne(source, '<BrandMark className="h-24 w-24 shrink-0" />', '<BrandMark className="h-20 w-20 shrink-0 sm:h-24 sm:w-24" />', "home profile brand size");
+              source = replaceOne(source, '</motion.aside></div></section>', '</aside></div><div className="relative z-10 mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-10 lg:pb-24"><div className="grid gap-px overflow-hidden border hairline bg-[#F7F5F0]/10 md:grid-cols-4">{c.heroSignals.map(([label, detail]) => <div key={label} className="bg-[#1F1F1F]/92 p-5 sm:p-6"><p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#57a6b7]">{label}</p><p className="mt-3 text-sm leading-6 text-[#D8D8D8]/66">{detail}</p></div>)}</div></div></section>', "home hero signals strip");
+              source = replaceOne(source, '<a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href="/cv"><Download size={15} /> CV</a><a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={language === "pt" ? "/" : "/pt"}>{language === "pt" ? "EN" : "PT"}</a>', '<Link className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href="/cv"><Download size={15} /> CV</Link><Link className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={language === "pt" ? "/" : "/pt"}>{language === "pt" ? "EN" : "PT"}</Link>', "home footer links");
+              return source;
+            });
+          }
+
+          function polishCvComponent(file) {
+            edit(file, (source) => {
+              source = replaceOne(source, 'import React, { FormEvent, useMemo, useState } from "react";\n', 'import React, { FormEvent, useMemo, useState } from "react";\nimport Link from "next/link";\n', `${file} link import`);
+              source = replaceOne(source, 'import { motion } from "framer-motion";\n', '', `${file} framer import`);
+              source = source.replaceAll('<a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">', '<Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">');
+              source = source.replaceAll('<a href="/" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">', '<Link href="/" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">');
+              source = source.replaceAll('          </a>', '          </Link>');
+              source = replaceOne(source, '<motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }}>', '<div className="animate-enter-up">', `${file} hero motion div`);
+              source = replaceOne(source, '</motion.div>\n\n          <motion.aside initial={{ opacity: 0, x: 22 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.1 }} className="self-end border border-[#F7F5F0]/14 bg-[#F7F5F0]/[0.035] p-6 backdrop-blur shadow-[0_0_80px_rgba(15,76,92,0.22)]">', '</div>\n\n          <aside className="animate-enter-side self-end border border-[#F7F5F0]/14 bg-[#F7F5F0]/[0.035] p-6 backdrop-blur shadow-[0_0_80px_rgba(15,76,92,0.22)]">', `${file} hero aside open`);
+              source = replaceOne(source, '</motion.aside>', '</aside>', `${file} hero aside close`);
+              return source;
+            });
+          }
+
+          function polishCvAccessTokenPage() {
+            edit("app/cv/access/page.tsx", (source) => {
+              source = replaceOne(source, 'import { ArrowLeft, Download, FileText, LockKeyhole, ShieldCheck } from "lucide-react";\n', 'import Link from "next/link";\nimport { ArrowLeft, Download, FileText, LockKeyhole, ShieldCheck } from "lucide-react";\n', "cv token link import");
+              source = replaceOne(source, '<a href="/cv" className="mt-9 inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F7F5F0] transition hover:bg-[#126177]">', '<Link href="/cv" className="mt-9 inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#F7F5F0] transition hover:bg-[#126177]">', "cv token invalid link open");
+              source = replaceOne(source, '      </a>\n    </section>', '      </Link>\n    </section>', "cv token invalid link close");
+              source = replaceOne(source, 'export default function CvAccessTokenPage({\n  searchParams,\n}: {\n  searchParams?: { token?: string; status?: string };\n}) {\n  const token = searchParams?.token;', 'export default async function CvAccessTokenPage({\n  searchParams,\n}: {\n  searchParams?: Promise<{ token?: string; status?: string }>;\n}) {\n  const resolvedSearchParams = searchParams ? await searchParams : {};\n  const token = resolvedSearchParams.token;', "cv token next15 search params");
+              source = replaceOne(source, '<a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">', '<Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">', "cv token home link open");
+              source = replaceOne(source, '          </a>\n          <a href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">', '          </Link>\n          <Link href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">', "cv token header link switch");
+              source = replaceOne(source, '          </a>\n        </header>', '          </Link>\n        </header>', "cv token header cv close");
+              return source;
+            });
+          }
+
+          function polishGlobals() {
+            edit("app/globals.css", (source) => {
+              source = replaceOne(source, '.tracking-\\[-0\\.075em\\],', '.animate-enter-up {\n  animation: enter-up 700ms ease-out both;\n}\n\n.animate-enter-side {\n  animation: enter-side 800ms ease-out 90ms both;\n}\n\n@keyframes enter-up {\n  from {\n    opacity: 0;\n    transform: translateY(18px);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateY(0);\n  }\n}\n\n@keyframes enter-side {\n  from {\n    opacity: 0;\n    transform: translateX(22px);\n  }\n\n  to {\n    opacity: 1;\n    transform: translateX(0);\n  }\n}\n\n.tracking-\\[-0\\.075em\\],', "globals animations");
+              source = replaceOne(source, '    transition-duration: 0.01ms !important;\n  }\n}', '    transition-duration: 0.01ms !important;\n  }\n\n  .animate-enter-up,\n  .animate-enter-side {\n    animation: none !important;\n  }\n}', "globals reduced motion animations");
+              return source;
+            });
+          }
+
+          function polishPackageJson() {
+            const file = "package.json";
+            const pkg = JSON.parse(read(file));
+            delete pkg.dependencies["framer-motion"];
+            pkg.dependencies.next = "^15.5.18";
+            pkg.devDependencies["eslint-config-next"] = "^15.5.18";
+            write(file, JSON.stringify(pkg, null, 2) + "\n");
+          }
+
+          polishHomePage();
+          polishCvComponent("app/components/CvAccessPage.tsx");
+          polishCvComponent("app/components/CvAccessRequestPage.tsx");
+          polishCvAccessTokenPage();
+          polishGlobals();
+          polishPackageJson();
+          NODE
+
+      - name: Refresh lockfile and install
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm ci
+
+      - name: Validate
+        run: |
+          npm run build
+          npm audit --omit=dev --audit-level=high
+
+      - name: Commit validated polish
+        run: |
+          rm .github/workflows/codex-frontend-10-polish.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/components/HomePage.tsx app/components/CvAccessPage.tsx app/components/CvAccessRequestPage.tsx app/cv/access/page.tsx app/globals.css package.json package-lock.json .github/workflows/codex-frontend-10-polish.yml
+          git diff --cached --quiet && { echo "No changes to commit"; exit 1; }
+          git commit -m "Polish frontend experience"
+          git push
