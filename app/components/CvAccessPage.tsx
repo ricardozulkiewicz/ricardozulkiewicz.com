@@ -177,13 +177,13 @@ export default function CvAccessPage() {
             <BrandMark className="h-10 w-10" />
             <div className="leading-none">
               <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
-              <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">CV ACCESS</div>
+              <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">B2B TECHNOLOGY SALES</div>
             </div>
           </Link>
 
           <Link href="/" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">
             <ArrowLeft size={15} />
-            Home
+            Início
           </Link>
         </header>
 

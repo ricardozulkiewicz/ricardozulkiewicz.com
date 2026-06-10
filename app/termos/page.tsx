@@ -54,8 +54,8 @@ export default function TermsPage() {
           <Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">
             <BrandMark className="h-10 w-10" />
             <div className="leading-none">
-              <div className="text-sm font-semibold tracking-[0.18em] text-[#F7F5F0] md:text-base md:tracking-[0.24em]">RICARDO ZULKIEWICZ</div>
-              <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">TERMOS DE USO</div>
+              <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
+              <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">B2B TECHNOLOGY SALES</div>
             </div>
           </Link>
 
