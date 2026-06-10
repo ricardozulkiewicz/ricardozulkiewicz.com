@@ -35,20 +35,22 @@ jobs:
             'app/termos/page.tsx',
           ];
 
-          const utilityBlock = `.hairline {
-            border-color: rgba(247, 245, 240, 0.14);
-          }
+          const utilityBlock = [
+            '.hairline {',
+            '  border-color: rgba(247, 245, 240, 0.14);',
+            '}',
+            '',
+            '.dark-hairline {',
+            '  border-color: rgba(31, 31, 31, 0.12);',
+            '}',
+            '',
+            '.soft-glow {',
+            '  box-shadow: 0 0 80px rgba(15, 76, 92, 0.22);',
+            '}',
+            '',
+          ].join('\n');
 
-          .dark-hairline {
-            border-color: rgba(31, 31, 31, 0.12);
-          }
-
-          .soft-glow {
-            box-shadow: 0 0 80px rgba(15, 76, 92, 0.22);
-          }
-          `;
-
-          const styleBlockPattern = /\s*<style>\{`\s*:root\s*\{\s*font-family:\s*Montserrat,[\s\S]*?\.soft-glow\s*\{\s*box-shadow:\s*0\s+0\s+80px\s+rgba\(15,\s*76,\s*92,\s*0\.22\);\s*\}\s*`}<\/style>/g;
+          const styleBlockPattern = /\s*<style>\{`:root\s*\{[^`]*Montserrat[^`]*`}<\/style>/g;
 
           let css = fs.readFileSync('app/globals.css', 'utf8');
           if (!css.includes('.hairline {')) {
