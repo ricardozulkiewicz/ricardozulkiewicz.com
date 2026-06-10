@@ -9,6 +9,10 @@ import {
   getPrivateCvDeliveryMode,
   isPrivateCvDeliveryConfigured,
 } from "../../../lib/private-cv-files";
+import {
+  getServerStateMode,
+  isRemoteServerStateConfigured,
+} from "../../../lib/server-state";
 
 export const runtime = "nodejs";
 
@@ -58,6 +62,10 @@ function getEnvironmentChecks(): EnvCheck[] {
     envCheck("CV_PT_DOWNLOAD_URL", false, "Fallback: server-side source URL for the Portuguese CV."),
     envCheck("CV_EN_DOWNLOAD_URL", false, "Fallback: server-side source URL for the English CV."),
     envCheck("CV_FILE_SOURCE_AUTH_HEADER", false, "Optional Authorization header for fallback private source URLs."),
+    envCheck("KV_REST_API_URL", false, "Optional durable state store URL for distributed rate limiting and one-time CV download tokens."),
+    envCheck("KV_REST_API_TOKEN", false, "Optional durable state store token for distributed rate limiting and one-time CV download tokens."),
+    envCheck("UPSTASH_REDIS_REST_URL", false, "Optional Upstash alias for the durable state store URL."),
+    envCheck("UPSTASH_REDIS_REST_TOKEN", false, "Optional Upstash alias for the durable state store token."),
     envCheck("GOOGLE_SERVICE_ACCOUNT_CLIENT_EMAIL", false, "Optional: service account e-mail used for Google Sheets and private Google Drive files."),
     envCheck("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY", false, "Optional: service account private key used for Google Sheets and private Google Drive files."),
     envCheck("CV_LEADS_SPREADSHEET_ID", false, "Optional: Google Sheets spreadsheet ID used to persist lead events."),
@@ -106,6 +114,7 @@ export async function GET(request: Request) {
 
   const sheetsConfigured = isGoogleSheetsConfigured();
   const privateCvDeliveryConfigured = isPrivateCvDeliveryConfigured();
+  const remoteStateConfigured = isRemoteServerStateConfigured();
 
   return NextResponse.json({
     ok: missingRequired.length === 0 && tokenSelfTest && privateCvDeliveryConfigured,
@@ -124,6 +133,12 @@ export async function GET(request: Request) {
       configured: privateCvDeliveryConfigured,
       ptMode: getPrivateCvDeliveryMode("pt"),
       enMode: getPrivateCvDeliveryMode("en"),
+    },
+    hardening: {
+      remoteStateConfigured,
+      stateMode: getServerStateMode(),
+      rateLimit: remoteStateConfigured ? "distributed" : "memory_fallback",
+      downloadTokens: remoteStateConfigured ? "single_use_distributed" : "single_use_per_instance",
     },
     persistence: {
       googleSheets: {

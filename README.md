@@ -50,6 +50,7 @@ The `/cv` page uses a controlled access flow instead of exposing direct public C
 
 - E-mail confirmation token: 24 hours.
 - Temporary CV access token: 24 hours.
+- Download token: single-use per file when a durable state store is configured; per-instance fallback when not configured.
 - Download route: no browser or CDN caching.
 
 ### Official CV files
@@ -93,6 +94,17 @@ CV_FILE_SOURCE_AUTH_HEADER=optional-authorization-header-for-private-source
 
 The download route sets `Cache-Control: no-store` and `X-Robots-Tag: noindex, nofollow, noarchive`.
 
+### Optional durable state hardening
+
+Configure Vercel KV or Upstash Redis REST to share backend state across Vercel instances. This upgrades the CV flow with distributed rate limiting and single-use download tokens across the deployment.
+
+```bash
+KV_REST_API_URL=replace-with-vercel-kv-rest-api-url
+KV_REST_API_TOKEN=replace-with-vercel-kv-rest-api-token
+```
+
+The app also accepts the equivalent `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` names. If these variables are not configured, the site still works with an in-memory fallback, but limits and token usage are scoped to the current server instance.
+
 ### Optional Google Sheets lead persistence
 
 A Google Sheet can be used for lead/event persistence.
@@ -133,6 +145,7 @@ Expected result when production is ready:
 ```
 
 If the endpoint returns `status: "incomplete"`, configure the missing environment variables listed in `missingRequired`. The response also includes `privateCvDelivery` and `persistence.googleSheets.configured`.
+The response includes `hardening.stateMode` to show whether distributed state is active or using memory fallback.
 
 ### Production validation checklist
 
@@ -143,14 +156,16 @@ If the endpoint returns `status: "incomplete"`, configure the missing environmen
 5. Share the private Google Drive files with the service account as Viewer, or configure private source URLs with `CV_FILE_SOURCE_AUTH_HEADER` if needed.
 6. Configure Google Sheets service account variables if lead persistence is required.
 7. Share the lead spreadsheet with the service account as Editor if persistence is enabled.
-8. Run `/api/cv/diagnostics`.
-9. Submit a real `/cv` request using a controlled test e-mail.
-10. Confirm the e-mail.
-11. Open the temporary `/cv/access` link.
-12. Download the permitted CV file.
-13. Confirm that the browser downloads a PDF from `/api/cv/download`, not from a public source URL.
-14. Confirm that the sheet has `request_submitted`, `email_confirmed`, and `download_accessed` rows for the same `lead_id` if persistence is enabled.
-15. Delete any smoke-test rows if desired.
+8. Configure Vercel KV or Upstash Redis REST if distributed rate limiting and single-use download links are required.
+9. Run `/api/cv/diagnostics`.
+10. Submit a real `/cv` request using a controlled test e-mail.
+11. Confirm the e-mail.
+12. Open the temporary `/cv/access` link.
+13. Download the permitted CV file.
+14. Confirm that the browser downloads a PDF from `/api/cv/download`, not from a public source URL.
+15. Try the same download link again and confirm it redirects back to `/cv` when durable state is configured.
+16. Confirm that the sheet has `request_submitted`, `email_confirmed`, and `download_accessed` rows for the same `lead_id` if persistence is enabled.
+17. Delete any smoke-test rows if desired.
 
 ### Security notes
 
@@ -158,7 +173,9 @@ If the endpoint returns `status: "incomplete"`, configure the missing environmen
 - `CV_ADMIN_TOKEN` protects the diagnostics endpoint and must be different from `CV_ACCESS_SECRET`.
 - `/cv/access` is configured as `noindex, nofollow`.
 - Legacy direct CV URLs should redirect back to `/cv`.
+- `/cv/en`, `/cv/pt`, and generated legacy CV routes redirect back to `/cv` instead of serving PDFs directly.
 - The visitor never receives the configured source URL for the PDF; the file is fetched server-side and returned as an attachment.
+- Vercel KV or Upstash Redis REST is recommended for distributed rate limits and single-use download-token enforcement.
 - Google Sheets persistence is optional and should use a dedicated service account with access only to the CV leads spreadsheet and private CV files.
 
 ## Notes
