@@ -36,7 +36,7 @@ function isSpamSubmission(body: unknown) {
 
 export async function POST(request: Request) {
   const clientIp = getClientIp(request);
-  const rateLimit = checkRateLimit({
+  const rateLimit = await checkRateLimit({
     key: `cv-request:${clientIp}`,
     limit: 5,
     windowMs: 60 * 60 * 1000,
@@ -57,6 +57,7 @@ export async function POST(request: Request) {
           "X-RateLimit-Limit": "5",
           "X-RateLimit-Remaining": "0",
           "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+          "X-RateLimit-Store": rateLimit.mode,
         },
       }
     );
@@ -82,6 +83,7 @@ export async function POST(request: Request) {
           "X-RateLimit-Limit": "5",
           "X-RateLimit-Remaining": String(rateLimit.remaining),
           "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+          "X-RateLimit-Store": rateLimit.mode,
         },
       }
     );
@@ -175,6 +177,7 @@ export async function POST(request: Request) {
       "X-RateLimit-Limit": "5",
       "X-RateLimit-Remaining": String(rateLimit.remaining),
       "X-RateLimit-Reset": String(Math.ceil(rateLimit.resetAt / 1000)),
+      "X-RateLimit-Store": rateLimit.mode,
     },
   });
 }

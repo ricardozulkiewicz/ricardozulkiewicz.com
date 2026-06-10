@@ -147,12 +147,27 @@ const nextConfig = {
         permanent: false,
       },
       {
+        source: "/CV_Ricardo_Zulkiewicz_EN.pdf",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
         source: "/CV_Ricardo_Zulkiewicz_PT.pdf",
         destination: "/cv",
         permanent: false,
       },
       {
         source: "/Ricardo_Zulkiewicz_CV_PT.pdf",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/cv/en",
+        destination: "/cv",
+        permanent: false,
+      },
+      {
+        source: "/cv/pt",
         destination: "/cv",
         permanent: false,
       },

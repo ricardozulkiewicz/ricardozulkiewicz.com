@@ -7,6 +7,11 @@ export default function robots(): MetadataRoute.Robots {
       allow: "/",
       disallow: [
         "/cv/access",
+        "/cv/en",
+        "/cv/pt",
+        "/cv/pt-final",
+        "/cv/ricardo-zulkiewicz-cv-en",
+        "/cv/ricardo-zulkiewicz-cv-pt",
         "/api/",
       ],
     },

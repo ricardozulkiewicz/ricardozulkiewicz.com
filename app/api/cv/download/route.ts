@@ -9,6 +9,7 @@ import {
   verifyCvAccessToken,
 } from "../../../lib/cv-access";
 import { appendCvLeadEvent } from "../../../lib/google-sheets";
+import { consumeCvDownloadToken } from "../../../lib/cv-token-usage";
 import { getPrivateCvFile, getPrivateCvDeliveryMode } from "../../../lib/private-cv-files";
 
 export const runtime = "nodejs";
@@ -42,6 +43,16 @@ export async function GET(request: Request) {
       );
     }
 
+    const tokenUse = await consumeCvDownloadToken({
+      tokenId: payload.tokenId,
+      file,
+      expiresAt: payload.exp,
+    });
+
+    if (!tokenUse.allowed) {
+      return NextResponse.redirect(buildAbsoluteUrl("/cv?status=invalid-or-expired-token"));
+    }
+
     const accessedAt = new Date().toISOString();
     const deliveryMode = getPrivateCvDeliveryMode(file);
     const fileLabel = file.toUpperCase();
@@ -57,7 +68,7 @@ export async function GET(request: Request) {
       lead: payload.lead,
       request,
       file,
-      notes: `Protected backend delivery issued for ${fileLabel} CV. Mode: ${deliveryMode}.`,
+      notes: `Protected backend delivery issued for ${fileLabel} CV. Mode: ${deliveryMode}. Token store: ${tokenUse.mode}.`,
     });
 
     await sendCvEmail({
@@ -94,6 +105,7 @@ export async function GET(request: Request) {
         "Content-Disposition": `attachment; filename="${cvFile.fileName}"`,
         "Cache-Control": "no-store, private, max-age=0",
         "X-Robots-Tag": "noindex, nofollow, noarchive",
+        "X-CV-Token-Store": tokenUse.mode,
       },
     });
   } catch {

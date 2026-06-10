@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const LEGACY_DIRECT_CV_PATHS = new Set([
+  "/cv/en",
+  "/cv/pt",
   "/cv/pt-final",
   "/cv/ricardo-zulkiewicz-cv-en",
   "/cv/ricardo-zulkiewicz-cv-pt",
@@ -31,6 +33,8 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/cv/en",
+    "/cv/pt",
     "/cv/pt-final",
     "/cv/ricardo-zulkiewicz-cv-en",
     "/cv/ricardo-zulkiewicz-cv-pt",
