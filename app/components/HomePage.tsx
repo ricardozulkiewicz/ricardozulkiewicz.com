@@ -121,7 +121,7 @@ const content: Record<Language, Copy> = {
   pt: {
     lang: "pt-BR",
     nav: [["Sobre", "#about"], ["Especialidades", "#expertise"], ["Abordagem", "#approach"], ["Experiência", "#experience"], ["Projetos", "#work"], ["Contato", "#contact"]],
-    brandSubtitle: "VENDAS B2B EM TECNOLOGIA",
+    brandSubtitle: "B2B TECHNOLOGY SALES",
     contact: "Contato",
     heroEyebrow: "Estratégia. Pipeline. Receita.",
     heroBefore: "Eu estruturo a operação comercial por trás de uma receita",
@@ -163,7 +163,7 @@ function BrandMark({ className = "", subtle = false, dark = false }: { className
 }
 
 function LogoLockup({ subtitle }: { subtitle: string }) {
-  return <div className="flex items-center gap-4"><BrandMark className="h-10 w-10" /><div className="leading-none"><div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div><div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">{subtitle}</div></div></div>;
+  return <div className="inline-flex items-center gap-4"><BrandMark className="h-10 w-10 shrink-0" /><div className="min-w-max leading-none"><div className="whitespace-nowrap text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div><div className="mt-2 whitespace-nowrap text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">{subtitle}</div></div></div>;
 }
 
 function Eyebrow({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
