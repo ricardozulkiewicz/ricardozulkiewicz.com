@@ -61,6 +61,38 @@ textarea {
   box-shadow: 0 0 80px rgba(15, 76, 92, 0.22);
 }
 
+.animate-enter-up {
+  animation: enter-up 700ms ease-out both;
+}
+
+.animate-enter-side {
+  animation: enter-side 800ms ease-out 90ms both;
+}
+
+@keyframes enter-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes enter-side {
+  from {
+    opacity: 0;
+    transform: translateX(22px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .tracking-\[-0\.075em\],
 .tracking-\[-0\.06em\],
 .tracking-\[-0\.055em\],
@@ -92,5 +124,10 @@ textarea {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .animate-enter-up,
+  .animate-enter-side {
+    animation: none !important;
   }
 }

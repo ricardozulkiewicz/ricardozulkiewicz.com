@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { AlertTriangle, ArrowLeft, Mail, RotateCcw } from "lucide-react";
 
 function BrandMark({ className = "" }: { className?: string }) {
@@ -48,10 +49,10 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
               <RotateCcw size={16} />
               Tentar novamente
             </button>
-            <a href="/" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">
+            <Link href="/" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">
               <ArrowLeft size={16} />
               Voltar ao início
-            </a>
+            </Link>
             <a href="mailto:ricardomachado.zulk@gmail.com" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">
               <Mail size={16} />
               Contato

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowLeft, FileText, Home } from "lucide-react";
 
 function BrandMark({ className = "" }: { className?: string }) {
@@ -41,14 +42,14 @@ export default function NotFound() {
             </p>
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-              <a href="/" className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]">
+              <Link href="/" className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]">
                 <Home size={16} />
                 Voltar ao início
-              </a>
-              <a href="/cv" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">
+              </Link>
+              <Link href="/cv" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">
                 <FileText size={16} />
                 Solicitar CV
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -56,15 +57,15 @@ export default function NotFound() {
             <div className="border-l border-[#F7F5F0]/14 pl-10">
               <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#57a6b7]">Rotas principais</p>
               <div className="mt-8 grid gap-4">
-                <a href="/" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
+                <Link href="/" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
                   <span className="inline-flex items-center gap-3">Home <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>
-                </a>
-                <a href="/pt" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
+                </Link>
+                <Link href="/pt" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
                   <span className="inline-flex items-center gap-3">Versão em português <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>
-                </a>
-                <a href="/cv" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
+                </Link>
+                <Link href="/cv" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">
                   <span className="inline-flex items-center gap-3">Acesso ao CV <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>
-                </a>
+                </Link>
               </div>
             </div>
           </aside>
