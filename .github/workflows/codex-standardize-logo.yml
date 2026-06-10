@@ -1,0 +1,55 @@
+name: Codex Standardize Logo
+
+on:
+  push:
+    branches:
+      - codex/standardize-logo-lockup-20260610
+
+permissions:
+  contents: write
+
+jobs:
+  standardize-logo:
+    if: contains(github.event.head_commit.message, '[codex-apply-logo-standardization]')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/standardize-logo-lockup-20260610
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Apply logo standardization
+        run: |
+          node <<'JS'
+          const fs = require('fs');
+          const file = 'app/components/HomePage.tsx';
+          let source = fs.readFileSync(file, 'utf8');
+
+          const oldSubtitle = '    brandSubtitle: "VENDAS B2B EM TECNOLOGIA",';
+          const newSubtitle = '    brandSubtitle: "B2B TECHNOLOGY SALES",';
+          if (!source.includes(oldSubtitle)) {
+            throw new Error('Portuguese brand subtitle pattern was not found.');
+          }
+          source = source.replace(oldSubtitle, newSubtitle);
+
+          const oldLogoReturn = `  return <div className="flex items-center gap-4"><BrandMark className="h-10 w-10" /><div className="leading-none"><div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div><div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">{subtitle}</div></div></div>;`;
+          const newLogoReturn = `  return <div className="inline-flex items-center gap-4"><BrandMark className="h-10 w-10 shrink-0" /><div className="min-w-max leading-none"><div className="whitespace-nowrap text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div><div className="mt-2 whitespace-nowrap text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">{subtitle}</div></div></div>;`;
+          if (!source.includes(oldLogoReturn)) {
+            throw new Error('Logo lockup return pattern was not found.');
+          }
+          source = source.replace(oldLogoReturn, newLogoReturn);
+
+          fs.writeFileSync(file, source);
+          fs.rmSync('.github/workflows/codex-standardize-logo.yml', { force: true });
+          JS
+      - name: Commit logo standardization
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/components/HomePage.tsx .github/workflows/codex-standardize-logo.yml
+          git status --short
+          git diff --cached --quiet && exit 0
+          git commit -m "Standardize localized logo lockups"
+          git push origin codex/standardize-logo-lockup-20260610
