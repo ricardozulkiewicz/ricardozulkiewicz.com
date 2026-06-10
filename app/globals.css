@@ -49,6 +49,18 @@ textarea {
   color: #f7f5f0;
 }
 
+.hairline {
+  border-color: rgba(247, 245, 240, 0.14);
+}
+
+.dark-hairline {
+  border-color: rgba(31, 31, 31, 0.12);
+}
+
+.soft-glow {
+  box-shadow: 0 0 80px rgba(15, 76, 92, 0.22);
+}
+
 .tracking-\[-0\.075em\],
 .tracking-\[-0\.06em\],
 .tracking-\[-0\.055em\],
