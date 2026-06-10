@@ -84,7 +84,7 @@ const sharedExperiencePt: Experience[] = [
 const content: Record<Language, Copy> = {
   en: {
     lang: "en-US",
-    nav: [["About", "#about"], ["Expertise", "#expertise"], ["Approach", "#approach"], ["Experience", "#experience"], ["Work", "#work"], ["Contact", "#contact"]],
+    nav: [["Expertise", "#expertise"], ["About", "#about"], ["Approach", "#approach"], ["Experience", "#experience"], ["Work", "#work"], ["Contact", "#contact"]],
     brandSubtitle: "B2B TECHNOLOGY SALES",
     contact: "Contact",
     heroEyebrow: "Strategy. Pipeline. Revenue.",
@@ -122,7 +122,7 @@ const content: Record<Language, Copy> = {
   },
   pt: {
     lang: "pt-BR",
-    nav: [["Sobre", "#about"], ["Especialidades", "#expertise"], ["Abordagem", "#approach"], ["Experiência", "#experience"], ["Projetos", "#work"], ["Contato", "#contact"]],
+    nav: [["Especialidades", "#expertise"], ["Sobre", "#about"], ["Abordagem", "#approach"], ["Experiência", "#experience"], ["Projetos", "#work"], ["Contato", "#contact"]],
     brandSubtitle: "B2B TECHNOLOGY SALES",
     contact: "Contato",
     heroEyebrow: "Estratégia. Pipeline. Receita.",

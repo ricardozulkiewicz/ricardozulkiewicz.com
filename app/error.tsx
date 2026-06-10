@@ -30,7 +30,7 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
           <div className="mb-10 flex items-center gap-4">
             <BrandMark className="h-12 w-12" />
             <div className="leading-none">
-              <div className="text-sm font-semibold tracking-[0.18em] text-[#F7F5F0] md:text-base md:tracking-[0.24em]">RICARDO ZULKIEWICZ</div>
+              <div className="text-sm font-semibold tracking-[0.26em] text-[#F7F5F0] md:text-base md:tracking-[0.34em]">RICARDO ZULK</div>
               <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">B2B TECHNOLOGY SALES</div>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function ErrorPage({ reset }: { error: Error & { digest?: string 
           </p>
 
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-            <button onClick={reset} className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]">
+            <button type="button" onClick={reset} className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]">
               <RotateCcw size={16} />
               Tentar novamente
             </button>
