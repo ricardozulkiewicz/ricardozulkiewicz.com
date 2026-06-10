@@ -1,0 +1,111 @@
+name: Codex Frontend Polish Final Runner
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - codex/frontend-10-polish-20260610
+
+permissions:
+  contents: write
+
+jobs:
+  polish:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Apply validated polish scripts
+        run: |
+          awk '/node <<'\''NODE'\''/ { capture=1; next } /^          NODE$/ { capture=0 } capture { sub(/^          /, ""); print }' .github/workflows/codex-frontend-10-polish.yml > /tmp/apply-polish.cjs
+          node /tmp/apply-polish.cjs
+          node <<'NODE'
+          const fs = require("fs");
+          const path = require("path");
+          const root = process.cwd();
+
+          function edit(file, fn) {
+            const full = path.join(root, file);
+            fs.writeFileSync(full, fn(fs.readFileSync(full, "utf8")), "utf8");
+          }
+
+          function replaceOne(source, from, to, label) {
+            if (!source.includes(from)) throw new Error(`Missing pattern: ${label}`);
+            return source.replace(from, to);
+          }
+
+          edit("app/error.tsx", (source) => {
+            source = replaceOne(source, '"use client";\n\nimport { AlertTriangle, ArrowLeft, Mail, RotateCcw } from "lucide-react";', '"use client";\n\nimport Link from "next/link";\nimport { AlertTriangle, ArrowLeft, Mail, RotateCcw } from "lucide-react";', "error link import");
+            source = replaceOne(source, '<a href="/" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">', '<Link href="/" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">', "error home open");
+            source = replaceOne(source, '              Voltar ao início\n            </a>', '              Voltar ao início\n            </Link>', "error home close");
+            return source;
+          });
+
+          edit("app/global-error.tsx", (source) => {
+            source = replaceOne(source, '"use client";\n\nimport { AlertTriangle, Home, Mail, RotateCcw } from "lucide-react";', '"use client";\n\nimport Link from "next/link";\nimport { AlertTriangle, Home, Mail, RotateCcw } from "lucide-react";', "global error link import");
+            source = replaceOne(source, '<a href="/" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">', '<Link href="/" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">', "global error home open");
+            source = replaceOne(source, '                  Página inicial\n                </a>', '                  Página inicial\n                </Link>', "global error home close");
+            return source;
+          });
+
+          edit("app/not-found.tsx", (source) => {
+            source = replaceOne(source, 'import { ArrowLeft, FileText, Home } from "lucide-react";', 'import Link from "next/link";\nimport { ArrowLeft, FileText, Home } from "lucide-react";', "not found link import");
+            source = replaceOne(source, '<a href="/" className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]">', '<Link href="/" className="inline-flex items-center justify-center gap-3 bg-[#0F4C5C] px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:bg-[#126177]">', "not found home cta open");
+            source = replaceOne(source, '                Voltar ao início\n              </a>', '                Voltar ao início\n              </Link>', "not found home cta close");
+            source = replaceOne(source, '<a href="/cv" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">', '<Link href="/cv" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 px-7 py-4 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/45">', "not found cv cta open");
+            source = replaceOne(source, '                Solicitar CV\n              </a>', '                Solicitar CV\n              </Link>', "not found cv cta close");
+            source = replaceOne(source, '<a href="/" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', '<Link href="/" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', "not found route home open");
+            source = replaceOne(source, '                  <span className="inline-flex items-center gap-3">Home <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>\n                </a>', '                  <span className="inline-flex items-center gap-3">Home <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>\n                </Link>', "not found route home close");
+            source = replaceOne(source, '<a href="/pt" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', '<Link href="/pt" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', "not found route pt open");
+            source = replaceOne(source, '                  <span className="inline-flex items-center gap-3">Versão em português <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>\n                </a>', '                  <span className="inline-flex items-center gap-3">Versão em português <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>\n                </Link>', "not found route pt close");
+            source = replaceOne(source, '<a href="/cv" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', '<Link href="/cv" className="group border-b border-[#F7F5F0]/14 pb-5 text-2xl font-light tracking-[-0.04em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', "not found route cv open");
+            source = replaceOne(source, '                  <span className="inline-flex items-center gap-3">Acesso ao CV <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>\n                </a>', '                  <span className="inline-flex items-center gap-3">Acesso ao CV <ArrowLeft className="rotate-180 transition group-hover:translate-x-1" size={18} /></span>\n                </Link>', "not found route cv close");
+            return source;
+          });
+
+          function patchLegalPage(file, subtitle) {
+            edit(file, (source) => {
+              source = replaceOne(source, 'import type { Metadata } from "next";\n', 'import type { Metadata } from "next";\nimport Link from "next/link";\n', `${file} link import`);
+              source = replaceOne(source, '<a href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">', '<Link href="/" className="inline-flex items-center gap-4" aria-label="Voltar para a página inicial">', `${file} header home open`);
+              source = replaceOne(source, `              <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">${subtitle}</div>\n            </div>\n          </a>`, `              <div className="mt-2 text-[10px] font-medium tracking-[0.22em] text-[#57a6b7] md:text-xs md:tracking-[0.32em]">${subtitle}</div>\n            </div>\n          </Link>`, `${file} header home close`);
+              source = replaceOne(source, '<a href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">', '<Link href="/cv" className="inline-flex items-center gap-3 border border-[#F7F5F0]/16 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#D8D8D8]/78 transition hover:border-[#F7F5F0]/35 hover:text-[#F7F5F0]">', `${file} header cv open`);
+              source = replaceOne(source, '            CV\n          </a>', '            CV\n          </Link>', `${file} header cv close`);
+              source = replaceOne(source, '<a href="/" className="mt-8 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', '<Link href="/" className="mt-8 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#F7F5F0] transition hover:text-[#57a6b7]">', `${file} aside home open`);
+              source = replaceOne(source, '              Voltar ao site\n            </a>', '              Voltar ao site\n            </Link>', `${file} aside home close`);
+              return source;
+            });
+          }
+
+          patchLegalPage("app/privacidade/page.tsx", "PRIVACIDADE");
+          patchLegalPage("app/termos/page.tsx", "TERMOS DE USO");
+          edit("app/termos/page.tsx", (source) => {
+            source = replaceOne(source, '<a href="/privacidade" className="inline-flex items-center gap-3 text-[#57a6b7] transition hover:text-[#F7F5F0]">', '<Link href="/privacidade" className="inline-flex items-center gap-3 text-[#57a6b7] transition hover:text-[#F7F5F0]">', "terms privacy open");
+            source = replaceOne(source, '                Acessar Política de Privacidade\n              </a>', '                Acessar Política de Privacidade\n              </Link>', "terms privacy close");
+            return source;
+          });
+          NODE
+
+      - name: Refresh dependencies and validate
+        run: |
+          npm install --package-lock-only --ignore-scripts
+          npm ci
+          npm run build
+          npm audit --omit=dev --audit-level=high
+
+      - name: Commit validated polish
+        run: |
+          rm -f .github/workflows/codex-frontend-10-polish.yml .github/workflows/codex-frontend-10-polish-runner.yml .github/workflows/codex-frontend-10-polish-runner-v3.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app/components/HomePage.tsx app/components/CvAccessPage.tsx app/components/CvAccessRequestPage.tsx app/cv/access/page.tsx app/globals.css app/error.tsx app/global-error.tsx app/not-found.tsx app/privacidade/page.tsx app/termos/page.tsx package.json package-lock.json .github/workflows/codex-frontend-10-polish.yml .github/workflows/codex-frontend-10-polish-runner.yml .github/workflows/codex-frontend-10-polish-runner-v3.yml
+          git diff --cached --quiet && { echo "No changes to commit"; exit 1; }
+          git commit -m "Polish frontend experience"
+          git push
