@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   ArrowUpRight,
   BriefcaseBusiness,
+  CalendarCheck,
   CheckCircle2,
   Compass,
   Database,
@@ -26,6 +27,7 @@ import {
 
 const email = "ricardomachado.zulk@gmail.com";
 const linkedinUrl = "https://www.linkedin.com/in/rick-zulk/";
+const calendlyUrl = "https://calendly.com/ricardo-zulkiewicz-firstdecision";
 
 type Language = "en" | "pt";
 type Card = { icon: LucideIcon; title: string; text: string; number?: string };
@@ -35,6 +37,7 @@ type Copy = {
   nav: [string, string][];
   brandSubtitle: string;
   contact: string;
+  scheduleCall: string;
   heroEyebrow: string;
   heroBefore: string;
   heroHighlight: string;
@@ -87,6 +90,7 @@ const content: Record<Language, Copy> = {
     nav: [["Expertise", "#expertise"], ["About", "#about"], ["Approach", "#approach"], ["Experience", "#experience"], ["Work", "#work"], ["Contact", "#contact"]],
     brandSubtitle: "B2B TECHNOLOGY SALES",
     contact: "Contact",
+    scheduleCall: "Schedule a call",
     heroEyebrow: "Strategy. Pipeline. Revenue.",
     heroBefore: "I build the commercial structure behind",
     heroHighlight: "predictable",
@@ -125,6 +129,7 @@ const content: Record<Language, Copy> = {
     nav: [["Especialidades", "#expertise"], ["Sobre", "#about"], ["Abordagem", "#approach"], ["Experiência", "#experience"], ["Projetos", "#work"], ["Contato", "#contact"]],
     brandSubtitle: "B2B TECHNOLOGY SALES",
     contact: "Contato",
+    scheduleCall: "Agendar chamada",
     heroEyebrow: "Estratégia. Pipeline. Receita.",
     heroBefore: "Eu estruturo a operação comercial por trás de uma receita",
     heroHighlight: "previsível",
@@ -205,7 +210,7 @@ export default function HomePage({ language }: { language: Language }) {
       <section id="experience" className="bg-[#F7F5F0] px-6 pb-24 text-[#1F1F1F] lg:px-10"><div className="mx-auto max-w-7xl"><div className="mb-14 max-w-3xl border-t dark-hairline pt-20"><Eyebrow dark>{language === "pt" ? "Experiência" : "Experience"}</Eyebrow><h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-6xl">{c.experienceTitle}</h2></div><div className="space-y-5">{c.experience.map((item) => <article key={item.company + item.period} className="grid gap-6 border dark-hairline bg-white/45 p-7 md:grid-cols-[0.25fr_0.75fr]"><div className="text-sm font-medium uppercase tracking-[0.14em] text-[#0F4C5C]">{item.period}</div><div><h3 className="text-2xl font-semibold tracking-[-0.03em]">{item.role}</h3><div className="mt-1 text-sm font-semibold uppercase tracking-[0.14em] text-[#4A4A4A]">{item.company}</div><p className="mt-5 max-w-4xl text-base leading-8 text-[#4A4A4A]">{item.text}</p><div className="mt-6 flex flex-wrap gap-2">{item.tags.map((tag) => <span key={tag} className="border dark-hairline px-3 py-1.5 text-[11px] font-medium uppercase tracking-[0.12em] text-[#4A4A4A]">{tag}</span>)}</div></div></article>)}</div></div></section>
       <section id="work" className="px-6 py-24 lg:px-10"><div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.7fr_1fr]"><div><Eyebrow>{language === "pt" ? "Projetos selecionados" : "Selected work"}</Eyebrow><h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">{c.workTitle}</h2></div><div className="grid gap-4">{c.work.map((project) => <article key={project.title} className="group border-b hairline py-6"><div className="flex gap-5"><ArrowUpRight className="mt-1 shrink-0 text-[#57a6b7] transition group-hover:translate-x-1 group-hover:-translate-y-1" size={18} /><div><h3 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#F7F5F0]">{project.title}</h3><p className="mt-4 text-base leading-7 text-[#D8D8D8]/74">{project.description}</p></div></div></article>)}</div></div></section>
       <section className="bg-[#F7F5F0] px-6 py-20 text-[#1F1F1F] lg:px-10"><div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.55fr_1fr]"><div><Eyebrow dark>{language === "pt" ? "Posicionamento" : "Positioning"}</Eyebrow><h2 className="text-4xl font-light leading-tight tracking-[-0.05em] md:text-5xl">{c.positioningTitle}</h2></div><div className="grid gap-5 md:grid-cols-2">{c.positioning.map((item) => <div key={item} className="border dark-hairline bg-white/50 p-6"><ShieldCheck className="mb-6 text-[#0F4C5C]" size={21} strokeWidth={1.6} /><p className="text-base leading-7 text-[#4A4A4A]">{item}</p></div>)}</div></div></section>
-      <section id="contact" className="px-6 pb-10 pt-10 lg:px-10"><div className="mx-auto max-w-7xl border hairline bg-[#0F4C5C]/70 p-8 md:p-12"><div className="grid gap-10 md:grid-cols-[0.9fr_1fr_0.6fr] md:items-center"><h2 className="text-3xl font-light leading-tight tracking-[-0.05em] md:text-5xl">{c.finalTitle}</h2><p className="text-base leading-8 text-[#F7F5F0]/78">{c.finalText}</p><a href={mailto} className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 bg-[#F7F5F0] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1F1F1F] transition hover:-translate-y-0.5">{c.contact} <Mail size={15} /></a></div></div><footer className="mx-auto mt-10 flex max-w-7xl flex-col gap-8 border-t hairline py-8 md:flex-row md:items-center md:justify-between"><LogoLockup subtitle={c.brandSubtitle} /><div className="flex flex-wrap items-center gap-5 text-sm text-[#D8D8D8]/65"><span className="inline-flex items-center gap-2"><MapPin size={15} /> {c.location}</span><a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={mailto}><Mail size={15} /> Email</a><a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a><Link className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href="/cv"><Download size={15} /> CV</Link><Link className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={language === "pt" ? "/" : "/pt"}>{language === "pt" ? "EN" : "PT"}</Link></div></footer></section>
+      <section id="contact" className="px-6 pb-10 pt-10 lg:px-10"><div className="mx-auto max-w-7xl border hairline bg-[#0F4C5C]/70 p-8 md:p-12"><div className="grid gap-10 md:grid-cols-[0.9fr_1fr_0.8fr] md:items-center"><h2 className="text-3xl font-light leading-tight tracking-[-0.05em] md:text-5xl">{c.finalTitle}</h2><p className="text-base leading-8 text-[#F7F5F0]/78">{c.finalText}</p><div className="flex flex-col gap-3 sm:flex-row md:flex-col xl:flex-row"><a href={mailto} className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/20 bg-[#F7F5F0] px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#1F1F1F] transition hover:-translate-y-0.5">{c.contact} <Mail size={15} /></a><a href={calendlyUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-3 border border-[#F7F5F0]/24 px-6 py-4 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#F7F5F0] transition hover:-translate-y-0.5 hover:border-[#F7F5F0]/55">{c.scheduleCall} <CalendarCheck size={15} /></a></div></div></div><footer className="mx-auto mt-10 flex max-w-7xl flex-col gap-8 border-t hairline py-8 md:flex-row md:items-center md:justify-between"><LogoLockup subtitle={c.brandSubtitle} /><div className="flex flex-wrap items-center gap-5 text-sm text-[#D8D8D8]/65"><span className="inline-flex items-center gap-2"><MapPin size={15} /> {c.location}</span><a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={mailto}><Mail size={15} /> Email</a><a className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={linkedinUrl} target="_blank" rel="noreferrer"><Linkedin size={15} /> LinkedIn</a><Link className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href="/cv"><Download size={15} /> CV</Link><Link className="inline-flex items-center gap-2 transition hover:text-[#F7F5F0]" href={language === "pt" ? "/" : "/pt"}>{language === "pt" ? "EN" : "PT"}</Link></div></footer></section>
     </main>
   );
 }
