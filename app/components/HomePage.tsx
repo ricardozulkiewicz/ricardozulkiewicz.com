@@ -183,7 +183,11 @@ function LanguageSwitch({ language, mobile = false }: { language: Language; mobi
 export default function HomePage({ language }: { language: Language }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const c = content[language];
-  const mailto = `mailto:${email}`;
+  const emailSubject = language === "pt" ? "Contato pelo site" : "Contact from ricardozulkiewicz.com";
+  const emailBody = language === "pt" ? "Ola Ricardo,\n\n" : "Hi Ricardo,\n\n";
+  const encodedSubject = encodeURIComponent(emailSubject);
+  const encodedBody = encodeURIComponent(emailBody);
+  const mailto = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(email)}&su=${encodedSubject}&body=${encodedBody}`;
 
   return (
     <main lang={c.lang} className="min-h-screen bg-[#1F1F1F] text-[#F7F5F0] antialiased selection:bg-[#0F4C5C] selection:text-[#F7F5F0]">
